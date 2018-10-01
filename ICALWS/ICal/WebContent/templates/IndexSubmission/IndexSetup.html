@@ -1,0 +1,134 @@
+<div id="content">
+
+	<div >
+   		<select name="WeightType" ng-change="updateIndexSetup()" ng-model="index.setupType" id="wType" class="form-control"  >
+	   		<option value="" >Please Select</option >
+	    	<option value="SI" >Single Index Setup </option >
+	    	<option value="MI" >Multiple Index Setup </option >
+  		</select >
+  	</div>
+  	
+  	<div ng-show="showdiv1" >
+		<div  class="divone">
+			<div class="input-group mb-3">
+				<button ng-click="getTemplate()" class="btn btn-secondary">Get Multiple Index File Template</button>
+			</div>
+			<br>
+			<br>
+			<div class="input-group mb-3">
+	 			
+	 			<div class="custom-file">
+	   				<input type="file" file-model="myFile" size="20" >
+					&nbsp;&nbsp;
+	    			<button ng-click="upload()" class="btn btn-primary">Upload Selected File to setup  multiple Indies</button>
+	  			</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="content" style="font-family: Arial"  ng-show="showdiv2" >
+	 <form name="userForm" ng-submit=" submitForm()" >
+	 	<div class="form-row">
+	 		<div class="form-group col-md-4">
+    			<label for="ClientName">Client Name:</label>
+   				<select ng-model="user.ClientName" class="form-control" >
+					<option value="">-Select Client-</option>
+			    	<option data-ng-repeat="client  in ClientData"  value="{{client.clientName}}">{{client.clientName}}</option>
+				</select>
+			</div>
+			<div  class="form-group col-md-4" >
+				<label for="date" >Index live Date:</label >
+		    	<input type="date" id="date" ng-model="user.IndexLiveDate"  value="2018-12-31"/ class="form-control">
+	    	</div >
+	    	<div class="form-group col-md-4" >
+			    <label for="Currency" >Currency:</label >
+				<select ng-model="user.Currency" class="form-control">
+				    <option value="">-Select Currency-</option>
+				    <option data-ng-repeat="currency in CData"  value="{{currency.currencySymbol}}">{{currency.currencySymbol}}</option>
+				</select>			
+			</div >
+ 		</div>
+  
+	 	<div class="form-row">
+    		<div class="form-group col-md-4">
+      			<label for="IndexName">Index Name:</label>
+      			<input type="text" ng-model="user.IndexName" class="form-control" id="IndexName" cols="10" rows="30">
+    		</div>
+    		<div class="form-group col-md-4">
+      			<label for="IndexTicker">Index Ticker:</label>
+      			 <input type="text" ng-model="user.IndexTicker"  id="IndexTicker"  class="form-control" >
+    		</div>
+    		<div class="form-group col-md-4" >
+			   <label for="Zone" >Zone:</label >
+			   <select name="Zone" ng-model="user.Zone" id="Zone" class="form-control" >
+				    <option value="" >Please Select</option >
+				    <option value="AR" >Americas Region</option >
+				    <option value="ER" >European Region</option >
+				    <option value="APR" >Asia/Pacific Region</option >
+			  	</select >
+		  	</div >
+  		</div>
+	 	<div class="form-row">
+    		<div class="form-group col-md-4">
+      			<label for="Index Value" >Index Value:</label >
+      			<input type="text" ng-model="user.IndexValue"  id="IndexValue" class="form-control">
+    		</div>
+    		<div class="form-group col-md-4">
+      			<label for="Index Market Value" >Index Market Value:</label >
+      			 <input type="text" ng-model="user.IndexMarketValue"  id="IndexMarketValue" class="form-control" >
+    		</div>
+    		<div class="form-group col-md-4"  >
+				<label for="Type of Index" >Type of Index</label >
+		    	<select name="Type of Index" id="TypeofIndex" ng-model="user.IndexType" class="form-control">
+		    		<option value="" >Please Select</option >
+		        	<option value="PR" >PR</option >
+		        	<option value="GTR" >GTR</option >
+		        	<option value="NTR" >NTR</option >
+				</select >
+			</div >
+	  	</div>
+		
+	  	
+		<div class="form-row">
+		<div class="form-group col-md-6" >
+			<label for="Normal cash dividend adjustment" >Normal Cash Dividend Adjustment:</label >
+		    <select name="Normal cash dividend adjustment" ng-model="user.NCashDivAdj" id="Normalcashdividendadjustment" class="form-control" >
+				<option value="" >Please Choose</option >
+		        <option value="DA" >Divisor Adjustment</option >
+		        <option value="SA" >Stock Adjustment</option >
+			</select >
+		</div >
+		<div class="form-group col-md-6" >
+			<label for="Special cash dividend adjustment" >Special Cash Dividend Adjustment:</label >
+		    <select name="Special cash dividend adjustment" ng-model="user.SNCashDivAdj" id="Specialcashdividendadjustment" class="form-control" >
+				<option value="" >Please Select</option >
+		        <option value="DA" >Divisor Adjustment</option >
+		        <option value="SA" >Stock Adjustment</option >
+			</select >
+		</div >
+		</div>
+		<div class="form-row">
+		<div class="form-group col-md-6" >
+		    <label for="Dissemination Source" >Dissemination Source:</label >
+		    <select name="Dissemination Source" ng-model="user.DisseminationSource" id="DisseminationSource" class="form-control"  >
+				<option value="" >Please Choose</option >
+		        <option value="Email" >Email</option >
+		        <option value="SFTP" >SFTP</option >
+			</select >
+		</div >
+		<!--<div class="form-group col-md-6" >
+			<label for="Format of output files" >Format of output files</label > 
+			<select name="Format of output files" ng-model="user.OutputFileFormat" id="Formatofoutputfiles" class="form-control" >
+				<option value="" >Please Select</option >
+				<option value="CSV" >CSV</option >
+		         <option value="XLS" >XLS</option >
+		         <option value="TXT" >TXT</option >
+			</select >
+		</div >-->
+		</div>
+		<div  ng-controller="addIndexController">
+			<button name="insert"  ngClick="submitForm()" class="btn btn-secondary">Upload</button>
+		</div>
+		</form>
+	</div>  
+</div>

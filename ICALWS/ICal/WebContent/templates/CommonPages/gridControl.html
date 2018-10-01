@@ -1,0 +1,24 @@
+<div class="form-control">
+	<h1>{{title}}</h1>
+	
+	<div class="form-group row"   >
+    	<label for="IndexWeightType" class="col-sm-2 col-form-label">Index Weight Type:</label>
+    	<div class="col-sm-10">
+     		 <select name="WeightType" ng-change="updateIndexList()" ng-model="index.weightType" id="wType" class="form-control" >
+	   		<option value="" >All</option >
+	    	<option value="PWI" >Proprietary Index</option >
+	    	<option value="MWI" >Market Cap Index</option >
+  		</select >
+    	</div>
+  	</div>
+  	
+	<div>
+		<button ng-click="approve()"	ng-show="inactiveApprove" class="btn btn-primary">Approve Selected indices</button> 
+		<button ng-click="openRunIndex()"	ng-show="inactiveRunIndex" class="btn btn-primary">Run Selected indices</button>
+		<!-- <<button ng-click="addValues()"  ng-show="inactiveAddValues">Add Index Values for selected indices</button>   -->		
+		<button ng-click="remove()" class="btn btn-primary">Delete Selected indices</button>
+	</div>
+	<br>
+	<div class="gridStyle" style="border: 5px solid #d4d4d4; width: 1050px;  height: 300px" ng-grid="gridOptions" ></div>
+</div>
+

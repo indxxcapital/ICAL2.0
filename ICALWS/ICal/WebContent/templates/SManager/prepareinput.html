@@ -1,0 +1,34 @@
+<div id="content">
+	<div  class="divone">
+		
+		<div>
+			<button ng-click="getParseTemplate()" class="btn btn-secondary">{{buttontitle1}}</button>
+			<button ng-click="getAddMissingTemplate()" class="btn btn-secondary" ng-show="showdiv1">{{buttontitle2}}</button>
+		</div>
+		<br>
+		<br>
+		<div class="input-group mb-3">
+ 			
+ 			<div class="custom-file">
+   				<input type="file" file-model="myFile" >&nbsp;&nbsp;
+   				<button ng-click="uploadFile()" class="btn btn-primary">{{buttontitle3}}</button>
+			</div>
+ 			
+		</div>
+		<br>
+		<div class="input-group mb-3" ng-show="showdiv1">
+ 			
+ 			<div class="custom-file">
+   				<input type="file" file-model="myFile" >&nbsp;&nbsp;
+   				<button ng-click="addMissingData()" class="btn btn-primary">{{buttontitle4}}</button>
+   				
+			</div>
+ 			
+		</div>
+		
+		
+	</div>
+	
+</div>
+
+

@@ -1,0 +1,81 @@
+ <form name="userForm" ng-submit=" submitForm()" >
+<div id="content" style="font-family: Arial"   >
+    
+<div class="form-group" >
+  	<label for="Client Name" >Client Name:</label >
+	<input type="text" ng-model="user.ClientName" class="form-control" id="ClientName" >
+	</div >
+<div class="form-group" >
+    <label for="name" >Index Name:</label >
+    <input type="text" ng-model="user.IndexName" class="form-control" id="IndexName" cols="10" rows="30">
+</div >
+
+<div class="form-group" >
+    <label for="Index Ticker" >Index Ticker:</label >
+    <input type="text" ng-model="user.IndexTicker" class="form-control" id="IndexTicker" >
+    </div >
+<div class="form-group" >
+    <label for="Currency" >Currency:</label >
+    <input type="text" ng-model="user.Currency" class="form-control" id="Currency">
+</div >
+
+<div class="form-group" >
+   <label for="Zone" >Zone:</label >
+   <select name="Zone" ng-model="user.Zone" id="Zone" class="form-control" >
+	    <option value="" >Please Select</option >
+	    <option value="AR" >Americas Region</option >
+	    <option value="ER" >European Region</option >
+	    <option value="APR" >Asia/Pacific Region</option >
+  	</select >
+  	</div >
+<div class="form-group" >
+	<label for="Type of Index" >Type of Index</label >
+    <select name="Type of Index" id="TypeofIndex" ng-model="user.IndexType" class="form-control" >
+    	<option value="" >Please Select</option >
+        <option value="TRI" >Total Return Index</option >
+        <option value="PRI" >Price Return Index</option >
+        <option value="NTRI" >Net Total Return Index</option >
+	</select >
+</div >
+<div class="form-group" >
+	<label for="Normal cash dividend adjustment" >Normal Cash Dividend Adjustment:</label >
+    <select name="Normal cash dividend adjustment" ng-model="user.NCashDivAdj" id="Normalcashdividendadjustment" class="form-control" >
+		<option value="" >Please Choose</option >
+        <option value="DA" >Divisor Adjustment</option >
+        <option value="SA" >Stock Adjustment</option >
+	</select >
+	</div >
+<div class="form-group" >
+	<label for="Special cash dividend adjustment" >Special Cash Dividend Adjustment:</label >
+    <select name="Special cash dividend adjustment" ng-model="user.SNCashDivAdj" id="Specialcashdividendadjustment" class="form-control" >
+		<option value="" >Please Select</option >
+        <option value="DA" >Divisor Adjustment</option >
+        <option value="SA" >Stock Adjustment</option >
+	</select >
+</div >
+<div class="form-group" >
+	<label for="date" >Index live Date:</label >
+    <input type="date" id="date" ng-model="user.IndexLiveDate" class="form-control" value="2018-12-31"/>
+    </div >
+<div class="form-group" >
+    <label for="Dissemination Source" >Dissemination Source:</label >
+    <select name="Dissemination Source" ng-model="user.DisseminationSource" id="DisseminationSource" class="form-control" >
+		<option value="" >Please Choose</option >
+        <option value="Divisor adjustment" >Email</option >
+        <option value="stock adjustment" >SFTP</option >
+	</select >
+	</div >
+<div class="form-group" >
+	<label for="Format of output files" >Format of output files</label > 
+	<select name="Format of output files" ng-model="user.OutputFileFormat" id="Formatofoutputfiles" class="form-control" >
+		<option value="" >Please Select</option >
+		<option value="CSV" >CSV</option >
+         <option value="XLS" >XLS</option >
+         <option value="TXT" >TXT</option >
+	</select >
+</div >
+<div class="form-group" ng-controller="addIndexController">
+	<button class="btn btn-primary" name="insert" class="btn btn-info" ngClick="submitForm()" >Upload</button>
+</div>
+</div>  
+</form>
