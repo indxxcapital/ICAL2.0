@@ -21,12 +21,11 @@ import com.Service.IndexService;
 
 @Path("/index") 
 public class fileGenerationRestService {
-
 	
 	@POST
 	@Path("/getpreclosing")
 	@Produces("application/vnd.ms-excel")
-	public Response getPreClosingFile(JsonObject  jsonObject) 
+	public Response getPreOpenigFile(JsonObject  jsonObject) 
 	{
 		System.out.println("in getSecuritiesForIndex");
 		System.out.println("json:"+jsonObject);
@@ -38,93 +37,19 @@ public class fileGenerationRestService {
 		System.out.println("Run Date :"+indexRunDate);
 		
 		String fileName = "Pre-closing-" + indexTicker +"-"+ indexRunDate + ".csv" ;
-		String fileCompletePath = RestUtil.INDEX_PRE_CLOSE_FILE_PATH +fileName;
+		String fileCompletePath = RestUtil.INDEX_PRE_OPEN_FILE_PATH +fileName;
 
 		File file = new File(fileCompletePath);
 		ResponseBuilder response = Response.ok((Object) file);
 		response.header("Content-Disposition","attachment; filename=" + fileName);
 		return response.build();
 	}
-	
-//	@POST
-//	@Path("/generateclosingfile")
-//	@Produces("application/vnd.ms-excel")
-//	public Response getClosingFileFile(JsonObject  jsonObject)
-//	{
-//		System.out.println("in generateclosingfile");
-//		System.out.println(jsonObject);
-//		
-//		LocalDate localDate = LocalDate.now();
-//		String strDate = DateTimeFormatter.ofPattern("yyy-MM-dd").format(localDate);
-//		
-//		String indexTicker = jsonObject.getString("indexTicker");
-//		String toDate = strDate;
-//		String indexCurrency = jsonObject.getString("currency");
-//		String fileCompletePath = "";
-//		IndexService iService = new IndexService();
-//		String fileName= "";
-//		try 
-//		{
-//			fileName = "Closing-" + indexTicker +"-"+ toDate + ".csv" ;
-//			fileCompletePath = RestUtil.INDEX_CLOSE_FILE_PATH +fileName;
-//			System.out.println(fileCompletePath);
-//			
-//			iService.generateCloseFile(indexTicker,toDate,indexCurrency,fileCompletePath);
-//		} 
-//		catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		
-//		System.out.println(fileCompletePath);
-//		
-//		File file = new File(fileCompletePath);
-//		ResponseBuilder response = Response.ok((Object) file);
-//		response.header("Content-Disposition","attachment; filename=" + fileName);
-//		return response.build();
-//	}
-//	
-//	@POST
-//	@Path("/generateopeningfile")
-//	@Produces("application/vnd.ms-excel")
-//	public Response getOpeningFileFile(JsonObject  jsonObject)
-//	{
-//		System.out.println("in generateopeningfile");
-//		System.out.println(jsonObject);
-//		
-//		LocalDate localDate = LocalDate.now();
-//		String strDate = DateTimeFormatter.ofPattern("yyy-MM-dd").format(localDate);
-//		
-//		String indexTicker = jsonObject.getString("indexTicker");
-//		String toDate = strDate;
-//		String indexCurrency = jsonObject.getString("currency");
-//		String fileCompletePath = "";
-//		IndexService iService = new IndexService();
-//		String fileName= "";
-//		try 
-//		{
-//			fileName = "Opening-" + indexTicker +"-"+ toDate + ".csv" ;
-//			fileCompletePath = RestUtil.INDEX_CLOSE_FILE_PATH +fileName;
-//			System.out.println(fileCompletePath);
-//			
-//			iService.generateCloseFile(indexTicker,toDate,indexCurrency,fileCompletePath);
-//		} 
-//		catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		
-//		System.out.println(fileCompletePath);
-//		
-//		File file = new File(fileCompletePath);
-//		ResponseBuilder response = Response.ok((Object) file);
-//		response.header("Content-Disposition","attachment; filename=" + fileName);
-//		return response.build();
-//	}
 	public static void main(String[] args) 
 	{
 		System.out.println("HELLO REST UTIL ");
 		getPreClosingFiles();
 	}
-	
+//	
 	public static void getPreClosingFiles()
 	{
 		List<IndexBean> indexBeanList = new ArrayList();
@@ -137,15 +62,15 @@ public class fileGenerationRestService {
 			String strDate = DateTimeFormatter.ofPattern("yyy-MM-dd").format(localDate);
 			
 			IndexService iService = new IndexService();
-			String indexRunDate = "2018-10-28";//jsonObject.getString("indexRunDate");
+			String indexRunDate = "2018-10-03";//jsonObject.getString("indexRunDate");
 			
 			List<Integer> strIndexTickers = new ArrayList<>();
 //			for(int i=0;i<arraySize;i++)
 			{
 				IndexBean iBean = new IndexBean();
-				Integer indexId = 3;//indexObj.getInt("id");
+				Integer indexId = 28;//indexObj.getInt("id");
 				strIndexTickers.add(indexId);
-				String indexTicker = "in3";//indexObj.getString("indexTicker");
+				String indexTicker = "T5";//indexObj.getString("indexTicker");
 				String indexCurrency = "USD";//indexObj.getString("currency");
 //				System.out.println("12222233333111");
 				iBean.setId(indexId);
@@ -154,8 +79,8 @@ public class fileGenerationRestService {
 //				System.out.println("555");
 				iBean.setCurrency(indexCurrency);
 //				System.out.println("666");
-				Float indexValue = (float) 3400;//indexObj.getInt("closeIndexValue");
-				Float  marketValue = (float) 340000;//indexObj.getInt("indexMarketValue");
+				Float indexValue = (float) 617.5639049;//indexObj.getInt("closeIndexValue");
+				Float  marketValue = (float) 61756.4;//indexObj.getInt("indexMarketValue");
 				System.out.println(indexValue);
 //				System.out.println("777");
 				iBean.setCloseIndexValue(Float.parseFloat(indexValue.toString()));	
@@ -164,7 +89,7 @@ public class fileGenerationRestService {
 				iBean.setIndexRunDate(indexRunDate);
 //				String fileName = "Pre-closing-" + indexTicker +"-"+ strDate + "-" + indexRunDate + ".csv" ;
 				String fileName = "Pre-closing-" + indexTicker +"-"+ indexRunDate + ".csv" ;
-				String fileCompletePath = RestUtil.INDEX_PRE_CLOSE_FILE_PATH +fileName;
+				String fileCompletePath = RestUtil.INDEX_PRE_OPEN_FILE_PATH +fileName;
 				System.out.println(fileCompletePath);
 					
 				iService.generatePreClosingile(iBean,fileCompletePath);
@@ -181,7 +106,7 @@ public class fileGenerationRestService {
 			String formatDateTime = now.format(formatter);
 		        
 			String fileName = "composite-pre-closing-(" + formatDateTime +")-"+ indexRunDate + ".csv" ;
-			String fileCompletePath = RestUtil.INDEX_PRE_CLOSE_FILE_PATH +fileName;
+			String fileCompletePath = RestUtil.INDEX_PRE_OPEN_FILE_PATH +fileName;
 			
 			iService.generateCompositePreClosingFile(indexBeanList,fileCompletePath);
 		}catch (Exception e) 
@@ -191,10 +116,11 @@ public class fileGenerationRestService {
 		}
 	}
 //	
+	
 	@POST
 	@Path("/runIndices")
 	@Produces("application/vnd.ms-excel")
-	public void generatePreClosingFiles(JsonObject  jsonObject)
+	public void generatePreOpeningFiles(JsonObject  jsonObject)
 	{
 		List<IndexBean> indexBeanList = new ArrayList();
 		
@@ -203,8 +129,8 @@ public class fileGenerationRestService {
 			System.out.println("in getPreClosingFiles");
 			System.out.println(jsonObject);
 			
-			LocalDate localDate = LocalDate.now();
-			String strDate = DateTimeFormatter.ofPattern("yyy-MM-dd").format(localDate);
+//			LocalDate localDate = LocalDate.now();
+//			String strDate = DateTimeFormatter.ofPattern("yyy-MM-dd").format(localDate);
 			
 			IndexService iService = new IndexService();
 			JsonArray  indexJSONArray = jsonObject.getJsonArray("indexData");
@@ -238,7 +164,7 @@ public class fileGenerationRestService {
 				iBean.setIndexRunDate(indexRunDate);
 //				String fileName = "Pre-closing-" + indexTicker +"-"+ strDate + "-" + indexRunDate + ".csv" ;
 				String fileName = "Pre-closing-" + indexTicker +"-"+ indexRunDate + ".csv" ;
-				String fileCompletePath = RestUtil.INDEX_PRE_CLOSE_FILE_PATH +fileName;
+				String fileCompletePath = RestUtil.INDEX_PRE_OPEN_FILE_PATH +fileName;
 				System.out.println(fileCompletePath);
 					
 				iService.generatePreClosingile(iBean,fileCompletePath);
@@ -247,7 +173,6 @@ public class fileGenerationRestService {
 			String strIndexList = strIndexTickers.toString();
 			iService.updateIndicesStatusAsRun(strIndexList.substring(1, strIndexList.length()-1),"RI",indexRunDate);
 			
-			
 			LocalDateTime now = LocalDateTime.now();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss");
@@ -255,10 +180,9 @@ public class fileGenerationRestService {
 			String formatDateTime = now.format(formatter);
 		        
 			String fileName = "composite-pre-closing-(" + formatDateTime +")-"+ indexRunDate + ".csv" ;
-			String fileCompletePath = RestUtil.INDEX_PRE_CLOSE_FILE_PATH +fileName;
+			String fileCompletePath = RestUtil.INDEX_PRE_OPEN_FILE_PATH +fileName;
 			
 			iService.generateCompositePreClosingFile(indexBeanList,fileCompletePath);
-			
 		} 
 		catch (Exception e) 
 		{
@@ -266,7 +190,5 @@ public class fileGenerationRestService {
 			System.out.println(e.getMessage());
 		}
 	}
-	
-	
 }
 		

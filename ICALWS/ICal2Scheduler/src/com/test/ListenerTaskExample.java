@@ -42,7 +42,7 @@ public class ListenerTaskExample implements ServletContextListener {
 		
 		try 
 		{
-			// Opening For AR Zone 
+			// Opening For APR Zone 
 			JobDetail job1 = JobBuilder.newJob(OpeningJobAPR.class).withIdentity("Job1", "group1").build();
 			Trigger trigger1 = TriggerBuilder.newTrigger().withIdentity("cronTrigger1", "group1").withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(02, 00)).build();
 //			Trigger trigger1 = TriggerBuilder.newTrigger().withIdentity("cronTrigger1", "group1").withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(10, 05)).build();
@@ -51,23 +51,7 @@ public class ListenerTaskExample implements ServletContextListener {
 			scheduler1.start();
 			scheduler1.scheduleJob(job1, trigger1);
 			
-			// Opening For AR Zone 
-			JobDetail job2 = JobBuilder.newJob(OpeningJobER.class).withIdentity("Job2", "group2").build();
-			Trigger trigger2 = TriggerBuilder.newTrigger().withIdentity("cronTrigger2", "group2").withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(10, 00)).build();
-		
-			Scheduler scheduler2 = new StdSchedulerFactory().getScheduler();
-			scheduler2.start();
-			scheduler2.scheduleJob(job2, trigger2);
-			
-			// Opening For AR Zone 
-			JobDetail job3 = JobBuilder.newJob(OpeningJobAR.class).withIdentity("Job3", "group3").build();
-			Trigger trigger3 = TriggerBuilder.newTrigger().withIdentity("cronTrigger3", "group3").withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(18, 00)).build();
-		
-			Scheduler scheduler3 = new StdSchedulerFactory().getScheduler();
-			scheduler3.start();
-			scheduler3.scheduleJob(job3, trigger3);
-			
-			// Opening For AR Zone 
+			// Closing For APR Zone 
 			JobDetail job4 = JobBuilder.newJob(ClosingJobAPR.class).withIdentity("Job4", "group4").build();
 			Trigger trigger4 = TriggerBuilder.newTrigger().withIdentity("cronTrigger4", "group4").withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(17, 30)).build();
 //			Trigger trigger4 = TriggerBuilder.newTrigger().withIdentity("cronTrigger4", "group4").withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(10, 10)).build();
@@ -76,17 +60,39 @@ public class ListenerTaskExample implements ServletContextListener {
 			scheduler4.start();
 			scheduler4.scheduleJob(job4, trigger4);
 			
-			// Opening For AR Zone 
+			// Opening For ER Zone 
+			JobDetail job2 = JobBuilder.newJob(OpeningJobER.class).withIdentity("Job2", "group2").build();
+			Trigger trigger2 = TriggerBuilder.newTrigger().withIdentity("cronTrigger2", "group2").withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(10, 00)).build();
+//			Trigger trigger2 = TriggerBuilder.newTrigger().withIdentity("cronTrigger2", "group2").withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(16, 15)).build();
+		
+			Scheduler scheduler2 = new StdSchedulerFactory().getScheduler();
+			scheduler2.start();
+			scheduler2.scheduleJob(job2, trigger2);
+			
+			// Closing For ER Zone 
 			JobDetail job5 = JobBuilder.newJob(ClosingJobER.class).withIdentity("Job5", "group5").build();
 			Trigger trigger5 = TriggerBuilder.newTrigger().withIdentity("cronTrigger5", "group5").withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(21, 30)).build();
+//			Trigger trigger5 = TriggerBuilder.newTrigger().withIdentity("cronTrigger5", "group5").withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(17, 05)).build();
 		
 			Scheduler scheduler5 = new StdSchedulerFactory().getScheduler();
 			scheduler5.start();
 			scheduler5.scheduleJob(job5, trigger5);
 			
+			
 			// Opening For AR Zone 
+			JobDetail job3 = JobBuilder.newJob(OpeningJobAR.class).withIdentity("Job3", "group3").build();
+			Trigger trigger3 = TriggerBuilder.newTrigger().withIdentity("cronTrigger3", "group3").withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(18, 00)).build();
+//			Trigger trigger3 = TriggerBuilder.newTrigger().withIdentity("cronTrigger3", "group3").withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(16, 20)).build();
+		
+			Scheduler scheduler3 = new StdSchedulerFactory().getScheduler();
+			scheduler3.start();
+			scheduler3.scheduleJob(job3, trigger3);		
+			
+			
+			// Closing For AR Zone 
 			JobDetail job6 = JobBuilder.newJob(ClosingJobAR.class).withIdentity("Job6", "group6").build();
 			Trigger trigger6 = TriggerBuilder.newTrigger().withIdentity("cronTrigger6", "group6").withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(04, 30)).build();
+//			Trigger trigger6 = TriggerBuilder.newTrigger().withIdentity("cronTrigger6", "group6").withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(17, 10)).build();
 		
 			Scheduler scheduler6 = new StdSchedulerFactory().getScheduler();
 			scheduler6.start();

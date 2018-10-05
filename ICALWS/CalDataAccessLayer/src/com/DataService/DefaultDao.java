@@ -36,7 +36,7 @@ public class DefaultDao
 		String query = DataUtill.createInsert(tableName,keyValueMap);
 	      
 		int iValue =ConnectionFactory.ExecuteUpdateInsertDelete(query);
-		ConnectionFactory.closeConnection();
+//		ConnectionFactory.closeConnection();
 		return iValue;
 	}
 	
@@ -44,7 +44,7 @@ public class DefaultDao
 	{
 		System.out.println(updateQuery);
 		int iValue =ConnectionFactory.ExecuteUpdateInsertDelete(updateQuery);
-		ConnectionFactory.closeConnection();
+//		ConnectionFactory.closeConnection();
 		return iValue;
 	}
 	
@@ -54,7 +54,7 @@ public class DefaultDao
 		String query = DataUtill.createInsert(tableName,keyValueMap);
 	      
 		int iValue =ConnectionFactory.ExecuteUpdateInsertDelete(query);
-		ConnectionFactory.closeConnection();
+//		ConnectionFactory.closeConnection();
 		return iValue;
 	}
 	
@@ -63,7 +63,7 @@ public class DefaultDao
 		try {
 			ConnectionFactory.getConnection();
 			ConnectionFactory.ExecuteUpdateInsertDelete(strInsertQuery);
-			ConnectionFactory.closeConnection();
+//			ConnectionFactory.closeConnection();
 		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
 			throw e;
@@ -76,7 +76,7 @@ public class DefaultDao
 		String query = DataUtill.createDelete(tableName,filter);
 		System.out.println(query);
 		int iValue =ConnectionFactory.ExecuteUpdateInsertDelete(query);
-		ConnectionFactory.closeConnection();
+//		ConnectionFactory.closeConnection();
 		return iValue;
 	}
 }

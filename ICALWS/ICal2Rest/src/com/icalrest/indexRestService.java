@@ -35,24 +35,38 @@ public class indexRestService {
 	
 	@POST
 	@Path("/add")
-	public void addIndex(File file)
+	public Response addIndex(File file) 
 	{
+		String strMsg = "";
 		System.out.println("in add index");
 		try
 		{
 			RestUtil.writeToFile(new FileInputStream(file),RestUtil.INDEX_INPUT_FILE_PATH);
 			IndexService iService = new IndexService();
 			iService.importIndexDataFromCsv(RestUtil.INDEX_INPUT_FILE_PATH,true);
-		} catch (FileNotFoundException e) {
+			strMsg = "Succesfully added Indices Details";
+		}
+		catch (FileNotFoundException e) 
+		{
 			e.printStackTrace();
+			System.out.println(e.getMessage());
+			strMsg = e.getMessage();
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.out.println(e.getMessage());
+			strMsg = e.getMessage();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			strMsg = e.getMessage();
 		}
+		ResponseBuilder rb = Response.ok(strMsg);
+	    return rb.build();
 	}
 	
 	@POST
 	@Path("/add2")
-	public void addIndexM(File file)
+	public void addIndexM(File file) throws Exception
 	{
 		System.out.println("in add index");
 		try
@@ -69,10 +83,11 @@ public class indexRestService {
 	
 	@POST
 	@Path("/addIndex")
-	public void addSingleIndex(JsonObject  jsonObject)
+	public void addSingleIndex(JsonObject  jsonObject) throws Exception
 	{
+		System.out.println("in side addIndex");
 		LocalDate localDate = LocalDate.now();
-		String strDate = DateTimeFormatter.ofPattern("yyy-MM-dd").format(localDate);
+		String strDate = DateTimeFormatter.ofPattern("YYYY-MM-dd").format(localDate);
 		
 		Map<String,String>  columnsNameMap = new HashMap <String,String>();
 		columnsNameMap.put("IndexName", "indexName");
@@ -86,7 +101,7 @@ public class indexRestService {
 		columnsNameMap.put("IndexMarketValue", "IndexMarketValue");
 		columnsNameMap.put("IndexValue", "CloseIndexValue");
 		columnsNameMap.put("DisseminationSource", "disseminationSource");
-		columnsNameMap.put("OutputFileFormat", "OutputFileFormat");
+//		columnsNameMap.put("OutputFileFormat", "OutputFileFormat");
 		columnsNameMap.put("IndexLiveDate", "indexLiveDate");
 		columnsNameMap.put("weightType", "indexWeightType");
 		
@@ -97,8 +112,12 @@ public class indexRestService {
         while (it.hasNext())
         {
             String key = it.next();
+            System.out.println(key);
             String strDbColumnName = columnsNameMap.get(key);
+            System.out.println(strDbColumnName);
             String strDbColumnValue = jsonObject.getString(key);
+            System.out.println(strDbColumnValue);
+            System.out.println(strDbColumnName + "::::::::::" + strDbColumnValue);
             columnsValuesMap.put(strDbColumnName, strDbColumnValue);
             
         }
@@ -111,7 +130,9 @@ public class indexRestService {
         System.out.println(columnsValuesMap);
 		
         IndexService iService = new IndexService();
-		try {
+		try 
+		{
+			
 			iService.insertIndexData(columnsValuesMap);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -120,7 +141,7 @@ public class indexRestService {
 	
 	@POST
 	@Path("/addIndex2")
-	public void addSingleIndexM(JsonObject  jsonObjecty)
+	public void addSingleIndexM(JsonObject  jsonObjecty) throws Exception
 	{
 		LocalDate localDate = LocalDate.now();
 		String strDate = DateTimeFormatter.ofPattern("yyy-MM-dd").format(localDate);
@@ -210,9 +231,23 @@ public class indexRestService {
 		}
 	}
 	
+	public static void main(String[] args) 
+	{
+		System.out.println("HELLO REST UTIL ");
+		String strFilter ="Where status ='NI'";
+		List<IndexBean> iList = new ArrayList<IndexBean>();
+		IndexService iService = new IndexService();
+		try {
+			iList = iService.getAllIndex(strFilter);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
+	
 	@POST
 	@Path("/getnewindex")
-	public Response getNewIndex(JsonObject  jsonObject)
+	public Response getNewIndex(JsonObject  jsonObject) throws Exception
 	{
 		System.out.println("in getnewindex");
 		System.out.println(jsonObject);
@@ -236,7 +271,7 @@ public class indexRestService {
 	
 	@POST
 	@Path("/getupcomongindex")
-	public Response getUpcomingIndex(JsonObject  jsonObject)
+	public Response getUpcomingIndex(JsonObject  jsonObject) throws Exception
 	{
 		System.out.println("in getUpcomingIndex");
 		
@@ -260,7 +295,7 @@ public class indexRestService {
 	
 	@POST
 	@Path("/getrunindex")
-	public Response getRunIndex(JsonObject  jsonObject)
+	public Response getRunIndex(JsonObject  jsonObject) throws Exception
 	{
 		System.out.println("in getRunIndex");
 		
@@ -283,7 +318,7 @@ public class indexRestService {
 	
 	@POST
 	@Path("/getliveindex")
-	public Response getLiveIndex(JsonObject  jsonObject)
+	public Response getLiveIndex(JsonObject  jsonObject) throws Exception
 	{
 		System.out.println("in add index");
 		

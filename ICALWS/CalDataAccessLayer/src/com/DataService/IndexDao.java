@@ -16,6 +16,14 @@ public class IndexDao extends DefaultDao
 	private String INDEX_TABLE_NAME = "indexdescription";
 //	private String INDEX_SECURITY_TABLE_NAME = "indexcomposition";
 	
+	 public ResultSet ExecuteMSSQLQuery(String sqlQuery) throws SQLException, ClassNotFoundException
+	 {
+		 
+//		 ConnectionFactory.getMSSQLConnection();
+		 ResultSet rs = ConnectionFactory.Execute(sqlQuery);
+		 return rs;		 
+	 }
+	 
 	public void insertIndex(List<IndexBean> indexBeanList) throws Exception 
 	{
 		LocalDate localDate = LocalDate.now();
@@ -51,9 +59,9 @@ public class IndexDao extends DefaultDao
 	{
 		List<IndexBean> indexList = new ArrayList<>();
 		if(filter.equalsIgnoreCase(""))
-			filter = " Where flag = 1 AND CURDATE() BETWEEN vf AND vt ";
+			filter = " Where flag = 1 AND CAST(GETDATE() AS DATE) BETWEEN vf AND vt ";
 		else
-			filter += " AND  flag = 1 AND CURDATE() BETWEEN vf AND vt "; 
+			filter += " AND  flag = 1 AND CAST(GETDATE() AS DATE) BETWEEN vf AND vt "; 
 		
 		ResultSet rs = getAllData(INDEX_TABLE_NAME,filter);
 		indexList = converResultToIndexBean(rs);
@@ -79,7 +87,11 @@ public class IndexDao extends DefaultDao
 		if(rs.getString("clientName") != null)
 			iBean.setClientName(rs.getString("clientName"));	
 		if(rs.getString("indexLiveDate") != null)
+		{
+			System.out.println(rs.getString("indexLiveDate"));
 			iBean.setIndexLiveDateStr(rs.getString("indexLiveDate"));
+			System.out.println(iBean.getIndexLiveDateStr());
+		}
 		if(rs.getString("indexName") != null)
 			iBean.setIndexlName(rs.getString("indexName"));
 		if(rs.getString("indexTicker") != null)
@@ -203,7 +215,7 @@ public class IndexDao extends DefaultDao
 		ConnectionFactory.getConnection();
 	      
 		int iValue =ConnectionFactory.ExecuteUpdateInsertDelete(strQuery);
-		ConnectionFactory.closeConnection();
+//		ConnectionFactory.closeConnection();
 		return iValue;
 	}
 	
@@ -211,11 +223,11 @@ public class IndexDao extends DefaultDao
 	{
 		Map<String,Object> closingFileDetailsMap = new HashMap<String,Object>();
 		
-		String strQuery = "where indexTicker = '" +indexTicker+ "' order by fileCreationDate desc LIMIT 1" ;
+		String strQuery = "Select top 1 * from ical2.closingfiledetails where indexTicker = '" +indexTicker+ "' order by fileCreationDate desc " ;
 		ResultSet rs;
 		try
 		{
-			rs = getAllData("closingfiledetails",strQuery);
+			rs = ExecuteQuery(strQuery);
 			while (rs.next())
 			{
 //				if(rs.getString("securityId") != null )
@@ -241,11 +253,11 @@ public class IndexDao extends DefaultDao
 	{
 		Map<String,Object> closingFileDetailsMap = new HashMap<String,Object>();
 		
-		String strQuery = "where indexTicker = '" +indexTicker+ "' order by fileCreationDate desc LIMIT 1" ;
+		String strQuery = "Select top 1 * from ical2.openingfiledetails where indexTicker = '" +indexTicker+ "' order by fileCreationDate desc" ;
 		ResultSet rs;
 		try
 		{
-			rs = getAllData("openingfiledetails",strQuery);
+			rs = ExecuteQuery(strQuery);
 			if(rs != null)
 			while (rs.next())
 			{
@@ -273,7 +285,7 @@ public class IndexDao extends DefaultDao
 		ConnectionFactory.getConnection();
 	      
 		int iValue =ConnectionFactory.ExecuteUpdateInsertDelete(strQuery);
-		ConnectionFactory.closeConnection();
+//		ConnectionFactory.closeConnection();
 		
 		return iValue;
 	}
@@ -286,7 +298,7 @@ public class IndexDao extends DefaultDao
 		ConnectionFactory.getConnection();
 	      
 		int iValue =ConnectionFactory.ExecuteUpdateInsertDelete(strQuery);
-		ConnectionFactory.closeConnection();
+//		ConnectionFactory.closeConnection();
 
 		return iValue;
 	}
@@ -295,9 +307,10 @@ public class IndexDao extends DefaultDao
 	{
 		List<IndexBean> indexList = new ArrayList<>();
 		String strQuery  = "SELECT * FROM ical2.indexdescription "
-				+ "where  status='LI' and flag=1 and indexLiveDate >= CURDATE()  "
-				+ "AND CURDATE() BETWEEN vf AND vt AND zoneType='" + zone + "'";
+				+ "where  status='LI' and flag=1 and indexLiveDate >= CAST(GETDATE() AS DATE)  "
+				+ "AND CAST(GETDATE() AS DATE) BETWEEN vf AND vt AND zoneType='" + zone + "'";
 		
+		System.out.println(strQuery);
 		ResultSet rs = ExecuteQuery(strQuery);
 		indexList = converResultToIndexBean(rs);
 		return indexList;

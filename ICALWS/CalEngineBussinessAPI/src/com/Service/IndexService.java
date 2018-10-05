@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,12 +19,24 @@ import com.opencsv.CSVWriter;
 
 public class IndexService {
 
-//	private String SECURITY_TABLE_NAME = "security";
+	public void testConn()
+	{
+		IndexDao iDao = new IndexDao();
+		try
+		{
+			iDao.ExecuteMSSQLQuery("SELECT TOP 5 *  FROM [FDS_DataFeeds].[fp_v1].[fp_prices_last_exch] order by date desc");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	
-	public String importIndexDataFromCsv(String outFilePath,Boolean isProprietaryWeightedIndices) throws IOException
+	public String importIndexDataFromCsv(String outFilePath,Boolean isProprietaryWeightedIndices) throws Exception
 	{	
 		List<IndexBean> indexList = new ArrayList<>();
-		try {
+		try 
+		{
 	        // Create an object of file reader
 	        // class with CSV file as a parameter.
 	        FileReader filereader = new FileReader(outFilePath);
@@ -43,39 +56,41 @@ public class IndexService {
 		        	indexList.add(indexBean);
 	        	}
 	        }
-	    }
-	    catch (Exception e) {
-	        e.printStackTrace();
-	    }
-		
-		IndexDao iDao = new IndexDao();
-		try {
+	        csvReader.close();
+	        IndexDao iDao = new IndexDao();
 			iDao.insertIndex(indexList);
-		} catch (Exception e) {
+			System.out.println("Success import index data into table");
+		} 
+		catch (Exception e)
+		{
 			e.printStackTrace();
+			System.out.println("Error import index data into table");
 			System.out.println(e.getMessage());
+			throw(e);
 		}
-//		input.close();
-		System.out.println("Success import excel to mysql table");
-		System.out.println("Import rows " );
-		return "importIndexDataFromCsv bussinessAPI";
+		return "importIndexDataFromCsv";
 	}
 	
-	public String insertIndexData(Map<String,Object>  columnsValuesMap) throws IOException
+	public String insertIndexData(Map<String,Object>  columnsValuesMap) throws Exception
 	{	
 		IndexDao iDao = new IndexDao();
-		try {
+		try 
+		{
 			iDao.insertData("indexdescription",columnsValuesMap);
-		} catch (Exception e) {
+			System.out.println("Success Add Index data to table");
+		} 
+		catch (Exception e) 
+		{
 			e.printStackTrace();
+			System.out.println("Error Add Index data to table");
 			System.out.println(e.getMessage());
+			throw(e);
 		}
-		System.out.println("Success import excel to mysql table");
-		System.out.println("Import rows " );
-		return "bussinessAPI";
+		
+		return "insertIndexData";
 	}
 	
-	public List<IndexBean> getAllIndex(String filter)
+	public List<IndexBean> getAllIndex(String filter) throws Exception
 	{
 		IndexDao iDao = new IndexDao();
 		List<IndexBean> indexList = new ArrayList<>();  
@@ -83,8 +98,8 @@ public class IndexService {
 		{
 			indexList = iDao.getAllIndexList(filter);
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw(e);
 		}
 		return indexList;
 	}
@@ -119,18 +134,21 @@ public class IndexService {
 		iDao.updateIndicesStatusAsRun(tickers,status,runDate);
 	}
 	
-	
 	public ResultSet getAllSecuritiesForIndex(String indexTicker)
 	{
+		
 		String STR_CLOSE_FILE_QUERY = 
-				"SELECT IC.id, IC.indexcode,S.securityid securityId, (Select CloseIndexValue FROM ical2.indexdescription where indexTicker = '" +indexTicker + "' limit 1) IndexValue ,"
+				"SELECT IC.id,S.securityid securityId, (Select top 1 CloseIndexValue FROM ical2.indexdescription where indexTicker = '" +indexTicker + "') IndexValue ,"
 				+ "S.BBGTicker,S.fullName,S.ISIN,S.SEDOL,S.CUSIP,S.Country,IC.weight,IC.shares,S.currency Currency,"
-				+ "(SELECT closePrice  FROM ical2.closeprice where ISIN =S.ISIN and BBGTicker = S.BBGTicker order by vd desc LIMIT 1) Price,"
-				+ "(SELECT rate FROM ical2.currencyrate where fromCurrency = S.currency and toCurrency = (Select currency FROM ical2.indexdescription where indexTicker = '" 
-				+ indexTicker+ "') "
-				+ "order by vd desc LIMIT 1) CurrencyFactor "
-				+" FROM ical2.security S, ical2.indexcomposition IC "
-				+ "  where IC.flag='1' and  IC.indexcode = '" + indexTicker+ "' and IC.securityId = S.securityid"
+				+ "(SELECT top 1 closePrice  FROM ical2.closeprice where ISIN =S.ISIN and BBGTicker = S.BBGTicker order by vd desc) Price,"
+				+ "(SELECT top 1 rate FROM ical2.currencyrate where fromCurrency = S.currency and toCurrency = "
+				+ "(Select currency FROM ical2.indexdescription where indexTicker = '" + indexTicker+ "') "
+				+ " order by vd desc) CurrencyFactor ,"
+				+ "(SELECT top 1 rate FROM ical2.currencyrate where toCurrency = S.currency and fromCurrency = "
+				+ "(Select currency FROM ical2.indexdescription where indexTicker = '" + indexTicker+ "') " 
+				+ " order by vd desc) CurrencyDivisor "
+				+ " FROM ical2.security S, ical2.indexcomposition IC "
+				+ " where IC.flag='1' and IC.indexcode = '" + indexTicker+ "' and IC.securityId = S.securityid"
 				;
 		
 		System.out.println(STR_CLOSE_FILE_QUERY);
@@ -148,256 +166,11 @@ public class IndexService {
 		return securityList;
 	}
 	
-	public String generateCloseFile(String indexTicker,String toDate,String indexCurrency,String fileCompletePath) throws Exception 
-	{
-		IndexDao iDao = new IndexDao();
-		Map<String,Object> openingFileDetailsMap = iDao.getIndexFileDetails(indexTicker,"openingfiledetails");
-		ResultSet securityList =  getAllSecuritiesForIndex( indexTicker);
-		
-		List<String[]> securityDataList = new ArrayList();
-		Float divisor = (float) 0.0 ;
-		Float marketValue = (float) 0.0 ;//IndexValue
-		Float indexValue = (float) 0.0 ;
-		String[] strDateHeaderArray = {"Date",toDate};		
-		String[] emptyHeaderArray = {" "," "};
-		
-		CSVWriter csvWriter = ICalUtil.generateCsvTemplate(strDateHeaderArray, fileCompletePath);
-		
-		securityDataList.add(ICalUtil.getClosingFileHeaderList());
-
-		if(securityList !=null)
-		{
-			while(securityList.next())
-			{
-				indexValue = (securityList.getFloat("IndexValue"));
-				
-				Float shares = (float) 0 ;
-				Float securityPrice = (float) 0;
-				Float currencyFactor = (float) 1 ;
-				shares = (securityList.getFloat("shares"));
-				securityPrice =(securityList.getFloat("Price"));
-				currencyFactor = (securityList.getFloat("CurrencyFactor"));
-				if(currencyFactor == 0)
-					currencyFactor = (float) 1;
-				marketValue += shares*securityPrice*currencyFactor;
-				
-				String[] strValueArray = new String[12];
-				
-				strValueArray[0] = toDate;
-				strValueArray[1] = securityList.getString("BBGTicker");
-				strValueArray[2] = securityList.getString("fullName");
-				strValueArray[3] = securityList.getString("ISIN");
-				strValueArray[4] = securityList.getString("SEDOL");
-				strValueArray[5] = securityList.getString("CUSIP");
-				strValueArray[6] = securityList.getString("Country");			
-				strValueArray[7] = securityList.getString("shares");
-				strValueArray[8] = securityList.getString("weight");
-				strValueArray[9] = securityList.getString("Price");			
-				strValueArray[10] = securityList.getString("Currency");		
-				strValueArray[11] = currencyFactor.toString();//securityList.getString("CurrencyFactor");		
-				
-				securityDataList.add(strValueArray);
-			}
-		}
-		if(openingFileDetailsMap.get("divisor") != null)
-		{
-			divisor = (Float) openingFileDetailsMap.get("divisor");
-			indexValue = marketValue/divisor;
-		}
-		else
-		{
-			divisor = marketValue/indexValue;
-		}		
-		String[] indexValueHeaderArray = {"Index Value",indexValue.toString()};
-		String[] divisorHeaderArray = {"Divisor",divisor.toString()};
-		String[] marketValueHeaderArray = {"Market Value",marketValue.toString()};
-		
-		Map<String,Object>  columnsValuesMap =new HashMap<String,Object>();
-		
-		columnsValuesMap.put("indexTicker", indexTicker);
-		columnsValuesMap.put("fileCreationDate", toDate);
-		columnsValuesMap.put("indexValue", indexValue);
-		columnsValuesMap.put("marketValue", marketValue);
-		columnsValuesMap.put("divisor", divisor);		
-		
-		insertIndexFileData(columnsValuesMap,"closingfiledetails");
-		
-		csvWriter.writeNext(indexValueHeaderArray);
-		csvWriter.writeNext(divisorHeaderArray);
-		csvWriter.writeNext(marketValueHeaderArray);
-		csvWriter.writeNext(emptyHeaderArray);
-		
-		csvWriter.writeAll(securityDataList);
-		csvWriter.close();
-		return fileCompletePath;
-	}
-	
-	private void generateOpeningFileHeader(String fileCompletePath)
-	{
-		
-	}
-	public void generateOpeningFile(IndexBean iBean,String toDate,String fileCompletePath) throws Exception 
-	{
-		IndexDao iDao = new IndexDao();
-		Map<String,Object> lastClosingFileDetailsMap = iDao.getIndexFileDetails(iBean.getIndexTicker(),"closingfiledetails");
-		
-		ResultSet securityList =  getAllSecuritiesForIndex( iBean.getIndexTicker());
-		List<String[]> securityDataList = new ArrayList();
-		
-		Float divisor = (float) 0.0 ;
-		Float marketValue = (float) 0.0 ;
-		Float indexValue = (float) 0.0 ;
-		Float sumOfWeights = (float) 0.0 ;
-		
-		indexValue = (Float) lastClosingFileDetailsMap.get("indexValue");
-		securityDataList.add(ICalUtil.getClosingFileHeaderList());
-		
-		if(securityList !=null)
-		{
-			while(securityList.next())
-			{
-				Float shares = (float) 0.0 ;
-				Float securityPrice = (float) 0.0 ;
-				Float currencyFactor = (float) 1 ;
-				Float weights = (float) 1 ;
-				
-				shares = (securityList.getFloat("shares"));
-				securityPrice =(securityList.getFloat("Price"));
-				currencyFactor = (securityList.getFloat("CurrencyFactor"));
-				weights = (securityList.getFloat("weight"));
-				
-				adjustCorporateActions(shares,weights,securityPrice);
-				
-				sumOfWeights +=  weights;
-				marketValue += shares*securityPrice*currencyFactor;
-				
-				String[] strValueArray = new String[12];
-				
-				strValueArray[0] = toDate;
-				strValueArray[1] = securityList.getString("BBGTicker");
-				strValueArray[2] = securityList.getString("fullName");
-				strValueArray[3] = securityList.getString("ISIN");
-				strValueArray[4] = securityList.getString("SEDOL");
-				strValueArray[5] = securityList.getString("CUSIP");
-				strValueArray[6] = securityList.getString("Country");			
-				strValueArray[7] = securityList.getString("shares");
-				strValueArray[8] = securityList.getString("weight");
-				strValueArray[9] = securityList.getString("Price");			
-				strValueArray[10] = securityList.getString("Currency");		
-				strValueArray[11] = securityList.getString("CurrencyFactor");		
-				
-				securityDataList.add(strValueArray);
-			}
-		}
-		
-		divisor = marketValue/indexValue;
-		
-		String[] strDateHeaderArray = {"Date",toDate};	
-		CSVWriter csvWriter = ICalUtil.generateCsvTemplate(strDateHeaderArray, fileCompletePath);
-		
-		String[] indexValueHeaderArray = {"Index Value",indexValue.toString()};
-		String[] divisorHeaderArray = {"Divisor",divisor.toString()};
-		String[] marketValueHeaderArray = {"Market Value",marketValue.toString()};		
-		String[] emptyHeaderArray = {" "," "};
-		
-		csvWriter.writeNext(indexValueHeaderArray);
-		csvWriter.writeNext(divisorHeaderArray);
-		csvWriter.writeNext(marketValueHeaderArray);
-		csvWriter.writeNext(emptyHeaderArray);		
-		csvWriter.writeAll(securityDataList);
-		csvWriter.close();
-		
-		Map<String,Object>  columnsValuesMap =new HashMap<String,Object>();
-		columnsValuesMap.put("indexTicker",  iBean.getIndexTicker());
-		columnsValuesMap.put("indexValue", indexValue);
-		columnsValuesMap.put("marketValue", marketValue);
-		columnsValuesMap.put("divisor", divisor);
-		columnsValuesMap.put("fileCreationDate", toDate);
-		columnsValuesMap.put("sumOfWeights", sumOfWeights);
-		insertIndexFileData(columnsValuesMap,"openingfiledetails");
-	}
-	
-	private void adjustCorporateActions(Float shares, Float weights, Float securityPrice) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public String generateOpeningFile(String indexTicker,String toDate,String indexCurrency,String fileCompletePath) throws Exception 
-	{
-		ResultSet securityList =  getAllSecuritiesForIndex( indexTicker);
-		List<String[]> securityDataList = new ArrayList();
-		
-		Float divisor = (float) 0.0 ;
-		Float marketValue = (float) 0.0 ;//IndexValue
-		Float indexValue = (float) 0.0 ;
-		String[] strDateHeaderArray = {"Date",toDate};		
-		
-	
-		String[] emptyHeaderArray = {" "," "};
-		
-		CSVWriter csvWriter = ICalUtil.generateCsvTemplate(strDateHeaderArray, fileCompletePath);
-		
-		securityDataList.add(ICalUtil.getClosingFileHeaderList());
-		if(securityList !=null)
-		while(securityList.next())
-		{
-			indexValue = (securityList.getFloat("IndexValue"));
-			
-			Float shares = (float) 0.0 ;
-			Float securityPrice = (float) 0.0 ;
-			Float currencyFactor = (float) 1 ;
-			shares = (securityList.getFloat("shares"));
-			securityPrice =(securityList.getFloat("Price"));
-			currencyFactor = (securityList.getFloat("CurrencyFactor"));
-			
-			marketValue += shares*securityPrice*currencyFactor;
-			
-			String[] strValueArray = new String[12];
-			
-			strValueArray[0] = toDate;
-			strValueArray[1] = securityList.getString("BBGTicker");
-			strValueArray[2] = securityList.getString("fullName");
-			strValueArray[3] = securityList.getString("ISIN");
-			strValueArray[4] = securityList.getString("SEDOL");
-			strValueArray[5] = securityList.getString("CUSIP");
-			strValueArray[6] = securityList.getString("Country");			
-			strValueArray[7] = securityList.getString("shares");
-			strValueArray[8] = securityList.getString("weight");
-			strValueArray[9] = securityList.getString("Price");			
-			strValueArray[10] = securityList.getString("Currency");		
-			strValueArray[11] = securityList.getString("CurrencyFactor");		
-			
-			securityDataList.add(strValueArray);
-		}
-		
-		divisor = marketValue/indexValue;
-		String[] indexValueHeaderArray = {"Index Value",indexValue.toString()};
-		String[] divisorHeaderArray = {"Divisor",divisor.toString()};
-		String[] marketValueHeaderArray = {"Market Value",marketValue.toString()};
-		
-		Map<String,Object>  columnsValuesMap =new HashMap<String,Object>();
-		columnsValuesMap.put("indexValue", indexValue);
-		columnsValuesMap.put("marketValue", marketValue);
-		columnsValuesMap.put("divisor", divisor);
-		columnsValuesMap.put("marketValue", indexTicker);
-		columnsValuesMap.put("fileCreationDate", toDate);
-		insertIndexFileData(columnsValuesMap,"openingfiledetails");
-		
-		csvWriter.writeNext(indexValueHeaderArray);
-		csvWriter.writeNext(divisorHeaderArray);
-		csvWriter.writeNext(marketValueHeaderArray);
-		csvWriter.writeNext(emptyHeaderArray);
-		
-		csvWriter.writeAll(securityDataList);
-		csvWriter.close();
-		return fileCompletePath;
-	}
 	
 	public String insertIndexFileData(Map<String,Object>  columnsValuesMap,String tableName) throws IOException
 	{	
 		IndexDao iDao = new IndexDao();
 		try {
-//			iDao.insertData("closingfiledetails",columnsValuesMap);
 			iDao.insertData(tableName,columnsValuesMap);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -486,11 +259,23 @@ public class IndexService {
 				Float shares = securityList.getFloat("shares");
 				Float weight = securityList.getFloat("weight");
 				Float currencyFactor = (securityList.getFloat("CurrencyFactor"));
-				if(currencyFactor == 0)
+				Float currencyDivisor = (securityList.getFloat("CurrencyDivisor"));
+				String cuerrency = (securityList.getString("Currency"));
+				if(cuerrency.compareTo(cuerrency.toUpperCase()) != 0)
+					sharePrice = sharePrice/100;
+				if(currencyFactor == 0 && currencyDivisor == 0)
 					currencyFactor = (float) 1;
+				else
+				{
+					if(currencyFactor == 0 && currencyDivisor != 0)
+					{
+						currencyFactor = 1/currencyDivisor;
+					}
+				}
+				
 				if(shares == 0.0)
 				{
-					shares = (indexMarketValue*weight)/(sharePrice*currencyFactor*100);
+					shares = (indexMarketValue*weight)/(sharePrice*currencyFactor);
 					try {
 						iDao.updateSecurityShares(id, shares);
 					} catch (ClassNotFoundException e) {
@@ -499,7 +284,7 @@ public class IndexService {
 				}
 				else if(weight == 0.0)
 				{
-					weight = (shares*sharePrice*currencyFactor*100)/indexMarketValue;
+					weight = (shares*sharePrice*currencyFactor)/indexMarketValue;
 					try {
 						iDao.updateSecurityWeight(id, weight);
 					} catch (ClassNotFoundException e) {
@@ -539,7 +324,6 @@ public class IndexService {
 		LocalDate localDate = LocalDate.now();
 		String strDate = DateTimeFormatter.ofPattern("yyy-MM-dd").format(localDate);
 		
-		
 		csvWriter.writeNext(indexValueHeaderArray);
 		csvWriter.writeNext(divisorHeaderArray);
 		csvWriter.writeNext(marketValueHeaderArray);
@@ -562,11 +346,110 @@ public class IndexService {
 		return fileCompletePath;
 	}
 
+	public void generateOpeningFile(IndexBean iBean,String toDate,String fileCompletePath) throws Exception 
+	{
+		IndexDao iDao = new IndexDao();
+		Map<String,Object> lastClosingFileDetailsMap = iDao.getIndexFileDetails(iBean.getIndexTicker(),"closingfiledetails");
+		
+		ResultSet securityList =  getAllSecuritiesForIndex( iBean.getIndexTicker());
+		List<String[]> securityDataList = new ArrayList();
+		
+		Float divisor = (float) 0.0 ;
+		Float marketValue = (float) 0.0 ;
+		Float indexValue = (float) 0.0 ;
+		Float sumOfWeights = (float) 0.0 ;
+		
+		indexValue = (Float) lastClosingFileDetailsMap.get("indexValue");
+		securityDataList.add(ICalUtil.getClosingFileHeaderList());
+		
+		if(securityList !=null)
+		{
+			while(securityList.next())
+			{
+				Float shares = (float) 0.0 ;
+				Float securityPrice = (float) 0.0 ;
+				Float weights = (float) 1 ;
+				
+				shares = (securityList.getFloat("shares"));
+				securityPrice =(securityList.getFloat("Price"));
+				Float currencyFactor = (securityList.getFloat("CurrencyFactor"));
+				Float currencyDivisor = (securityList.getFloat("CurrencyDivisor"));
+				String cuerrency = (securityList.getString("Currency"));
+				if(cuerrency.compareTo(cuerrency.toUpperCase()) != 0)
+					securityPrice = securityPrice/100;
+				if(currencyFactor == 0 && currencyDivisor == 0)
+					currencyFactor = (float) 1;
+				else
+				{
+					if(currencyFactor == 0 && currencyDivisor != 0)
+					{
+						currencyFactor = 1/currencyDivisor;
+					}
+				}
+				
+				weights = (securityList.getFloat("weight"));
+				
+				adjustCorporateActions(shares,weights,securityPrice);
+				
+				sumOfWeights +=  weights;
+				marketValue += shares*securityPrice*currencyFactor;
+				
+				String[] strValueArray = new String[12];
+				
+				strValueArray[0] = toDate;
+				strValueArray[1] = securityList.getString("BBGTicker");
+				strValueArray[2] = securityList.getString("fullName");
+				strValueArray[3] = securityList.getString("ISIN");
+				strValueArray[4] = securityList.getString("SEDOL");
+				strValueArray[5] = securityList.getString("CUSIP");
+				strValueArray[6] = securityList.getString("Country");			
+				strValueArray[7] = securityList.getString("shares");
+				strValueArray[8] = securityList.getString("weight");
+				strValueArray[9] = securityList.getString("Price");			
+				strValueArray[10] = securityList.getString("Currency");		
+				strValueArray[11] = currencyFactor.toString();//securityList.getString("CurrencyFactor");		
+				
+				securityDataList.add(strValueArray);
+			}
+		}
+		
+		divisor = marketValue/indexValue;
+		
+		String[] strDateHeaderArray = {"Date",toDate};	
+		CSVWriter csvWriter = ICalUtil.generateCsvTemplate(strDateHeaderArray, fileCompletePath);
+		
+		String[] indexValueHeaderArray = {"Index Value",indexValue.toString()};
+		String[] divisorHeaderArray = {"Divisor",divisor.toString()};
+		String[] marketValueHeaderArray = {"Market Value",marketValue.toString()};		
+		String[] emptyHeaderArray = {" "," "};
+		
+		csvWriter.writeNext(indexValueHeaderArray);
+		csvWriter.writeNext(divisorHeaderArray);
+		csvWriter.writeNext(marketValueHeaderArray);
+		csvWriter.writeNext(emptyHeaderArray);		
+		csvWriter.writeAll(securityDataList);
+		csvWriter.close();
+		
+		Map<String,Object>  columnsValuesMap =new HashMap<String,Object>();
+		columnsValuesMap.put("indexTicker",  iBean.getIndexTicker());
+		columnsValuesMap.put("indexValue", indexValue);
+		columnsValuesMap.put("marketValue", marketValue);
+		columnsValuesMap.put("divisor", divisor);
+		columnsValuesMap.put("fileCreationDate", toDate);
+		columnsValuesMap.put("sumOfWeights", sumOfWeights);
+		insertIndexFileData(columnsValuesMap,"openingfiledetails");
+	}
+	
+	private void adjustCorporateActions(Float shares, Float weights, Float securityPrice) {
+		
+	}
+
 	public void generateClosingFile(IndexBean iBean,String toDate,String fileCompletePath) throws Exception 
 	{
 		IndexDao iDao = new IndexDao();
 		Map<String,Object> lastOpeningFileDetailsMap = iDao.getIndexFileDetails(iBean.getIndexTicker(),"openingfiledetails");
-		
+		if(lastOpeningFileDetailsMap.get("divisor") == null)
+			return;
 		ResultSet securityList =  getAllSecuritiesForIndex( iBean.getIndexTicker());
 		List<String[]> securityDataList = new ArrayList();
 		
@@ -585,14 +468,26 @@ public class IndexService {
 				Float shares = (float) 0.0 ;
 				Float securityPrice = (float) 0.0 ;
 				Float weights = (float) 1 ;
+				String cuerrency="";
 				
 				shares = (securityList.getFloat("shares"));
 				securityPrice =(securityList.getFloat("Price"));
 				weights = (securityList.getFloat("weight"));
-				
+				cuerrency = (securityList.getString("Currency"));
+				if(cuerrency.compareTo(cuerrency.toUpperCase()) != 0)
+					securityPrice = securityPrice/100;
 				Float currencyFactor = (securityList.getFloat("CurrencyFactor"));
-				if(currencyFactor == 0)
+				Float currencyDivisor = (securityList.getFloat("CurrencyDivisor"));
+				
+				if(currencyFactor == 0 && currencyDivisor == 0)
 					currencyFactor = (float) 1;
+				else
+				{
+					if(currencyFactor == 0 && currencyDivisor != 0)
+					{
+						currencyFactor = 1/currencyDivisor;
+					}
+				}
 				
 				sumOfWeights +=  weights;
 				marketValue += shares*securityPrice*currencyFactor;
@@ -610,7 +505,7 @@ public class IndexService {
 				strValueArray[8] = securityList.getString("weight");
 				strValueArray[9] = securityList.getString("Price");			
 				strValueArray[10] = securityList.getString("Currency");		
-				strValueArray[11] = securityList.getString("CurrencyFactor");		
+				strValueArray[11] = currencyFactor.toString();	
 				
 				securityDataList.add(strValueArray);
 			}

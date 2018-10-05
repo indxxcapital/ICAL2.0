@@ -17,7 +17,7 @@ public class ClientService
 		DefaultDao dDao = new DefaultDao();
 		try
 		{
-			ResultSet rs = dDao. getAllData("currency","") ;
+			ResultSet rs = dDao. getAllData("clientdetails","") ;
 			clientsList =convertListToClientBeanList(rs);
 		}
 		catch (ClassNotFoundException e) {
@@ -42,8 +42,8 @@ public class ClientService
 	
 	private void getClientBeanFromResultSet(ResultSet rs,ClientBean cBean) throws SQLException
 	{
-		if(rs.getString("crryname") != null)
-			cBean.setClientName(rs.getString("crryname"));	
+		if(rs.getString("clientName") != null)
+			cBean.setClientName(rs.getString("clientName"));	
 	}
 	
 

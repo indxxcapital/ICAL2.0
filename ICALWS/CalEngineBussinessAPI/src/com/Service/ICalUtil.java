@@ -74,7 +74,7 @@ public class ICalUtil
 		if(row[3] != null && !row[3].toString().equalsIgnoreCase(""))
 			securityBean.setWeight(Float.parseFloat(row[3]));
 		if(row[4] != null && !row[4].toString().equalsIgnoreCase(""))
-			securityBean.setShares(Integer.parseInt(row[4]));
+			securityBean.setShares(Float.parseFloat(row[4]));
 	}
 	
 	public static void setSecurityPriceBean(SecurityPriceBean securityPriceBean,String[] row) throws ParseException
@@ -114,15 +114,27 @@ public class ICalUtil
 		if(row[7] != null)
 			indexBean.setIndexMarketValue(Float.parseFloat(row[7].toString()));		
 		if(row[8] != null)
-			indexBean.setNormalCashDivAdj(row[8].toString());
+		{
+			if(row[8].toString().toLowerCase().contains("divisor"))
+				indexBean.setNormalCashDivAdj("DA");
+			else if(row[8].toString().toLowerCase().contains("stock"))
+				indexBean.setNormalCashDivAdj("SA");
+		}
 		if(row[9] != null)
-			indexBean.setSpecialCashDivAdj(row[9].toString());
+		{
+			if(row[9].toString().toLowerCase().contains("divisor"))
+				indexBean.setSpecialCashDivAdj("DA");
+			else if(row[9].toString().toLowerCase().contains("stock"))
+				indexBean.setSpecialCashDivAdj("SA");
+		}
 		if(row[10] != null)
 		{
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			Date date = simpleDateFormat.parse(row[10].toString());
-			indexBean.setIndexLiveDate((simpleDateFormat.format(date)));
-			indexBean.setIndexLiveDateStr((simpleDateFormat.format(date)));
+//			indexBean.setIndexLiveDate((simpleDateFormat.format(date)));
+			indexBean.setIndexLiveDate(row[10].toString());
+//			indexBean.setIndexLiveDateStr((simpleDateFormat.format(date)));
+			indexBean.setIndexLiveDateStr(row[10].toString());
 		}
 		if(row[11] != null)
 			indexBean.setDisseminationSource(row[11].toString());

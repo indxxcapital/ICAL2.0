@@ -10,7 +10,7 @@ public class IndexSecurityCompBean
 	private String sedol;
 	private String cusip;
 	private String country;
-	private Integer shares;
+	private Float shares;
 	private float weight;
 	private float securityPrice;
 	private float currencyFactor;
@@ -80,10 +80,10 @@ public class IndexSecurityCompBean
         this.weight = aWeight;
     }
     
-    public Integer getShares() {
+    public Float getShares() {
         return shares;
     }
-    public void setShares(Integer aShares) {
+    public void setShares(Float aShares) {
         this.shares= aShares;
     }
 }

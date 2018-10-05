@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_181">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_181">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
@@ -19,7 +19,9 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/mysql-connector-java-5.1.46.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/opencsv-4.2.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/poi-3.9.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/sqljdbc4.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CalDataAccessLayer.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CalEngineBussinessAPI.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/sqljdbc42.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="E:/CalculationEngine/TARGET_JARS/mysql-connector-java-5.1.46.jar" sourcepath=""/>
+	<classpathentry kind="lib" path="E:/CalculationEngine/TARGET_JARS/sqljdbc42.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

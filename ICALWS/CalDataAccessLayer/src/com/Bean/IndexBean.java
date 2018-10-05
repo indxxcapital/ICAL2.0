@@ -149,7 +149,7 @@ public class IndexBean {
     }
     
     public void setIndexLiveDateStr(String aIndexLiveDate) {
-        this.indexLiveDateStr= aIndexLiveDate.toString();
+        this.indexLiveDateStr= aIndexLiveDate;
     }
     
     public String getSpecialCashDivAdj() {

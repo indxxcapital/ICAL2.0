@@ -144,8 +144,6 @@ iCal.factory('icalFactory', function($location)
 //	  service.getUsers = function() {
 //	      return $http.get(urlBase + '/users');
 //	  };
-	  
-	  
 //
 //	  service.getUser = function(id){
 //	      return $http.get(urlBase + '/user/' + id);

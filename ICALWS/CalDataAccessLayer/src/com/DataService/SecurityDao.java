@@ -16,7 +16,8 @@ public class SecurityDao extends DefaultDao
 	private String SECURITY_TABLE_NAME = "security";
 	private String SECURITY_PRICE_TABLE_NAME = "closeprice";
 	private String INDEX_SECURITY_TABLE_NAME = "indexcomposition";
-	private String GET_SECURITY_ID = "SELECT securityid  FROM ical2.security order by securityid desc limit 1";
+//	private String GET_SECURITY_ID = "SELECT top 1 securityid  FROM ical2.security order by securityid desc limit 1";
+	private String GET_SECURITY_ID = "SELECT top 1 securityid  FROM ical2.security order by securityid desc";
 	
 	public int getNextSecurityId() throws ClassNotFoundException, SQLException
 	{
@@ -79,7 +80,7 @@ public class SecurityDao extends DefaultDao
 	public ResultSet getSecutiry(SecurityBean sBean) throws ClassNotFoundException, SQLException
 	{		
 		String strWhereClause = "Where  ISIN = '" +sBean.getISIN().trim() + "' and BBGTicker = '" +sBean.getBBGTicker().trim() + "' "
-				+ " AND CURDATE() BETWEEN vf AND vt and flag = 1";
+				+ " AND CAST(GETDATE() AS DATE) BETWEEN vf AND vt and flag = 1";
 		String strSelectQuery = DataUtill.createSelect(SECURITY_TABLE_NAME, strWhereClause);
 		ResultSet rs = ExecuteQuery(strSelectQuery);
 		return rs;		
@@ -88,7 +89,7 @@ public class SecurityDao extends DefaultDao
 	public ResultSet getSecutiry(String ISIN ,String bbgTicker) throws ClassNotFoundException, SQLException
 	{		
 		String strWhereClause = "Where  ISIN = '" +ISIN.trim() + "' and BBGTicker = '" +bbgTicker.trim() + "' "
-				+ " AND CURDATE() BETWEEN vf AND vt";
+				+ " AND CAST(GETDATE() AS DATE) BETWEEN vf AND vt";
 		String strSelectQuery = DataUtill.createSelect(SECURITY_TABLE_NAME, strWhereClause);
 		ResultSet rs = ExecuteQuery(strSelectQuery);
 		return rs;		
@@ -223,9 +224,22 @@ public class SecurityDao extends DefaultDao
 		if(rs.getString("indexcode") != null)
 			sBean.setIndexCode(rs.getString("indexcode"));
 		sBean.setWeight(rs.getFloat("weight"));
-		sBean.setShares(rs.getInt("shares"));
+		sBean.setShares(rs.getFloat("shares"));
 		sBean.setPrice(rs.getFloat("Price"));
-		sBean.setCurrencyFactor(rs.getFloat("CurrencyFactor"));
+
+		Float currencyFactor = rs.getFloat("CurrencyFactor");
+		Float currencyDivisor = rs.getFloat("CurrencyDivisor");
+		if(currencyFactor == 0 && currencyDivisor == 0)
+			sBean.setCurrencyFactor(1);
+		else
+		{
+			if(currencyFactor == 0 && currencyDivisor != 0)
+			{
+				currencyFactor = 1/currencyDivisor;
+			}
+			sBean.setCurrencyFactor(currencyFactor);
+		}
+			
 		sBean.setCurrency(rs.getString("Currency"));
 	}
 	
@@ -243,12 +257,15 @@ public class SecurityDao extends DefaultDao
 	{
 		System.out.println("print query");
 		String STR_CLOSE_FILE_QUERY = 
-				"SELECT IC.indexcode,S.securityid securityId, (Select CloseIndexValue FROM ical2.indexdescription where indexTicker = '" +indexTicker + "' limit 1) IndexValue ,"
+				"SELECT IC.indexcode,S.securityid securityId, (Select  top 1 CloseIndexValue FROM ical2.indexdescription where indexTicker = '" +indexTicker + "') IndexValue ,"
 				+ "S.BBGTicker,S.fullName,S.ISIN,S.SEDOL,S.CUSIP,S.Country,IC.weight,IC.shares,S.currency Currency,"
-				+ "(SELECT closePrice  FROM ical2.closeprice where ISIN =S.ISIN and BBGTicker = S.BBGTicker order by vd desc LIMIT 1) Price,"
-				+ "(SELECT rate FROM ical2.currencyrate where fromCurrency = S.currency and toCurrency = (Select currency FROM ical2.indexdescription where indexTicker = '" 
-				+ indexTicker+ "') "
-				+ "order by vd desc LIMIT 1) CurrencyFactor "
+				+ "(SELECT top 1 closePrice  FROM ical2.closeprice where ISIN =S.ISIN and BBGTicker = S.BBGTicker order by vd desc ) Price,"
+				+ "(SELECT top 1 rate FROM ical2.currencyrate where fromCurrency = S.currency and toCurrency = "
+				+ "(Select currency FROM ical2.indexdescription where indexTicker = '" + indexTicker+ "') "
+				+ " order by vd desc) CurrencyFactor ,"
+				+ "(SELECT top 1 rate FROM ical2.currencyrate where toCurrency = S.currency and fromCurrency = "
+				+ "(Select currency FROM ical2.indexdescription where indexTicker = '" + indexTicker+ "') " 
+				+ " order by vd desc ) CurrencyDivisor "
 				+ " FROM ical2.security S, ical2.indexcomposition IC "
 				+ " where IC.flag='1' and IC.indexcode = '" + indexTicker+ "' and IC.securityId = S.securityid"
 				;

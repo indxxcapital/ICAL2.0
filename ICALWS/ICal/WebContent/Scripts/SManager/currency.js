@@ -17,7 +17,8 @@ iCal.directive('fileModel', ['$parse', function ($parse) {
 	};
 }]); 
 
-iCal.controller('currencyController',  ['$scope','$window', 'currencyService', function($scope,$window, currencyService)
+iCal.controller('currencyController',  ['$scope','$window', 'currencyService',
+	function($scope,$window, currencyService)
 {
 	$scope.title1 = "Step 1 - Parse Currency File";
 	$scope.title2 = "Step 2 - Add Missing Currencies";
@@ -26,6 +27,7 @@ iCal.controller('currencyController',  ['$scope','$window', 'currencyService', f
 	$scope.buttontitle3 = "Check Selected file for Currency Availability";
 	$scope.buttontitle4 = "Upload Selected file to add New Currencies";
 	$scope.showdiv1= false;
+	
 	$scope.uploadFile = function()
 	{
 		var file = $scope.myFile;
@@ -33,7 +35,8 @@ iCal.controller('currencyController',  ['$scope','$window', 'currencyService', f
 		console.log('file upload started' );
 		console.log(file);
 	       
-		var uploadUrl = "http://192.168.1.72:8080/ICal2Rest/rest/currency/parseCurrency";
+//		var uploadUrl = "http://192.168.1.72:8080/ICal2Rest/rest/currency/parseCurrency";
+		var uploadUrl = "/ICal2Rest/rest/currency/parseCurrency";
 		currencyService.uploadFileToParse(file, uploadUrl);
 		console.log('file is uploaded' );
     };
@@ -45,7 +48,8 @@ iCal.controller('currencyController',  ['$scope','$window', 'currencyService', f
     	console.log('file upload started' );
     	console.log(file);
 	        
-    	var uploadUrl1 = "http://192.168.1.72:8080/ICal2Rest/rest/currency/addNewCurrency";
+//    	var uploadUrl1 = "http://192.168.1.72:8080/ICal2Rest/rest/currency/addNewCurrency";
+    	var uploadUrl1 = "/ICal2Rest/rest/currency/addNewCurrency";
     	currencyService.uploadFileToAddSecurities(file, uploadUrl1);
     	console.log('file is uploaded' );
      };
@@ -53,11 +57,13 @@ iCal.controller('currencyController',  ['$scope','$window', 'currencyService', f
    
      $scope.getParseTemplate = function()
      {
-    	 currencyService.getTemplate("http://192.168.1.72:8080/ICal2Rest/rest/template/getCurrencyCheckTemplate");
+//    	 currencyService.getTemplate("http://192.168.1.72:8080/ICal2Rest/rest/template/getCurrencyCheckTemplate");
+    	 currencyService.getTemplate("/ICal2Rest/rest/template/getCurrencyCheckTemplate");
      };
      $scope.getAddMissingTemplate = function()
      {
-    	 currencyService.getTemplate("http://192.168.1.72:8080/ICal2Rest/rest/template/getCurrencyAddTemplate");
+//    	 currencyService.getTemplate("http://192.168.1.72:8080/ICal2Rest/rest/template/getCurrencyAddTemplate");
+    	 currencyService.getTemplate("/ICal2Rest/rest/template/getCurrencyAddTemplate");
      };
      
 }]);

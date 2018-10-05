@@ -27,6 +27,7 @@ iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$htt
 	$scope.title = "Add Multiple Indices";
 	$scope.index = {};
 	$scope.index.setupType = '';
+	var baseURL = icalFactory.baseUrl
 	
 	$scope.loadCurrencies = function () 
     {
@@ -52,13 +53,15 @@ iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$htt
     
 	$scope.submitForm = function() 
 	{
+		var baseUrl = baseURL + '/ICal2Rest/rest/index/addIndex';
 //	    	alert("submitForm");
 	    	console.log('inside submitForm');
 	    	var indexData = $scope.user;
 	        console.log(indexData);
 	        $http({ 
 	        	method  : 'POST',
-	        	url     : 'http://192.168.1.72:8080/ICal2Rest/rest/index/addIndex',
+//	        	url     : 'http://192.168.1.72:8080/ICal2Rest/rest/index/addIndex',
+	        	url     : baseUrl,
 	        	data: indexData,
 	        	headers: {"Content-Type": "application/json"}
 	        })
@@ -91,9 +94,11 @@ iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$htt
     
 	$scope.upload = function()
     {
+		var baseUrl = '/ICal2Rest/rest/index/add';
 		console.log('inside upload');
         var file = $scope.myFile;
-        var addUrl = "http://192.168.1.72:8080/ICal2Rest/rest/index/add";
+//        var addUrl = "http://192.168.1.72:8080/ICal2Rest/rest/index/add";
+        var addUrl = baseUrl;
         indexService.uploadFileToAddIndex(file, addUrl);
     };
 	    
@@ -103,44 +108,55 @@ iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$htt
     };
 }]);
 
-iCal.controller('mapSecurityIndexController',  ['$scope','$window', 'indexService','securityService', 
-function($scope,$window, indexService,securityService)
+iCal.controller('mapSecurityIndexController',  ['$scope','$window', 'indexService','securityService', 'icalFactory',
+function($scope,$window, indexService,securityService,icalFactory)
 {
+	var baseURL = icalFactory.baseUrl
 	$scope.title = "Map Securities with Index";
 	$scope.upload = function()
 	{
+		var baseUrl = '/ICal2Rest/rest/index/map';
 		var file = $scope.myFile;
-		var mapUrl = "http://192.168.1.72:8080/ICal2Rest/rest/index/map";
+//		var mapUrl = "http://192.168.1.72:8080/ICal2Rest/rest/index/map";
+		var mapUrl = baseUrl;
 		indexService.uploadFileToMapSecurities(file, mapUrl);
 	};
 	$scope.getTemplate = function()
 	{
-		securityService.getTemplate("http://192.168.1.72:8080/ICal2Rest/rest/template/getMapSecuritiesTemplate");
+		var baseUrl = '/ICal2Rest/rest/template/getMapSecuritiesTemplate';
+//		securityService.getTemplate("http://192.168.1.72:8080/ICal2Rest/rest/template/getMapSecuritiesTemplate");
+		securityService.getTemplate(baseUrl);
 	};
 }]);
 
 
-iCal.service('indexService', ['$http', function ($http)
+iCal.service('indexService', ['$http','icalFactory', function ($http,icalFactory)
 {
+	var baseURL = icalFactory.baseUrl
 	//add indices
     this.uploadFileToAddIndex = function(file, uploadUrl)
     {
+		var Url = baseURL + uploadUrl;
     	console.log('inside uploadFileToAddIndex');
-    	$http.post(uploadUrl, file, {transformRequest: angular.identity,headers: {'Content-Type': undefined}})        
-    	.success(function(data){
+    	$http.post(Url, file, {transformRequest: angular.identity,headers: {'Content-Type': undefined}})        
+    	.success(function(data)
+    	{
     		console.log("indices added successfully")
+    		console.log(data)
     		alert("indices added successfully");
     	})
-    	.error(function(){
+    	.error(function(data){
             console.log("Ërror in adding indices")
+            console.log(data)
+            alert(data);
     	});
     }
     
   //map securities to index
   this.uploadFileToMapSecurities = function(file, uploadUrl)
   {
-	  
-	  $http.post(uploadUrl, file, {transformRequest: angular.identity,headers: {'Content-Type': undefined}})        
+	  var Url = baseURL + uploadUrl;
+	  $http.post(Url, file, {transformRequest: angular.identity,headers: {'Content-Type': undefined}})        
     		.success(function(data){
     		console.log("Securities mapped successfully")
     		alert("Securities mapped successfully");
@@ -153,7 +169,9 @@ iCal.service('indexService', ['$http', function ($http)
   //Get Template
 	this.getTemplate = function()
 	{
-		$http.get("http://192.168.1.72:8080/ICal2Rest/rest/template/getIndexTemplate", {responseType: 'arraybuffer'})
+		var baseUrl = baseURL + '/ICal2Rest/rest/template/getIndexTemplate';	
+//		$http.get("http://192.168.1.72:8080/ICal2Rest/rest/template/getIndexTemplate", {responseType: 'arraybuffer'})
+		$http.get(baseUrl, {responseType: 'arraybuffer'})
 		.then(function (response) 
 		{
 			var header = response.headers('Content-Disposition')
@@ -169,9 +187,11 @@ iCal.service('indexService', ['$http', function ($http)
 	
 	this.getAllCurrencies = function ()
 	{
+		var baseUrl = baseURL + '/ICal2Rest/rest/currency/getCurrencies';
 	    return $http({ 
 	    	method  : 'GET',
-	    	url     : 'http://192.168.1.72:8080/ICal2Rest/rest/currency/getCurrencies',
+//	    	url     : 'http://192.168.1.72:8080/ICal2Rest/rest/currency/getCurrencies',
+	    	url     : baseUrl,
 	    	
 	    }).then(function (response) {
 	    	console.log(response.data);
@@ -181,9 +201,11 @@ iCal.service('indexService', ['$http', function ($http)
 	
 	this.getAllClient = function ()
 	{
+		var baseUrl = baseURL + '/ICal2Rest/rest/client/getAllClients';
 	    return $http({ 
 	    	method  : 'GET',
-	    	url     : 'http://192.168.1.72:8080/ICal2Rest/rest/client/getAllClients',
+//	    	url     : 'http://192.168.1.72:8080/ICal2Rest/rest/client/getAllClients',
+	    	url     : baseUrl,
 	    	
 	    }).then(function (response) {
 	    	console.log(response.data);

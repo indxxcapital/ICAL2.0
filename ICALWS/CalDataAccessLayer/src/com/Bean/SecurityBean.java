@@ -37,7 +37,7 @@ public class SecurityBean {
     
     private String indexCode;
     private float weight = 0;
-    private Integer shares = 0; 
+    private Float shares = (float) 0; 
     
     private String currency;
     private float price;
@@ -153,10 +153,10 @@ public class SecurityBean {
         this.weight = aWeight;
     }
     
-    public Integer getShares() {
+    public Float getShares() {
         return shares;
     }
-    public void setShares(Integer aShares) {
+    public void setShares(Float aShares) {
         this.shares= aShares;
     }
     

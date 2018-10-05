@@ -61,7 +61,7 @@ iCal.controller('indexSecurityController', function ($scope, $window, IManagerSe
            		enableCellEdit: false,
            		width: '120px'
 			},{
-				field: 'CurrencyFactor',
+				field: 'currencyFactor',
 				displayName: 'Currency Factor',
            		enableCellEdit: false,
            		width: '120px'

@@ -30,6 +30,7 @@ iCal.controller('indexManagerController', ['$scope','$window','$location','IMana
     	IManagerService.getAllNewIndex($scope.index).then(function (response) 
     	{
             $scope.Data = response;
+            console.log($scope.Data);
         });
     }
     
