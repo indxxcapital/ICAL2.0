@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -200,7 +201,9 @@ public class indexRestService {
 		System.out.println("in add index");
 		try
 		{
-			RestUtil.writeToFile(new FileInputStream(file),RestUtil.INDEX_INPUT_FILE_PATH);
+			InputStream uploadedInputStream = new FileInputStream(file);
+			RestUtil.writeToFile(uploadedInputStream,RestUtil.INDEX_INPUT_FILE_PATH);
+			uploadedInputStream.close();
 			IndexService iService = new IndexService();
 			iService.importIndexDataFromCsv(RestUtil.INDEX_INPUT_FILE_PATH,isProprietaryWeightedIndices);
 			strMsg = "Succesfully added Indices Details";

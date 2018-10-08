@@ -115,24 +115,29 @@ public class ICalUtil
 			indexBean.setIndexMarketValue(Float.parseFloat(row[7].toString()));		
 		if(row[8] != null)
 		{
-			if(row[8].toString().toLowerCase().contains("divisor"))
-				indexBean.setNormalCashDivAdj("DA");
-			else if(row[8].toString().toLowerCase().contains("stock"))
-				indexBean.setNormalCashDivAdj("SA");
+//			if(row[8].toString().toLowerCase().contains("divisor"))
+//				indexBean.setNormalCashDivAdj("DA");
+//			else if(row[8].toString().toLowerCase().contains("stock"))
+				indexBean.setNormalCashDivAdj(row[8].toString());//"SA");
 		}
 		if(row[9] != null)
 		{
-			if(row[9].toString().toLowerCase().contains("divisor"))
-				indexBean.setSpecialCashDivAdj("DA");
-			else if(row[9].toString().toLowerCase().contains("stock"))
-				indexBean.setSpecialCashDivAdj("SA");
+//			if(row[9].toString().toLowerCase().contains("divisor"))
+//				indexBean.setSpecialCashDivAdj("DA");
+//			else if(row[9].toString().toLowerCase().contains("stock"))
+				indexBean.setNormalCashDivAdj(row[8].toString());//"SA");
 		}
 		if(row[10] != null)
 		{
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			Date date = simpleDateFormat.parse(row[10].toString());
-//			indexBean.setIndexLiveDate((simpleDateFormat.format(date)));
-			indexBean.setIndexLiveDate(row[10].toString());
+			String sDate1=row[10].toString();//"31-10-1998";  
+		    Date date=new SimpleDateFormat("dd-MM-yyyy").parse(sDate1);  
+		    
+//			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("DD-MM-YYYY");
+			SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("YYYY-MM-dd");
+//			Date date = simpleDateFormat.parse(row[10].toString());
+			String strDate =simpleDateFormat1.format(date);
+			indexBean.setIndexLiveDate(strDate);
+//			indexBean.setIndexLiveDate(row[10].toString());
 //			indexBean.setIndexLiveDateStr((simpleDateFormat.format(date)));
 			indexBean.setIndexLiveDateStr(row[10].toString());
 		}
@@ -140,7 +145,8 @@ public class ICalUtil
 			indexBean.setDisseminationSource(row[11].toString());
 //		if(row[12] != null)
 //			indexBean.setOutputFilesFormat(row[12].toString());
-		indexBean.setStatus("NI");
+//		indexBean.setStatus("NI");
+		indexBean.setStatus("New");
 		
 		if(isProprietaryWeightedIndices)
 			indexBean.setIndexWeightType("PWI");

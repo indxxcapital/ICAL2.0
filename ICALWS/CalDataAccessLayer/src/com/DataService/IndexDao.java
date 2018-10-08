@@ -34,10 +34,11 @@ public class IndexDao extends DefaultDao
 			keyValueMap.put("clientName", indexBean.getClientName());
 			keyValueMap.put("indexType", indexBean.getIndexType());
 			keyValueMap.put("indexTicker", indexBean.getIndexTicker());
-			keyValueMap.put("normalCashDivAdj", indexBean.getNormalCashDivAdj());
-			keyValueMap.put("specialCashDivAdj", indexBean.getSpecialCashDivAdj());
-			keyValueMap.put("zoneType", indexBean.getZoneType());
-			keyValueMap.put("status", indexBean.getStatus());
+			keyValueMap.put("normalCashDivAdj",ICalCommonUtill.getIndexDividentAdjustmentMap().get(indexBean.getNormalCashDivAdj()));//getIndexDividentAdjustmentMap
+			keyValueMap.put("specialCashDivAdj",ICalCommonUtill.getIndexDividentAdjustmentMap().get(indexBean.getSpecialCashDivAdj()));
+			keyValueMap.put("zoneType",ICalCommonUtill.getIndexZoneMap().get(indexBean.getZoneType()));
+//			keyValueMap.put("status", indexBean.getStatus());//getIndexStatusNameCodeMap
+			keyValueMap.put("status",ICalCommonUtill.getIndexStatusNameCodeMap().get(indexBean.getStatus()));
 			keyValueMap.put("indexLiveDate", indexBean.getIndexLiveDate());
 			keyValueMap.put("currency", indexBean.getCurrency());
 			keyValueMap.put("disseminationSource", indexBean.getDisseminationSource());

@@ -11,6 +11,7 @@ public class ICalCommonUtill {
 		keyValueMap.put("New", "NI");
 		keyValueMap.put("Upcoming", "UI");
 		keyValueMap.put("Live", "LI");
+		keyValueMap.put("Run", "RI");
 		return keyValueMap;
 	}
 	
@@ -41,4 +42,20 @@ public class ICalCommonUtill {
 	}
 	
 	
+	public static Map<String,String> getIndexZoneMap()
+	{
+		Map<String,String> keyValueMap = new HashMap<String,String>();
+		keyValueMap.put("Americas Region","AR");
+		keyValueMap.put("European Region","ER");
+		keyValueMap.put("Asia/Pacific Region","APR");
+		return keyValueMap;
+	}
+	
+	public static Map<String,String> getIndexDividentAdjustmentMap()
+	{
+		Map<String,String> keyValueMap = new HashMap<String,String>();
+		keyValueMap.put("Divisor Adjustment","DA");
+		keyValueMap.put("Stock Adjustment","SA");
+		return keyValueMap;
+	}
 }
