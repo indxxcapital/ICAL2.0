@@ -20,13 +20,11 @@ iCal.directive('securityManager', ['$parse', function ($parse) {
 iCal.service('SManagerService', ['$http','icalFactory', function ($http,icalFactory)
 {
 	var baseURL = icalFactory.baseUrl
-	
 	this.getAllSecurities = function ()
 	{
 		var baseUrl = baseURL + '/ICal2Rest/rest/security/getSecurities';
 	    return $http({ 
 	    	method  : 'GET',
-//	    	url     : 'http://192.168.1.72:8080/ICal2Rest/rest/security/getSecurities',
 	    	url     : baseUrl,
 	    	
 	    }).then(function (response) {
@@ -39,7 +37,6 @@ iCal.service('SManagerService', ['$http','icalFactory', function ($http,icalFact
 		var baseUrl = baseURL + '/ICal2Rest/rest/currency/getCurrencies';
 	    return $http({ 
 	    	method  : 'GET',
-//	    	url     : 'http://192.168.1.72:8080/ICal2Rest/rest/currency/getCurrencies',
 	    	url     : baseUrl,
 	    	
 	    }).then(function (response) {

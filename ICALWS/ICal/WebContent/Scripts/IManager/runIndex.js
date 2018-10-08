@@ -98,7 +98,6 @@ iCal.controller('runIndexController', ['$scope','$window','IManagerService','$ro
         		'<button id="viewPreClosingBtn" type="button" ng-click="viewPreClosing(row)" >View Pre Closing File</button>'
 		}]
 	}; 
-    //getIndexPreClosingFile
     
     $scope.viewPreClosing = function(row) 
     {

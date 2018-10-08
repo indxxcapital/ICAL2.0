@@ -21,11 +21,6 @@ iCal.controller('upcomingIndexController', ['$scope','$window','IManagerService'
         $scope.load();
      });
     
-//    $scope.$on("reLoad", function (evt) {
-//    	 $scope.load();
-//    });
-
-    
     $scope.updateIndexList = function () 
     {
     	  $scope.load();
@@ -100,31 +95,8 @@ iCal.controller('upcomingIndexController', ['$scope','$window','IManagerService'
         	enableCellEdit: false,
         	cellTemplate: 
         		'<button id="deleteBtn" type="button" ng-click="view(row)" >View</button>'
-        		//'<button id="deleteBtn" type="button" ng-click="closingFile(row)" >Closing File</button>'+
-        		//'<button id="deleteBtn" type="button" ng-click="openingFile(row)" >Opening File</button>'
 		}]
 	}; 
-
-    //addValues
-//    $scope.addValues = function(row) 
-//    {
-//        if (window.confirm("Are you sure you want to add indexvalues?")) $scope.result = "Yes";  
-//        else $scope.result = "No";  
-//        if ($scope.result == "Yes")
-//        { 
-//        	if($scope.selectedRows.length == 0)
-//        		alert("Please select indices to add values");
-//        	else
-//        	{
-//        		IManagerService.updateIndexValues($scope.selectedRows).then(function (response) 
-//				{
-//        			alert(response);
-//				});
-//    		}
-//        }
-//    };
-    
-  
     
     $scope.approve = function(row) 
     {

@@ -30,6 +30,10 @@ public class DefaultDao
 		 return rs;		 
 	 }
 	
+	 public Map<String,String> getAllConfigValues()
+	 {
+		 return ConnectionFactory.readPropertyFile();
+	 }
 	public int insertData(String tableName,Map<String,Object> keyValueMap) throws SQLException, ClassNotFoundException
 	{
 		ConnectionFactory.getConnection();

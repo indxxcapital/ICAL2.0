@@ -19,16 +19,11 @@ iCal.directive('indexManager', ['$parse', function ($parse) {
 
 iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFactory)
 {
-//	var hostValue = $location.host();
-//	var portValue = $location.port();
-//	var baseValue = hostValue + ':' + portValue;
 	console.log('Host: :::;' + icalFactory.baseUrl);
 	var baseURL = icalFactory.baseUrl
 	//Get All New Indices List
 	this.getAllNewIndex = function (indexDdata)
     {
-		//http://192.168.1.72:8080
-//    	var baseUrl = 'http://192.168.1.72:8080/ICal2Rest/rest/index/getnewindex';
     	var baseUrl = baseURL + '/ICal2Rest/rest/index/getnewindex';
         return $http({
             method	: 'POST',
@@ -42,7 +37,6 @@ iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFact
 	//Get All Upcoming Indices List
 	this.getAllUpcomingIndex = function (indexDdata)
     {
-//    	var baseUrl = 'http://192.168.1.72:8080/ICal2Rest/rest/index/getupcomongindex';
 		var baseUrl = baseURL + '/ICal2Rest/rest/index/getupcomongindex';
         return $http({
             method: 'POST',
@@ -56,7 +50,6 @@ iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFact
 	//Get All Run Indices List
 	this.getAllRunIndex = function (indexDdata)
     {
-//    	var baseUrl = 'http://192.168.1.72:8080/ICal2Rest/rest/index/getrunindex';
     	var baseUrl = baseURL + '/ICal2Rest/rest/index/getrunindex';
         return $http({
             method: 'POST',
@@ -71,7 +64,6 @@ iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFact
 	//Get All Live Indices List
 	this.getAllLiveIndex = function (indexDdata)
     {
-//    	var baseUrl = 'http://192.168.1.72:8080/ICal2Rest/rest/index/getliveindex';
     	var baseUrl = baseURL + '/ICal2Rest/rest/index/getliveindex';
         return $http({
             method: 'POST',
@@ -88,7 +80,6 @@ iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFact
 		var baseUrl = baseURL + '/ICal2Rest/rest/security/getSecurities';
 	    return $http({ 
 	    	method  : 'GET',
-//	    	url     : 'http://192.168.1.72:8080/ICal2Rest/rest/security/getSecurities',
 	    	url     : baseUrl,
 	    	
 	    }).then(function (response) {
@@ -104,7 +95,6 @@ iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFact
         console.log(indexData);
         return $http({ 
          		method  : 'POST',//
-//         		url     : 'http://192.168.1.72:8080/ICal2Rest/rest/index/deleteindex',
          		url     : baseUrl,
          		data	: indexData,
          	    headers	: {"Content-Type": "application/json"}
@@ -122,7 +112,6 @@ iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFact
         console.log(indexData);
         return $http({ 
          		method  : 'POST',
-//         		url     : 'http://192.168.1.72:8080/ICal2Rest/rest/index/updateIndicesStatus',
          		url     : baseUrl,
          		data	: indexData,
          	    headers	: {"Content-Type": "application/json"}
@@ -139,7 +128,6 @@ iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFact
         console.log(indexData);
         $http({ 
          		method  : 'POST',
-//         		url     : 'http://192.168.1.72:8080/ICal2Rest/rest/index/getpreclosing',
          		url     : baseUrl,
          		data	: indexData,
          	    headers	: {"Content-Type": "application/json","responseType": 'arraybuffer'}
@@ -164,7 +152,6 @@ iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFact
         console.log(indexData);
         return $http({ 
          		method  : 'POST',//
-//         		url     : 'http://192.168.1.72:8080/ICal2Rest/rest/security/getSecuritiesForIndex',
          		url     : baseUrl,
          		data	: indexData,
          	    headers	: {"Content-Type": "application/json"}
@@ -181,7 +168,6 @@ iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFact
         console.log(indexData);
         return $http({ 
          		method  : 'POST',//
-//         		url     : 'http://192.168.1.72:8080/ICal2Rest/rest/index/deleteSecurityFromIndex',
          		url     : baseUrl,
          		data	: indexData,
          	    headers	: {"Content-Type": "application/json"}
@@ -198,7 +184,6 @@ iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFact
         console.log(indexDataList);
         return $http({ 
          		method  : 'POST',//
-//         		url     : 'http://192.168.1.72:8080/ICal2Rest/rest/index/addIndexValues',
          		url     : baseUrl,
          		data	: indexDataList,
          	    headers	: {"Content-Type": "application/json"}
@@ -216,7 +201,6 @@ iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFact
         console.log(indexDataList);
         return $http({ 
          		method  : 'POST',
-//         		url     : 'http://192.168.1.72:8080/ICal2Rest/rest/index/runIndices',
          		url     : baseUrl,
          		data	: indexData,
          	    headers	: {"Content-Type": "application/json"}

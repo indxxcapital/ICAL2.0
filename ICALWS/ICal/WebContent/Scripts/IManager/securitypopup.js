@@ -2,7 +2,6 @@ iCal.controller('indexSecurityController', function ($scope, $window, IManagerSe
 {
 	$scope.indexCode = $window.indexTicker;
 	console.log($scope.indexCode);
-	
 	 
 	$scope.loadIndexSecurities = function() 
 	{
@@ -17,7 +16,6 @@ iCal.controller('indexSecurityController', function ($scope, $window, IManagerSe
     $scope.gridOptionsS = 
 	{
 		data: 'SData',
-//		showSelectionCheckbox: true, 
 		columnDefs: 
 		[
 			{
@@ -71,7 +69,6 @@ iCal.controller('indexSecurityController', function ($scope, $window, IManagerSe
     
     $scope.remove = function(row) 
     {
-//        alert("INSIDE remote " + row.entity.indexTicker);
         if (window.confirm("Are you sure you want to Delete this record?")) $scope.result = "Yes";  
         else $scope.result = "No";  
         if ($scope.result == "Yes")

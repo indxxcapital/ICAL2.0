@@ -54,13 +54,11 @@ iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$htt
 	$scope.submitForm = function() 
 	{
 		var baseUrl = baseURL + '/ICal2Rest/rest/index/addIndex';
-//	    	alert("submitForm");
 	    	console.log('inside submitForm');
 	    	var indexData = $scope.user;
 	        console.log(indexData);
 	        $http({ 
 	        	method  : 'POST',
-//	        	url     : 'http://192.168.1.72:8080/ICal2Rest/rest/index/addIndex',
 	        	url     : baseUrl,
 	        	data: indexData,
 	        	headers: {"Content-Type": "application/json"}
@@ -97,7 +95,6 @@ iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$htt
 		var baseUrl = '/ICal2Rest/rest/index/add';
 		console.log('inside upload');
         var file = $scope.myFile;
-//        var addUrl = "http://192.168.1.72:8080/ICal2Rest/rest/index/add";
         var addUrl = baseUrl;
         indexService.uploadFileToAddIndex(file, addUrl);
     };
@@ -117,14 +114,12 @@ function($scope,$window, indexService,securityService,icalFactory)
 	{
 		var baseUrl = '/ICal2Rest/rest/index/map';
 		var file = $scope.myFile;
-//		var mapUrl = "http://192.168.1.72:8080/ICal2Rest/rest/index/map";
 		var mapUrl = baseUrl;
 		indexService.uploadFileToMapSecurities(file, mapUrl);
 	};
 	$scope.getTemplate = function()
 	{
 		var baseUrl = '/ICal2Rest/rest/template/getMapSecuritiesTemplate';
-//		securityService.getTemplate("http://192.168.1.72:8080/ICal2Rest/rest/template/getMapSecuritiesTemplate");
 		securityService.getTemplate(baseUrl);
 	};
 }]);
@@ -170,7 +165,6 @@ iCal.service('indexService', ['$http','icalFactory', function ($http,icalFactory
 	this.getTemplate = function()
 	{
 		var baseUrl = baseURL + '/ICal2Rest/rest/template/getIndexTemplate';	
-//		$http.get("http://192.168.1.72:8080/ICal2Rest/rest/template/getIndexTemplate", {responseType: 'arraybuffer'})
 		$http.get(baseUrl, {responseType: 'arraybuffer'})
 		.then(function (response) 
 		{
@@ -190,7 +184,6 @@ iCal.service('indexService', ['$http','icalFactory', function ($http,icalFactory
 		var baseUrl = baseURL + '/ICal2Rest/rest/currency/getCurrencies';
 	    return $http({ 
 	    	method  : 'GET',
-//	    	url     : 'http://192.168.1.72:8080/ICal2Rest/rest/currency/getCurrencies',
 	    	url     : baseUrl,
 	    	
 	    }).then(function (response) {
@@ -204,7 +197,6 @@ iCal.service('indexService', ['$http','icalFactory', function ($http,icalFactory
 		var baseUrl = baseURL + '/ICal2Rest/rest/client/getAllClients';
 	    return $http({ 
 	    	method  : 'GET',
-//	    	url     : 'http://192.168.1.72:8080/ICal2Rest/rest/client/getAllClients',
 	    	url     : baseUrl,
 	    	
 	    }).then(function (response) {

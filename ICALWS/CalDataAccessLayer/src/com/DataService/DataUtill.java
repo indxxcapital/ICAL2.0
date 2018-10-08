@@ -5,7 +5,8 @@ public class DataUtill
 {
 	public static String createInsert(String tableName,Map<String,Object> keyValueMap)
 	{
-		String strInsertQuery = "insert into ical2." + tableName ;
+//		String strInsertQuery = "insert into ical2." + tableName ;
+		String strInsertQuery = "insert into " + ConfigUtil.propertiesMap.get("dbName") + "." + tableName ;
 		String strColumns= "";
 		String strValue =  "";
 		
@@ -74,14 +75,17 @@ public class DataUtill
 	
 	public static String createSelect(String tableName,String filterClause)
 	{
-		String strSelectQuery = "select * from  ical2." + tableName + " " + filterClause;		
+//		String strSelectQuery = "select * from  ical2." + tableName + " " + filterClause;		
+		String strSelectQuery = "select * from  " + ConfigUtil.propertiesMap.get("dbName") + "." + tableName + " " + filterClause;
+		
 		
 		return strSelectQuery;		
 	}
 	
 	public static String createDelete(String tableName,String filter)
 	{
-		String strInsertQuery = "Delete from ical2." + tableName + " "  + filter;
+//		String strInsertQuery = "Delete from ical2." + tableName + " "  + filter;
+		String strInsertQuery = "Delete from " + ConfigUtil.propertiesMap.get("dbName") + "." + tableName + " "  + filter;
 		
 		return strInsertQuery;
 	}

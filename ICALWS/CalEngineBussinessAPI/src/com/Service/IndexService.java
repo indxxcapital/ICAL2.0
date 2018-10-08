@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.Bean.IndexBean;
+import com.DataService.ConfigUtil;
 import com.DataService.IndexDao;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
@@ -138,17 +139,17 @@ public class IndexService {
 	{
 		
 		String STR_CLOSE_FILE_QUERY = 
-				"SELECT IC.id,S.securityid securityId, (Select top 1 CloseIndexValue FROM ical2.indexdescription where indexTicker = '" +indexTicker + "') IndexValue ,"
+				"SELECT IC.id,S.securityid securityId, (Select top 1 CloseIndexValue FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription where flag ='1' and  indexTicker = '" +indexTicker + "') IndexValue ,"
 				+ "S.BBGTicker,S.fullName,S.ISIN,S.SEDOL,S.CUSIP,S.Country,IC.weight,IC.shares,S.currency Currency,"
-				+ "(SELECT top 1 closePrice  FROM ical2.closeprice where ISIN =S.ISIN and BBGTicker = S.BBGTicker order by vd desc) Price,"
-				+ "(SELECT top 1 rate FROM ical2.currencyrate where fromCurrency = S.currency and toCurrency = "
-				+ "(Select currency FROM ical2.indexdescription where indexTicker = '" + indexTicker+ "') "
+				+ "(SELECT top 1 closePrice  FROM " + ConfigUtil.propertiesMap.get("dbName") + ".closeprice where ISIN =S.ISIN and BBGTicker = S.BBGTicker order by vd desc) Price,"
+				+ "(SELECT top 1 rate FROM " + ConfigUtil.propertiesMap.get("dbName") + ".currencyrate where fromCurrency = S.currency and toCurrency = "
+				+ "(Select currency FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription where flag ='1' and  indexTicker = '" + indexTicker+ "') "
 				+ " order by vd desc) CurrencyFactor ,"
-				+ "(SELECT top 1 rate FROM ical2.currencyrate where toCurrency = S.currency and fromCurrency = "
-				+ "(Select currency FROM ical2.indexdescription where indexTicker = '" + indexTicker+ "') " 
+				+ "(SELECT top 1 rate FROM " + ConfigUtil.propertiesMap.get("dbName") + ".currencyrate where toCurrency = S.currency and fromCurrency = "
+				+ "(Select currency FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription where flag ='1' and  indexTicker = '" + indexTicker+ "') " 
 				+ " order by vd desc) CurrencyDivisor "
-				+ " FROM ical2.security S, ical2.indexcomposition IC "
-				+ " where IC.flag='1' and IC.indexcode = '" + indexTicker+ "' and IC.securityId = S.securityid"
+				+ " FROM " + ConfigUtil.propertiesMap.get("dbName") + ".security S, " + ConfigUtil.propertiesMap.get("dbName") + ".indexcomposition IC "
+				+ " where IC.flag='1' and S.flag ='1' and  IC.indexcode = '" + indexTicker+ "' and IC.securityId = S.securityid"
 				;
 		
 		System.out.println(STR_CLOSE_FILE_QUERY);

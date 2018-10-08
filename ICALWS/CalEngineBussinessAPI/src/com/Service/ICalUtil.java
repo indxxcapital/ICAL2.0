@@ -138,8 +138,8 @@ public class ICalUtil
 		}
 		if(row[11] != null)
 			indexBean.setDisseminationSource(row[11].toString());
-		if(row[12] != null)
-			indexBean.setOutputFilesFormat(row[12].toString());
+//		if(row[12] != null)
+//			indexBean.setOutputFilesFormat(row[12].toString());
 		indexBean.setStatus("NI");
 		
 		if(isProprietaryWeightedIndices)

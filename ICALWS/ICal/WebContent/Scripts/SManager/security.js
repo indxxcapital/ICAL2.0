@@ -36,7 +36,6 @@ iCal.controller('securityController',  ['$scope','$window', 'securityService', f
 		console.log('file upload started' );
 		console.log(file);
 	       
-//		var uploadUrl = "http://192.168.1.72:8080/ICal2Rest/rest/security/parse";
 		var uploadUrl = "/ICal2Rest/rest/security/parse";
 		securityService.uploadFileToParse(file, uploadUrl);
 		console.log('file is uploaded' );
@@ -50,7 +49,6 @@ iCal.controller('securityController',  ['$scope','$window', 'securityService', f
     	console.log('file upload started' );
     	console.log(file);
 	        
-//    	var uploadUrl1 = "http://192.168.1.72:8080/ICal2Rest/rest/security/addnew";
     	var uploadUrl1 = "/ICal2Rest/rest/security/addnew";
     	securityService.uploadFileToAddSecurities(file, uploadUrl1);
     	console.log('file is uploaded' );
@@ -60,24 +58,20 @@ iCal.controller('securityController',  ['$scope','$window', 'securityService', f
      $scope.upload = function()
      {
     	 var file = $scope.myFile;
-//    	 var mapUrl = "http://192.168.1.72:8080/ICal2Rest/rest/security/addprice";
     	 var mapUrl = "/ICal2Rest/rest/security/addprice";
     	 securityService.uploadFileToAddSecuritiesPrice(file, mapUrl);
      };
      $scope.getParseTemplate = function()
      {
-//    	 securityService.getTemplate("http://192.168.1.72:8080/ICal2Rest/rest/template/getSecurityTemplate");
     	 securityService.getTemplate("/ICal2Rest/rest/template/getSecurityTemplate");
      };
      $scope.getAddMissingTemplate = function()
      {
-//    	 securityService.getTemplate("http://192.168.1.72:8080/ICal2Rest/rest/template/getSecurityAddTemplate");
     	 securityService.getTemplate("/ICal2Rest/rest/template/getSecurityAddTemplate");
      };
      
      $scope.getTemplate = function()
      {
-//    	 securityService.getTemplate("http://192.168.1.72:8080/ICal2Rest/rest/template/getSecurityPriceTemplate");
     	 securityService.getTemplate("/ICal2Rest/rest/template/getSecurityPriceTemplate");
      };
 }]);
@@ -95,7 +89,6 @@ iCal.service('securityService', ['$http','icalFactory', function ($http,icalFact
 		{
 			console.log(data)
 	                
-//			$http.get("http://192.168.1.72:8080/ICal2Rest/rest/security/get", {responseType: 'arraybuffer'})
 			$http.get(baseURL + "/ICal2Rest/rest/security/get", {responseType: 'arraybuffer'})
 			.then(function (response) 
 			{

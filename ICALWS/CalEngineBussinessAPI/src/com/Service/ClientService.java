@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.Bean.ClientBean;
+import com.DataService.ConfigUtil;
 import com.DataService.DefaultDao;
 
 public class ClientService 
@@ -17,7 +18,9 @@ public class ClientService
 		DefaultDao dDao = new DefaultDao();
 		try
 		{
-			ResultSet rs = dDao. getAllData("clientdetails","") ;
+			String strQuery = " SELECT DISTINCT clientName FROM " + ConfigUtil.propertiesMap.get("dbName") + ".clientdetails order by clientName asc ";
+					
+			ResultSet rs = dDao. ExecuteQuery(strQuery) ;
 			clientsList =convertListToClientBeanList(rs);
 		}
 		catch (ClassNotFoundException e) {

@@ -55,13 +55,11 @@ iCal.controller('addIndexController2',  ['$scope','$window', 'indexService','$ht
 	$scope.submitForm = function() 
 	{
 		var baseUrl = baseURL + '/ICal2Rest/rest/index/addIndex2';
-//	    	alert("submitForm");
 	    	console.log('inside submitForm');
 	    	var indexData = $scope.user;
 	        console.log(indexData);
 	        $http({ 
 	        	method  : 'POST',
-//	        	url     : 'http://192.168.1.72:8080/ICal2Rest/rest/index/addIndex2',
 	        	url     : baseUrl,
 	        	data: indexData,
 	        	headers: {"Content-Type": "application/json"}
@@ -97,7 +95,6 @@ iCal.controller('addIndexController2',  ['$scope','$window', 'indexService','$ht
 		var baseUrl = '/ICal2Rest/rest/index/add2';
 		console.log('inside upload');
         var file = $scope.myFile;
-//        var addUrl = "http://192.168.1.72:8080/ICal2Rest/rest/index/add2";
         var addUrl = baseUrl;
         indexService.uploadFileToAddIndex(file, addUrl);
     };

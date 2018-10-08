@@ -12,83 +12,77 @@ import com.DataService.ConfigUtil;
 @Path("/template") 
 public class fileTemplateRestService {
 	
-	public static final String TEMPLATE_FILE_PATH = ConfigUtil.propertiesMap.get("TEMPLATE_FILE_PATH");//"c://temp/template/";
+	String TEMPLATE_FILE_PATH = ConfigUtil.propertiesMap.get("TEMPLATE_FILE_PATH");
+	String TEMPLATE_FILE_FORMAT = ConfigUtil.propertiesMap.get("TEMPLATE_FILE_FORMAT");
 	
 	@GET
 	@Path("/getSecurityTemplate")//1
 	@Produces("application/vnd.ms-excel")
 	public Response getSecurityTemplate() 
 	{
-
-		File file = new File(TEMPLATE_FILE_PATH+ "SecurityCheckInputFile.csv");
-		ResponseBuilder response = Response.ok((Object) file);
-		response.header("Content-Disposition","attachment; filename=SecurityCheckInputFile.csv");
-		return response.build();
+		String fileName = "SecurityCheckInputFile." +TEMPLATE_FILE_FORMAT;
+		return getTemplate(fileName);
 	}
 	
 	@GET
-	@Path("/getSecurityAddTemplate")///2
+	@Path("/getSecurityAddTemplate")//2
 	@Produces("application/vnd.ms-excel")
 	public Response getSecurityAddTemplate() 
 	{
-		File file = new File(TEMPLATE_FILE_PATH+ "SecurityAddInputFile.csv");
-		ResponseBuilder response = Response.ok((Object) file);
-		response.header("Content-Disposition","attachment; filename=SecurityAddInputFile.csv");
-		return response.build();
+		String fileName = "SecurityAddInputFile." +TEMPLATE_FILE_FORMAT;
+		return getTemplate(fileName);
 	}
 	
 	@GET
 	@Path("/getIndexTemplate")//3
 	@Produces("application/vnd.ms-excel")
-	public Response getIndexTemplate() {
-
-		File file = new File(TEMPLATE_FILE_PATH+ "IndexInputFile.csv");
-		ResponseBuilder response = Response.ok((Object) file);
-		response.header("Content-Disposition","attachment; filename=IndexInputFile.csv");
-		return response.build();
+	public Response getIndexTemplate()
+	{
+		String fileName = "IndexInputFile." +TEMPLATE_FILE_FORMAT;
+		return getTemplate(fileName);
 	}
 	
 	@GET
 	@Path("/getMapSecuritiesTemplate")//4
 	@Produces("application/vnd.ms-excel")
-	public Response gettMapSecuritiesTemplate() {
-
-		File file = new File(TEMPLATE_FILE_PATH+ "SecurityMapFile.csv");
-		ResponseBuilder response = Response.ok((Object) file);
-		response.header("Content-Disposition","attachment; filename=SecurityMapFile.csv");
-		return response.build();
+	public Response gettMapSecuritiesTemplate()
+	{
+		String fileName = "SecurityMapFile." +TEMPLATE_FILE_FORMAT;
+		return getTemplate(fileName);
 	}
 	
 	@GET
 	@Path("/getSecurityPriceTemplate")//5
 	@Produces("application/vnd.ms-excel")
-	public Response getSecurityPriceTemplate() {
-
-		File file = new File(TEMPLATE_FILE_PATH +"SecurityPrice.csv");
-		ResponseBuilder response = Response.ok((Object) file);
-		response.header("Content-Disposition","attachment; filename=SecurityPrice.csv");
-		return response.build();
+	public Response getSecurityPriceTemplate() 
+	{
+		String fileName = "SecurityPrice." +TEMPLATE_FILE_FORMAT;
+		return getTemplate(fileName);
 	}	
 	
 	@GET
 	@Path("/getCurrencyCheckTemplate")//6
 	@Produces("application/vnd.ms-excel")
-	public Response getCurrencyCheckTemplate() {
-
-		File file = new File(TEMPLATE_FILE_PATH +"CurrencyInputFile.csv");
-		ResponseBuilder response = Response.ok((Object) file);
-		response.header("Content-Disposition","attachment; filename=CurrencyInputFile.csv");
-		return response.build();
+	public Response getCurrencyCheckTemplate() 
+	{
+		String fileName = "CurrencyInputFile." +TEMPLATE_FILE_FORMAT;
+		return getTemplate(fileName);
 	}	
 	
 	@GET
 	@Path("/getCurrencyAddTemplate")//7
 	@Produces("application/vnd.ms-excel")
-	public Response getCurrencyAddTemplate() {
-
-		File file = new File(TEMPLATE_FILE_PATH +"CurrencyAddInputFile.csv");
-		ResponseBuilder response = Response.ok((Object) file);
-		response.header("Content-Disposition","attachment; filename=CurrencyAddInputFile.csv");
-		return response.build();
+	public Response getCurrencyAddTemplate()
+	{
+		String fileName = "CurrencyAddInputFile." +TEMPLATE_FILE_FORMAT;
+		return getTemplate(fileName);
 	}	
+	
+	private Response getTemplate(String fileName)
+	{
+		File file = new File(TEMPLATE_FILE_PATH + fileName );
+		ResponseBuilder response = Response.ok((Object) file);
+		response.header("Content-Disposition","attachment; filename=" + fileName);
+		return response.build();
+	}
 }

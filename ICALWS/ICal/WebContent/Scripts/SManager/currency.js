@@ -35,7 +35,6 @@ iCal.controller('currencyController',  ['$scope','$window', 'currencyService',
 		console.log('file upload started' );
 		console.log(file);
 	       
-//		var uploadUrl = "http://192.168.1.72:8080/ICal2Rest/rest/currency/parseCurrency";
 		var uploadUrl = "/ICal2Rest/rest/currency/parseCurrency";
 		currencyService.uploadFileToParse(file, uploadUrl);
 		console.log('file is uploaded' );
@@ -48,7 +47,6 @@ iCal.controller('currencyController',  ['$scope','$window', 'currencyService',
     	console.log('file upload started' );
     	console.log(file);
 	        
-//    	var uploadUrl1 = "http://192.168.1.72:8080/ICal2Rest/rest/currency/addNewCurrency";
     	var uploadUrl1 = "/ICal2Rest/rest/currency/addNewCurrency";
     	currencyService.uploadFileToAddSecurities(file, uploadUrl1);
     	console.log('file is uploaded' );
@@ -57,12 +55,10 @@ iCal.controller('currencyController',  ['$scope','$window', 'currencyService',
    
      $scope.getParseTemplate = function()
      {
-//    	 currencyService.getTemplate("http://192.168.1.72:8080/ICal2Rest/rest/template/getCurrencyCheckTemplate");
     	 currencyService.getTemplate("/ICal2Rest/rest/template/getCurrencyCheckTemplate");
      };
      $scope.getAddMissingTemplate = function()
      {
-//    	 currencyService.getTemplate("http://192.168.1.72:8080/ICal2Rest/rest/template/getCurrencyAddTemplate");
     	 currencyService.getTemplate("/ICal2Rest/rest/template/getCurrencyAddTemplate");
      };
      
@@ -80,7 +76,6 @@ iCal.service('currencyService', ['$http','icalFactory', function ($http,icalFact
 		{
 			console.log(data)
 	                
-//			$http.get("http://192.168.1.72:8080/ICal2Rest/rest/currency/get", {responseType: 'arraybuffer'})
 			$http.get(baseURL + "/ICal2Rest/rest/currency/get", {responseType: 'arraybuffer'})
 			.then(function (response) 
 			{

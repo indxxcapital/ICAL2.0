@@ -39,7 +39,7 @@ public class IndexBean {
     private String currency;
     
     private String disseminationSource;
-    private String outputFilesFormat;
+//    private String outputFilesFormat;
     private String status;
     
     private String indexWeightType;
@@ -187,12 +187,12 @@ public class IndexBean {
         this.disseminationSource = aDisseminationSource;
     }
     
-    public String getOutputFilesFormat() {
-        return outputFilesFormat;
-    }
-    public void setOutputFilesFormat(String aOutputFilesFormat) {
-        this.outputFilesFormat = aOutputFilesFormat;
-    }
+//    public String getOutputFilesFormat() {
+//        return outputFilesFormat;
+//    }
+//    public void setOutputFilesFormat(String aOutputFilesFormat) {
+//        this.outputFilesFormat = aOutputFilesFormat;
+//    }
     //
     public String getStatus() {
         return status;

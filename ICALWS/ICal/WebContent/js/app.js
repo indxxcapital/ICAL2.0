@@ -130,7 +130,7 @@ iCal.directive('fileModel', ['$parse', function ($parse) {
 //	$scope.title = "Market Cap Index Submission";	
 //}]);
 
-iCal.factory('icalFactory', function($location) 
+iCal.factory('icalFactory', function($location,$http) 
 {
 	  var factory  = {};
 //	  var urlBase = '/api/v1';
@@ -138,12 +138,21 @@ iCal.factory('icalFactory', function($location)
 	  var hostValue = $location.host();
 	  var portValue = $location.port();	  
 	  var baseValue = hostValue + ':' + portValue;
-	  
+	  var baseUrl = 'http://' + baseValue;
 	  factory.baseUrl = 'http://' + baseValue;
 //
-//	  service.getUsers = function() {
-//	      return $http.get(urlBase + '/users');
-//	  };
+	  factory.configValues = function() 
+	  {
+//	      return $http.get(baseUrl + '/readConfig');
+	      return $http({
+	    	  	method	: 'GET',
+	            headers	: {"Content-Type": "application/json"},
+	            url		: baseUrl + '/ICal2Rest/rest/Config/readConfigData'
+	        }).then(function (response) {
+	            console.log(response.data);
+	        	return response.data;
+	        });
+	  };
 //
 //	  service.getUser = function(id){
 //	      return $http.get(urlBase + '/user/' + id);
@@ -152,6 +161,29 @@ iCal.factory('icalFactory', function($location)
 	  return factory ;
 
 });
+
+iCal.controller('mainController', ['$scope','$window','icalFactory','$http', 
+	function($scope,$window,icalFactory,$http)
+{
+	
+	var values = icalFactory.configValues();
+	console.log("configValues::" + values);
+//	//Get All New Indices List
+//	this.getAllNewIndex = function (indexDdata)
+//    {
+//    	var baseUrl = baseURL + '/ICal2Rest/rest/index/getnewindex';
+//        return $http({
+//            method	: 'POST',
+//            data	: indexDdata,
+//            headers	: {"Content-Type": "application/json"},
+//            url		: baseUrl 
+//        }).then(function (response) {
+//            return response.data;
+//        });
+//    }
+	
+
+}]);
 
 
 

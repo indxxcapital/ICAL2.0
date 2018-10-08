@@ -9,12 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.ui.internal.handlers.WizardHandler.New;
-
 import com.Bean.CurrencyBean;
-import com.Bean.SecurityBean;
+import com.Bean.IndexBean;
+import com.DataService.ConfigUtil;
 import com.DataService.DefaultDao;
-import com.DataService.SecurityDao;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.CSVWriter;
@@ -66,7 +64,7 @@ public class CurrencyService {
 	 
 	public boolean checkForExistingCurrencies(CurrencyBean currencyBean) throws ClassNotFoundException, SQLException
 	{
-		String strQuery = "SELECT * FROM ical2.currency where crrysymbol='" +currencyBean.getCurrencySymbol() + "'";
+		String strQuery = "SELECT * FROM " + ConfigUtil.propertiesMap.get("dbName") + ".currency where crrysymbol='" +currencyBean.getCurrencySymbol() + "'";
 		DefaultDao sDao = new DefaultDao();
 		ResultSet rs = sDao.ExecuteQuery(strQuery);
 		if(rs == null || !rs.next())
@@ -122,7 +120,10 @@ public class CurrencyService {
 		DefaultDao dDao = new DefaultDao();
 		try
 		{
-			ResultSet rs = dDao. getAllData("currency","") ;
+			String strQuery = " SELECT DISTINCT crrysymbol,crryname FROM " + ConfigUtil.propertiesMap.get("dbName") + ".currency order by crrysymbol asc ";
+			
+			ResultSet rs = dDao. ExecuteQuery(strQuery) ;
+			
 			currencyList =convertListToCurrencyBeanList(rs);
 		}
 		catch (ClassNotFoundException e) {

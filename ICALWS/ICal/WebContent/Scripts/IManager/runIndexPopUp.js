@@ -14,8 +14,6 @@ iCal.controller('runIndexPopUpController', ['$scope','$window','IManagerService'
   		IManagerService.runIndices($scope.selectedRows,$scope.index.IndexRunDate).then(function (response) 
 		{
   			alert(response);
-//  			$rootScope.$broadcast("reLoad");
-//  			$rootScope.$emit("reLoad", {});
   			window.opener.location.reload(true);
   			$window.close();
 		});

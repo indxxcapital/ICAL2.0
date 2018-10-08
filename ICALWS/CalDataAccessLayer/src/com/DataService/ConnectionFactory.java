@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.Properties;
 
 import com.CalCommon.ICalCommonUtill;
@@ -22,7 +23,7 @@ public class ConnectionFactory
 {
 	static Connection conn = null;
 	
-	private static void readPropertyFile() 
+	public static Map<String,String> readPropertyFile() 
 	{
 		Properties prop = new Properties();
     	InputStream input = null;
@@ -55,7 +56,8 @@ public class ConnectionFactory
     	} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+    	Map<String,String> map = ConfigUtil.propertiesMap;
+		return map;
 	}
 
 	private static String dbURL = "";
@@ -101,7 +103,7 @@ public class ConnectionFactory
      */
     public static void getConnection() throws ClassNotFoundException, SQLException
     {
-    	 if(conn == null)
+    	 if(conn == null || conn.isClosed())
     	 {
     		 readPropertyFile() ;
     		 Class.forName(dbDriver); 

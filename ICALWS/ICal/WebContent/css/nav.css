@@ -20,7 +20,11 @@ body {
 }
 
 .mainMenu a:hover {
-    background-color: red;
+    background-color: grey;
+}
+
+.mainMenu a:focus {
+    background-color: grey;
 }
 
 .submenu {
@@ -36,6 +40,24 @@ body {
     background: grey;
     float: left;
 }
+.one a {
+    float: left;
+    font-size: 16px;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.one a.active{
+    color: red;
+    background-color: grey;
+}
+.one a:focus {
+     color: red;
+     background-color: grey;
+}
+
 .two {
 	overflow:hidden;
 	width: 82%;
@@ -56,11 +78,9 @@ body {
 a,input,select{
 	margin-top: 10px;
     margin-bottom: 10px;
-    margin-left: 10px;
-    color: inherit;
+    margin-left: 10px;   
     text-decoration: none;
 }
-
 
 .divone {
     width: 100%;
