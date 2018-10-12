@@ -1,16 +1,16 @@
 <div class="form-control">
 	
 	
-	<div class="form-group row"   >
-    	<label for="IndexWeightType" class="col-sm-2 col-form-label">Index Weight Type:</label>
-    	<div class="col-sm-10">
+	<nav class="navbar navbar-light bg-light">
+    	<label for="IndexWeightType" class="col-sm-4 col-form-label">Index Weight Type:</label>
+    	<div class="col-sm-8">
      		 <select name="WeightType" ng-change="updateIndexList()" ng-model="index.weightType" id="wType" class="form-control" >
 	   		<option value="" >All</option >
 	    	<option value="PWI" >Proprietary Index</option >
 	    	<option value="MWI" >Market Cap Index</option >
   		</select >
     	</div>
-  	</div>
+    	</nav>
   	
 	<div>
 		<button ng-click="approve()"	ng-show="inactiveApprove" class="btn btn-primary">Approve Selected indices</button> 

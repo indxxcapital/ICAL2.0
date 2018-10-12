@@ -1,33 +1,34 @@
 <div id="content">
 
-	<div >
+	<div ng-show="showdiv" >
+	<nav class="navbar navbar-light bg-light">
    		<select name="WeightType" ng-change="updateIndexSetup()" ng-model="index.setupType" id="wType" class="form-control"  >
 	   		<option value="" >Please Select</option >
 	    	<option value="SI" >Single Index Setup </option >
 	    	<option value="MI" >Multiple Index Setup </option >
   		</select >
+  		</nav>
   	</div>
-  	
-  	<div ng-show="showdiv1" >
+  	<br>
+  	<div ng-show="showdiv1" class="divone" >
 		<div  class="divone">
 			<div class="input-group mb-3">
 				<button ng-click="getTemplate()" class="btn btn-secondary">Get Multiple Index File Template</button>
 			</div>
 			<br>
-			<br>
 			<div class="input-group mb-3">
-	 			
 	 			<div class="custom-file">
-	   				<input type="file" file-model="myFile" size="20" >
-					&nbsp;&nbsp;
-	    			<button ng-click="upload()" class="btn btn-primary">Upload Selected File to setup  multiple Indies</button>
+	   				<input type="file" file-model="myFile" size="20" text="hkjhkhk" >
 	  			</div>
+			</div>
+			<div class="input-group mb-3">
+				<button ng-click="next()" class="btn btn-primary btn-lg btn-block">Next</button>
 			</div>
 		</div>
 	</div>
 	
-	<div id="content" style="font-family: Arial"  ng-show="showdiv2" >
-	 <form name="userForm" ng-submit=" submitForm()" >
+	<div class="divone"  style="font-family: Arial;width: 100%"   ng-show="showdiv2" >
+	 <form name="userForm" ng-submit=" next()" >
 	 	<div class="form-row">
 	 		<div class="form-group col-md-4">
     			<label for="ClientName">Client Name:</label>
@@ -48,11 +49,10 @@
 				</select>			
 			</div >
  		</div>
-  
 	 	<div class="form-row">
     		<div class="form-group col-md-4">
       			<label for="IndexName">Index Name:</label>
-      			<input type="text" ng-model="user.IndexName" class="form-control" id="IndexName" cols="10" rows="30">
+      			<input type="text" ng-model="user.IndexName" class="form-control" id="IndexName" cols="10" rows="30" ng-required="true">
     		</div>
     		<div class="form-group col-md-4">
       			<label for="IndexTicker">Index Ticker:</label>
@@ -87,10 +87,8 @@
 				</select >
 			</div >
 	  	</div>
-		
-	  	
 		<div class="form-row">
-		<div class="form-group col-md-6" >
+		<div class="form-group col-md-4" >
 			<label for="Normal cash dividend adjustment" >Normal Cash Dividend Adjustment:</label >
 		    <select name="Normal cash dividend adjustment" ng-model="user.NCashDivAdj" id="Normalcashdividendadjustment" class="form-control" >
 				<option value="" >Please Choose</option >
@@ -98,7 +96,7 @@
 		        <option value="SA" >Stock Adjustment</option >
 			</select >
 		</div >
-		<div class="form-group col-md-6" >
+		<div class="form-group col-md-4" >
 			<label for="Special cash dividend adjustment" >Special Cash Dividend Adjustment:</label >
 		    <select name="Special cash dividend adjustment" ng-model="user.SNCashDivAdj" id="Specialcashdividendadjustment" class="form-control" >
 				<option value="" >Please Select</option >
@@ -106,9 +104,7 @@
 		        <option value="SA" >Stock Adjustment</option >
 			</select >
 		</div >
-		</div>
-		<div class="form-row">
-		<div class="form-group col-md-6" >
+		<div class="form-group col-md-4" >
 		    <label for="Dissemination Source" >Dissemination Source:</label >
 		    <select name="Dissemination Source" ng-model="user.DisseminationSource" id="DisseminationSource" class="form-control"  >
 				<option value="" >Please Choose</option >
@@ -116,19 +112,24 @@
 		        <option value="SFTP" >SFTP</option >
 			</select >
 		</div >
-		<!--<div class="form-group col-md-6" >
-			<label for="Format of output files" >Format of output files</label > 
-			<select name="Format of output files" ng-model="user.OutputFileFormat" id="Formatofoutputfiles" class="form-control" >
-				<option value="" >Please Select</option >
-				<option value="CSV" >CSV</option >
-		         <option value="XLS" >XLS</option >
-		         <option value="TXT" >TXT</option >
-			</select >
-		</div >-->
 		</div>
-		<div  ng-controller="addIndexController">
-			<button name="insert"  ngClick="submitForm()" class="btn btn-secondary">Upload</button>
+		<div >
+			<button name="insert"  ng-click="next()" class="btn btn-primary btn-lg btn-block">Next </button>
 		</div>
 		</form>
 	</div>  
+	<div  ng-show="showdiv3">
+		<div>
+			<button ng-click="getSecurityMapTemplate()"  class="btn btn-secondary">Get Security Map File Template</button>
+		</div>
+		<br>
+		<div class="input-group mb-3">
+ 			<div class="custom-file">
+   				<input type="file" file-model="SecurityMapFile" size="20">&nbsp;&nbsp;
+				<button ng-click="SubmitIndexData()" class="btn btn-primary">Submit Index Data</button>&nbsp;&nbsp;
+				<button ng-click="back()"  class="btn btn-primary">Back</button>&nbsp;&nbsp;
+				<button ng-click="cancel()"  class="btn btn-primary">Cancel</button>
+			</div>
+		</div>
+	</div>
 </div>

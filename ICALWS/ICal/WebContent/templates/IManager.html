@@ -1,10 +1,16 @@
 <section class="submenu">
 	<div class="one">
-		<br>
-		<a ui-sref="IManager.new">New Indices</a>&nbsp;&nbsp;<br><br>
-		<a ui-sref="IManager.upcoming">Upcoming Indices</a>&nbsp;&nbsp;<br><br>
-		<a ui-sref="IManager.run">Run Indices</a>&nbsp;&nbsp;<br><br>
-		<a ui-sref="IManager.live">Live Indices</a>&nbsp;&nbsp;<br><br>
-	</div>
+		<div class="row">	
+			<div class="col-9">
+	    		<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+			      <a class="nav-link" id="v-pills-home-tab" data-toggle="pill" role="tab" aria-controls="v-pills-home" aria-selected="false"ui-sref="IManager.new">New Indices</a>
+			      <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" role="tab" aria-controls="v-pills-profile" aria-selected="false" ui-sref="IManager.upcoming">Upcoming Indices</a>
+			      <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill"  role="tab" aria-controls="v-pills-messages" aria-selected="false"ui-sref="IManager.run">Run Indices</a>
+			      <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill"  role="tab" aria-controls="v-pills-settings" aria-selected="false"ui-sref="IManager.live">Live Indices</a>
+			    </div>
+	  		</div>
+	  	</div>
+ 	</div>
+	
 	<div class="two" ui-view></div>
 </section>

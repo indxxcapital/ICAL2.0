@@ -19,6 +19,7 @@ iCal.directive('indexManager', ['$parse', function ($parse) {
 
 iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFactory)
 {
+	console.log("configValues::" + icalFactory.configData.INDEX_CLOSE_FILE_PATH);
 	console.log('Host: :::;' + icalFactory.baseUrl);
 	var baseURL = icalFactory.baseUrl
 	//Get All New Indices List
@@ -122,29 +123,6 @@ iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFact
          });
     }
 	 	
-	this.getIndexPreClosingFile = function (indexData)
-	{
-		var baseUrl = baseURL + '/ICal2Rest/rest/index/getpreclosing';
-        console.log(indexData);
-        $http({ 
-         		method  : 'POST',
-         		url     : baseUrl,
-         		data	: indexData,
-         	    headers	: {"Content-Type": "application/json","responseType": 'arraybuffer'}
-         })
-        .then(function (response)
-         {
-        	var header = response.headers('Content-Disposition')
-			var fileName = header.split("=")[1].replace(/\"/gi,'');
-			console.log(fileName);
-        
-			var blob = new Blob([response.data],{type : 'application/vnd.openxmlformats-officedocument.presentationml.presentation;charset=UTF-8'});
-			var objectUrl = (window.URL || window.webkitURL).createObjectURL(blob);
-			var link = angular.element('<a/>');
-			link.attr({	href : objectUrl,download : fileName})[0].click();
-         });
-    }
-	
 	this.getAllIndexSecurities = function (indexTicker)
 	{
 		var baseUrl = baseURL + '/ICal2Rest/rest/security/getSecuritiesForIndex';
@@ -178,19 +156,42 @@ iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFact
          });
     }
 	
-	this.updateIndexValues = function (indexDataList)
+//	this.updateIndexValues = function (indexDataList)
+//	{
+//		var baseUrl = baseURL + '/ICal2Rest/rest/index/addIndexValues';
+//        console.log(indexDataList);
+//        return $http({ 
+//         		method  : 'POST',//
+//         		url     : baseUrl,
+//         		data	: indexDataList,
+//         	    headers	: {"Content-Type": "application/json"}
+//         })
+//        .then(function (response)
+//         {
+//              return "Index Values has been added Successfully";
+//         });
+//    }
+	
+	this.getIndexPreClosingFile = function (indexData)
 	{
-		var baseUrl = baseURL + '/ICal2Rest/rest/index/addIndexValues';
-        console.log(indexDataList);
-        return $http({ 
-         		method  : 'POST',//
+		var baseUrl = baseURL + '/ICal2Rest/rest/index/getpreclosing';
+        console.log(indexData);
+        $http({ 
+         		method  : 'POST',
          		url     : baseUrl,
-         		data	: indexDataList,
-         	    headers	: {"Content-Type": "application/json"}
+         		data	: indexData,
+         	    headers	: {"Content-Type": "application/json","responseType": 'arraybuffer'}
          })
         .then(function (response)
          {
-              return "Index Values has been added Successfully";
+        	var header = response.headers('Content-Disposition')
+			var fileName = header.split("=")[1].replace(/\"/gi,'');
+			console.log(fileName);
+        
+			var blob = new Blob([response.data],{type : 'application/vnd.openxmlformats-officedocument.presentationml.presentation;charset=UTF-8'});
+			var objectUrl = (window.URL || window.webkitURL).createObjectURL(blob);
+			var link = angular.element('<a/>');
+			link.attr({	href : objectUrl,download : fileName})[0].click();
          });
     }
 	
@@ -203,11 +204,19 @@ iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFact
          		method  : 'POST',
          		url     : baseUrl,
          		data	: indexData,
-         	    headers	: {"Content-Type": "application/json"}
+         	    headers	: {"Content-Type": "application/json","responseType": 'arraybuffer'}
          })
         .then(function (response)
          {
-              return "Selected indices has been run Successfully";
+//              return "Selected indices has been run Successfully";
+              var header = response.headers('Content-Disposition')
+              var fileName = header.split("=")[1].replace(/\"/gi,'');
+              console.log(fileName);
+          
+              var blob = new Blob([response.data],{type : 'application/vnd.openxmlformats-officedocument.presentationml.presentation;charset=UTF-8'});
+              var objectUrl = (window.URL || window.webkitURL).createObjectURL(blob);
+              var link = angular.element('<a/>');
+              link.attr({	href : objectUrl,download : fileName})[0].click();
          });
     }
 }]);

@@ -20,6 +20,7 @@ import com.DataService.ConfigUtil;
 import com.ICal2.Scheduler.Jobs.ClosingJobAPR;
 import com.ICal2.Scheduler.Jobs.ClosingJobAR;
 import com.ICal2.Scheduler.Jobs.ClosingJobER;
+import com.ICal2.Scheduler.Jobs.GoLiveIndexJob;
 import com.ICal2.Scheduler.Jobs.OpeningJobAPR;
 import com.ICal2.Scheduler.Jobs.OpeningJobAR;
 import com.ICal2.Scheduler.Jobs.OpeningJobER;
@@ -68,12 +69,32 @@ public class ListenerTaskExample implements ServletContextListener
 		// Job Opening For AR Zone 
 		fileJobForARZone();
 		
+		//Go Live Index Job
+		goliveByDate();
         context = contextEvent.getServletContext();
         // you can set a context variable just like this
         context.setAttribute("TEST", "TEST_VALUE");
     }
     
-    private void fileJobForARZone() 
+    private void goliveByDate()
+    {
+    	try 
+    	{
+	    	JobDetail jobLive = JobBuilder.newJob(GoLiveIndexJob.class).withIdentity("jobLive", "groupLive").build();
+			Trigger triggerLive = TriggerBuilder.newTrigger().withIdentity("cronTriggerLive", "groupLive").withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(1, 00)).build();
+		
+			Scheduler schedulerLive;
+			
+			schedulerLive = new StdSchedulerFactory().getScheduler();
+			
+			schedulerLive.start();
+			schedulerLive.scheduleJob(jobLive, triggerLive);	
+    	} catch (SchedulerException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void fileJobForARZone() 
     {
     	try 
 		{

@@ -43,33 +43,37 @@ public class indexRestService {
 
 	@POST
 	@Path("/addIndex")
-	public void addSingleIndex(JsonObject  jsonObject) throws Exception
+	public Response addSingleIndex(JsonObject  jsonObject) throws Exception
 	{
-		addSingleIndex(true,jsonObject);
+		return addSingleIndex(true,jsonObject);
 	}
 	
 	@POST
 	@Path("/addIndex2")
-	public void addSingleIndexM(JsonObject  jsonObject) throws Exception
+	public Response addSingleIndexM(JsonObject  jsonObject) throws Exception
 	{
-		addSingleIndex(false,jsonObject);
+		return addSingleIndex(false,jsonObject);
 	}
 	
 	@POST
 	@Path("/map")
-	public void mapSecurityies(File file)
+	public Response mapSecurityies(File file)
 	{
+		String strMsg = "";
 		System.out.println("in map index");
 		try
 		{
 			RestUtil.writeToFile(new FileInputStream(file),RestUtil.SECURITY_MAP_FILE_PATH);
 			SecurityService sService = new SecurityService();
 			sService.mapSecurityWithIndex(RestUtil.SECURITY_MAP_FILE_PATH);
-		}
-		catch (IOException e) 
+			strMsg = "SUCCESS";
+		} catch (Exception e)
 		{
 			e.printStackTrace();
-		}
+			strMsg = e.toString();
+		}	
+		ResponseBuilder rb = Response.ok(strMsg);
+	    return rb.build();		
 	}
 	
 	@POST
@@ -109,7 +113,7 @@ public class indexRestService {
 		String strWeightType = jsonObject.getString("weightType");
 		System.out.println(strWeightType);
 		
-		return getIndexList("NI",strWeightType);
+		return getIndexList("'NI'",strWeightType);
 	}	
 	
 	@POST
@@ -122,7 +126,7 @@ public class indexRestService {
 		String strWeightType = jsonObject.getString("weightType");
 		System.out.println(strWeightType);
 		
-		return getIndexList("UI",strWeightType);
+		return getIndexList("'UI'",strWeightType);
 	}	
 	
 	@POST
@@ -135,7 +139,7 @@ public class indexRestService {
 		String strWeightType = jsonObject.getString("weightType");
 		System.out.println(strWeightType);
 		
-		return getIndexList("RI",strWeightType);
+		return getIndexList("'RI','AI'",strWeightType);
 	}	
 	
 	@POST
@@ -148,7 +152,7 @@ public class indexRestService {
 		String strWeightType = jsonObject.getString("weightType");
 		System.out.println(strWeightType);
 		
-		return getIndexList("LI",strWeightType);
+		return getIndexList("'LI'",strWeightType);
 	}	
 	
 	@POST
@@ -206,83 +210,92 @@ public class indexRestService {
 			uploadedInputStream.close();
 			IndexService iService = new IndexService();
 			iService.importIndexDataFromCsv(RestUtil.INDEX_INPUT_FILE_PATH,isProprietaryWeightedIndices);
-			strMsg = "Succesfully added Indices Details";
+//			strMsg = "Succesfully added Indices Details";
+			strMsg = "SUCCESS";
 		}
 		catch (FileNotFoundException e) 
 		{
 			e.printStackTrace();
 			System.out.println(e.getMessage());
-			strMsg = e.getMessage();
+			strMsg = e.toString();
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
-			strMsg = e.getMessage();
+			strMsg = e.toString();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			strMsg = e.getMessage();
+			System.out.println(e.getMessage());
+			strMsg = e.toString();
 		}
+		System.out.println(strMsg);
 		ResponseBuilder rb = Response.ok(strMsg);
 	    return rb.build();
 	}
 	
-	private void addSingleIndex(boolean isProprietaryWeightedIndices,JsonObject  jsonObject)
+	private Response addSingleIndex(boolean isProprietaryWeightedIndices,JsonObject  jsonObject)
 	{
+		String strMsg = "";
 		System.out.println("in side addIndex");
-		LocalDate localDate = LocalDate.now();
-		String strDate = DateTimeFormatter.ofPattern("YYYY-MM-dd").format(localDate);
-		
-		Map<String,String>  columnsNameMap = new HashMap <String,String>();
-		columnsNameMap.put("IndexName", "indexName");
-		columnsNameMap.put("ClientName", "clientName");
-		columnsNameMap.put("IndexType", "indexType");
-		columnsNameMap.put("IndexTicker", "indexTicker");
-		columnsNameMap.put("NCashDivAdj", "normalCashDivAdj");
-		columnsNameMap.put("SNCashDivAdj", "specialCashDivAdj");
-		columnsNameMap.put("Zone", "zoneType");
-		columnsNameMap.put("Currency", "currency");
-		columnsNameMap.put("IndexMarketValue", "IndexMarketValue");
-		columnsNameMap.put("IndexValue", "CloseIndexValue");
-		columnsNameMap.put("DisseminationSource", "disseminationSource");
-//		columnsNameMap.put("OutputFileFormat", "OutputFileFormat");
-		columnsNameMap.put("IndexLiveDate", "indexLiveDate");
-		columnsNameMap.put("weightType", "indexWeightType");
-		
-		Map<String,Object>  columnsValuesMap = new HashMap <String,Object>();
-		System.out.println(jsonObject);
-		Iterator<String> it = columnsNameMap.keySet().iterator();
-        
-        while (it.hasNext())
-        {
-            String key = it.next();
-            System.out.println(key);
-            String strDbColumnName = columnsNameMap.get(key);
-            System.out.println(strDbColumnName);
-            String strDbColumnValue = jsonObject.getString(key);
-            System.out.println(strDbColumnValue);
-            System.out.println(strDbColumnName + "::::::::::" + strDbColumnValue);
-            columnsValuesMap.put(strDbColumnName, strDbColumnValue);
-            
-        }
-        columnsValuesMap.put("status", "NI");
-        if(isProprietaryWeightedIndices)
-        	columnsValuesMap.put("indexWeightType", "PWI");
-		else
-			columnsValuesMap.put("indexWeightType", "MWI");
-        columnsValuesMap.put("indexWeightType", "PWI");
-        columnsValuesMap.put("flag","1");
-        columnsValuesMap.put("vf", strDate);
-        columnsValuesMap.put("vt","9999-12-31");
-		
-        System.out.println(columnsValuesMap);
-		
-        IndexService iService = new IndexService();
 		try 
 		{
+			LocalDate localDate = LocalDate.now();
+			String strDate = DateTimeFormatter.ofPattern("YYYY-MM-dd").format(localDate);
+			
+			Map<String,String>  columnsNameMap = new HashMap <String,String>();
+			columnsNameMap.put("IndexName", "indexName");
+			columnsNameMap.put("ClientName", "clientName");
+			columnsNameMap.put("IndexType", "indexType");
+			columnsNameMap.put("IndexTicker", "indexTicker");
+			columnsNameMap.put("NCashDivAdj", "normalCashDivAdj");
+			columnsNameMap.put("SNCashDivAdj", "specialCashDivAdj");
+			columnsNameMap.put("Zone", "zoneType");
+			columnsNameMap.put("Currency", "currency");
+			columnsNameMap.put("IndexMarketValue", "IndexMarketValue");
+			columnsNameMap.put("IndexValue", "CloseIndexValue");
+			columnsNameMap.put("DisseminationSource", "disseminationSource");
+	//		columnsNameMap.put("OutputFileFormat", "OutputFileFormat");
+			columnsNameMap.put("IndexLiveDate", "indexLiveDate");
+			columnsNameMap.put("weightType", "indexWeightType");
+			
+			Map<String,Object>  columnsValuesMap = new HashMap <String,Object>();
+			System.out.println(jsonObject);
+			Iterator<String> it = columnsNameMap.keySet().iterator();
+	        
+	        while (it.hasNext())
+	        {
+	            String key = it.next();
+	            System.out.println(key);
+	            String strDbColumnName = columnsNameMap.get(key);
+	            System.out.println(strDbColumnName);
+	            String strDbColumnValue = jsonObject.getString(key);
+	            System.out.println(strDbColumnValue);
+	            System.out.println(strDbColumnName + "::::::::::" + strDbColumnValue);
+	            columnsValuesMap.put(strDbColumnName, strDbColumnValue);
+	            
+	        }
+	        columnsValuesMap.put("status", "NI");
+	        if(isProprietaryWeightedIndices)
+	        	columnsValuesMap.put("indexWeightType", "PWI");
+			else
+				columnsValuesMap.put("indexWeightType", "MWI");
+	        columnsValuesMap.put("indexWeightType", "PWI");
+	        columnsValuesMap.put("flag","1");
+	        columnsValuesMap.put("vf", strDate);
+	        columnsValuesMap.put("vt","9999-12-31");
+			
+	        System.out.println(columnsValuesMap);
+			
+	        IndexService iService = new IndexService();
+		
 			iService.insertIndexData(columnsValuesMap);
+			strMsg = "SUCCESS";
 		} catch (Exception e) {
 			e.printStackTrace();
+			strMsg = e.toString();
 		}		
+		System.out.println(strMsg);
+		ResponseBuilder rb = Response.ok(strMsg);
+	    return rb.build();
 	}
 	
 	private Response getIndexList(String status,String weightType)
@@ -290,10 +303,16 @@ public class indexRestService {
 		String strFilter = "";
 		List<IndexBean> iList = new ArrayList<IndexBean>();
 		IndexService iService = new IndexService();
+//		if(!weightType.equalsIgnoreCase(""))
+//			strFilter ="Where status ='" + status + "' and indexWeightType = '" + weightType + "'";
+//		else
+//			strFilter ="Where status ='" + status + "'";
+		
 		if(!weightType.equalsIgnoreCase(""))
-			strFilter ="Where status ='" + status + "' and indexWeightType = '" + weightType + "'";
+			strFilter ="Where status In (" + status + ")  and indexWeightType = '" + weightType + "'";
 		else
-			strFilter ="Where status ='" + status + "'";
+			strFilter ="Where status In (" + status + ")";
+		
 		
 		try 
 		{

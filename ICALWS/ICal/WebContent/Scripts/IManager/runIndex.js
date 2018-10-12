@@ -94,8 +94,8 @@ iCal.controller('runIndexController', ['$scope','$window','IManagerService','$ro
         	displayName: 'Actions', 
         	enableCellEdit: false,
         	cellTemplate: 
-        		'<button id="viewBtn" type="button" ng-click="view(row)" >View Securities</button>'+
-        		'<button id="viewPreClosingBtn" type="button" ng-click="viewPreClosing(row)" >View Pre Closing File</button>'
+        		'<button id="viewBtn" type="button" ng-click="view(row)" >View</button>'+
+        		'<button id="viewPreClosingBtn" type="button" ng-click="viewPreClosing(row)" >Pre Opening File</button>'
 		}]
 	}; 
     
@@ -119,7 +119,7 @@ iCal.controller('runIndexController', ['$scope','$window','IManagerService','$ro
         		alert("Please select indices to be approve");
         	else
         	{
-        		IManagerService.updateIndexStatus($scope.selectedRows,'LI').then(function (response) 
+        		IManagerService.updateIndexStatus($scope.selectedRows,'AI').then(function (response) 
 				{
         			alert(response);
         			 $scope.load();

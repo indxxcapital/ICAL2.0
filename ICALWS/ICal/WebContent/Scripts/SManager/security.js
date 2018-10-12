@@ -32,7 +32,17 @@ iCal.controller('securityController',  ['$scope','$window', 'securityService', f
 	$scope.uploadFile = function()
 	{
 		var file = $scope.myFile;
-		
+		if( $scope.myFile == undefined)
+		{
+			alert("Please select a file to upload.");
+			return;
+		}
+		var extn =  $scope.myFile.name.split(".").pop();
+        if(extn != 'csv')
+    	{
+        	alert("File should be in CSV Format only.");
+			return;
+    	}
 		console.log('file upload started' );
 		console.log(file);
 	       
@@ -45,7 +55,17 @@ iCal.controller('securityController',  ['$scope','$window', 'securityService', f
     $scope.addMissingData = function()
     {
     	var file = $scope.myFile;
-    	
+    	if( $scope.myFile == undefined)
+		{
+			alert("Please select a file to upload.");
+			return;
+		}
+		var extn =  $scope.myFile.name.split(".").pop();
+        if(extn != 'csv')
+    	{
+        	alert("File should be in CSV Format only.");
+			return;
+    	}
     	console.log('file upload started' );
     	console.log(file);
 	        
@@ -57,10 +77,22 @@ iCal.controller('securityController',  ['$scope','$window', 'securityService', f
 	 //to Add price securities
      $scope.upload = function()
      {
+    	 if( $scope.myFile == undefined)
+    	 {
+    		 alert("Please select a file to upload.");
+    		 return;
+    	 }
+    	 var extn =  $scope.myFile.name.split(".").pop();
+         if(extn != 'csv')
+         {
+        	 alert("File should be in CSV Format only.");
+        	 return;
+         }
     	 var file = $scope.myFile;
     	 var mapUrl = "/ICal2Rest/rest/security/addprice";
     	 securityService.uploadFileToAddSecuritiesPrice(file, mapUrl);
      };
+     
      $scope.getParseTemplate = function()
      {
     	 securityService.getTemplate("/ICal2Rest/rest/template/getSecurityTemplate");

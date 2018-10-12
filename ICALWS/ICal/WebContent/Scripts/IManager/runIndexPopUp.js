@@ -13,7 +13,7 @@ iCal.controller('runIndexPopUpController', ['$scope','$window','IManagerService'
       { 
   		IManagerService.runIndices($scope.selectedRows,$scope.index.IndexRunDate).then(function (response) 
 		{
-  			alert(response);
+//  			alert(response);
   			window.opener.location.reload(true);
   			$window.close();
 		});

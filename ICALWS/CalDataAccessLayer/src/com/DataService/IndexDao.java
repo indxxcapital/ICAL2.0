@@ -319,8 +319,11 @@ public class IndexDao extends DefaultDao
 	{
 		List<IndexBean> indexList = new ArrayList<>();
 //		String strQuery  = "SELECT * FROM ical2.indexdescription "
+//		String strQuery  = "SELECT * FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription "
+//				+ "where  status='LI' and flag=1 and indexLiveDate >= CAST(GETDATE() AS DATE)  "
+//				+ "AND CAST(GETDATE() AS DATE) BETWEEN vf AND vt AND zoneType='" + zone + "'";
 		String strQuery  = "SELECT * FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription "
-				+ "where  status='LI' and flag=1 and indexLiveDate >= CAST(GETDATE() AS DATE)  "
+				+ "where  status='RI' and flag=1 "
 				+ "AND CAST(GETDATE() AS DATE) BETWEEN vf AND vt AND zoneType='" + zone + "'";
 		
 		System.out.println(strQuery);
@@ -328,4 +331,25 @@ public class IndexDao extends DefaultDao
 		indexList = converResultToIndexBean(rs);
 		return indexList;
 	}	
+	
+	public void goLiveIndex() throws ClassNotFoundException, SQLException
+	{
+		try 
+		{
+			String strQuery = "UPDATE " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription SET status = 'LI' WHERE indexLiveDate = CONVERT(VARCHAR(10),GETDATE(),126) and status = 'AI'";
+			System.out.println(strQuery);
+			
+			ConnectionFactory.getConnection();
+			int iValue =ConnectionFactory.ExecuteUpdateInsertDelete(strQuery);
+		} 
+		catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+			throw(e);
+		} catch (SQLException e) 
+		{
+			e.printStackTrace();
+			throw(e);
+		}
+	}
 }

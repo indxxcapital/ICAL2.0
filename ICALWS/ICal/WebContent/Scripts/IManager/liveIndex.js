@@ -116,25 +116,6 @@ iCal.controller('liveIndexController', ['$scope','$window','IManagerService', fu
 	{
 		var $popup = $window.open("securityPopUp.html");
 		$popup.indexTicker =row.entity.indexTicker;
+		$popup.indexData =row.entity;
     }
-    
-    $scope.closingFile = function(row) 
-    {
-		 if (window.confirm("Are you sure you want to generate closing file for this Index?")) $scope.result = "Yes";  
-		 else $scope.result = "No";  
-		 if ($scope.result == "Yes")
-		 { 
-			 IManagerService.getIndexClosingFile(row.entity);
-		 }
-	};
-	
-	$scope.openingFile = function(row) 
-    {
-		 if (window.confirm("Are you sure you want to generate opening file for this Index?")) $scope.result = "Yes";  
-		 else $scope.result = "No";  
-		 if ($scope.result == "Yes")
-		 { 
-			 IManagerService.getIndexOpeningFile(row.entity);
-		 }
-	};
 }]);

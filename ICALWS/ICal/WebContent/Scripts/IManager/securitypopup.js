@@ -1,7 +1,9 @@
 iCal.controller('indexSecurityController', function ($scope, $window, IManagerService) 
 {
 	$scope.indexCode = $window.indexTicker;
+	$scope.index = $window.indexData;
 	console.log($scope.indexCode);
+	console.log($scope.index);
 	 
 	$scope.loadIndexSecurities = function() 
 	{

@@ -12,6 +12,7 @@ public class ICalCommonUtill {
 		keyValueMap.put("Upcoming", "UI");
 		keyValueMap.put("Live", "LI");
 		keyValueMap.put("Run", "RI");
+		keyValueMap.put("Approve", "AI");
 		return keyValueMap;
 	}
 	
@@ -22,6 +23,7 @@ public class ICalCommonUtill {
 		keyValueMap.put("UI","Upcoming");
 		keyValueMap.put("LI","Live");
 		keyValueMap.put("RI","Run");
+		keyValueMap.put("AI","Approve");
 		return keyValueMap;
 	}
 	

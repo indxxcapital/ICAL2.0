@@ -27,7 +27,9 @@ iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$htt
 	$scope.title = "Add Multiple Indices";
 	$scope.index = {};
 	$scope.index.setupType = '';
-	var baseURL = icalFactory.baseUrl
+	var baseURL = icalFactory.baseUrl;
+	$scope.showdiv3= false;
+	$scope.showdiv= true;
 	
 	$scope.loadCurrencies = function () 
     {
@@ -35,7 +37,8 @@ iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$htt
     	{
 			console.log(response);
             $scope.CData = response;
-            console.log( $scope.CData);
+            console.log($scope.CData);
+            icalFactory.currencyList =  $scope.CData;
         });
     }
 	$scope.loadClient = function () 
@@ -51,25 +54,221 @@ iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$htt
     $scope.loadCurrencies();
     $scope.loadClient();
     
-	$scope.submitForm = function() 
+    $scope.next = function() 
+    {
+    	if($scope.index.setupType =='SI')
+		{
+    		$scope.showdiv= false;
+    		$scope.showdiv2= false;
+    		$scope.showdiv3= true;
+		}
+    	if($scope.index.setupType =='MI')
+		{
+    		if( $scope.myFile == undefined)
+    		{
+    			alert("Please select a file to upload Multiple Indices.");
+    			return;
+    		}
+            var extn =  $scope.myFile.name.split(".").pop();
+            if(extn != 'csv')
+        	{
+            	alert("File should be in CSV Format only.");
+    			return;
+        	}
+            $scope.showdiv= false;
+    		$scope.showdiv1= false;        	
+     		$scope.showdiv3= true;
+		}  
+    }
+    $scope.cancel = function() 
+    {
+    	$scope.index.setupType ==''
+    	$scope.showdiv= true;
+		$scope.showdiv2= false;
+		$scope.showdiv3= false;
+		$scope.showdiv1= false;        	
+    }
+    $scope.back = function() 
+    {
+    	$scope.showdiv= true;
+    	if($scope.index.setupType =='SI')
+		{
+    		$scope.showdiv2= true;
+    		$scope.showdiv3= false;
+		}
+    	if($scope.index.setupType =='MI')
+		{
+    		$scope.showdiv1= true;        	
+     		$scope.showdiv3= false;
+		}     	
+    }
+    
+    $scope.SubmitSingleIndexData = function() 
 	{
+    	//File Validation
+    	var sFile = $scope.SecurityMapFile;
+		if( $scope.SecurityMapFile == undefined)
+		{
+			alert("Please select a file to upload.");
+			return;
+		}
+		var extn =  $scope.SecurityMapFile.name.split(".").pop();
+        if(extn != 'csv')
+    	{
+        	alert("File should be in CSV Format only.");
+			return;
+    	}
+        
+        // Add Single Index Details
 		var baseUrl = baseURL + '/ICal2Rest/rest/index/addIndex';
-	    	console.log('inside submitForm');
-	    	var indexData = $scope.user;
-	        console.log(indexData);
-	        $http({ 
-	        	method  : 'POST',
-	        	url     : baseUrl,
-	        	data: indexData,
-	        	headers: {"Content-Type": "application/json"}
-	        })
-	        .success(function(data) 
-			{
-	        	console.log('data saved');
-	        	$scope.content = data;
-	        	alert("Index added successfully");
-			});
+    	console.log('inside SubmitSingleIndexData');
+    	var indexData = $scope.user;
+        console.log(indexData);
+        $http({ 
+        	method  : 'POST',
+        	url     : baseUrl,
+        	data: indexData,
+        	headers: {"Content-Type": "application/json"}
+        })
+        .success(function(data) 
+		{
+        	if(data == 'SUCCESS')
+    		{
+        		console.log('Single Index added successfully');
+        		var Url = baseURL + '/ICal2Rest/rest/index/map';
+            	console.log('inside uploadFileToAddIndex');
+            	$http.post(Url, sFile, {transformRequest: angular.identity,headers: {'Content-Type': undefined}})        
+            	.success(function(data1)
+            	{
+            		if(data1 == 'SUCCESS')
+                	{
+                		alert("Index has been Submitted Successfully");
+                		$scope.index.setupType = '';
+                		$scope.user = {};
+                		$scope.showdiv= true;
+                		$scope.showdiv1= false;
+                		$scope.showdiv2= false;
+        	     		$scope.showdiv3= false;
+                	}
+                	else
+            		{
+                		console.log('Error in Mapping Securities with Index.' + data1);
+                		alert('Error in uploading Security Map input file.Please check the file.' + data1);        		
+            		}
+            	})
+            	.error(function(data1){
+            		console.log('Error in Mapping Securities with Index.' + data1);
+            		alert('Error in uploading Security Map input file.Please check the file.' + data1);  
+            	});
+    		}
+    		else
+    		{
+    			console.log('Error in adding Single Index.' + data);
+        		alert('Error in adding Single Index.Please check the input data.' + data);
+        		$scope.showdiv= true;
+        		$scope.showdiv1= false;
+        		$scope.showdiv2= true;
+         		$scope.showdiv3= false;
+    		}
+		}).
+		error(function(data)
+		{
+			console.log('Error in adding Single Index.' + data);
+    		alert('Error in adding Single Index.Please check the input data.' + data);
+    		$scope.showdiv= true;
+    		$scope.showdiv1= false;
+    		$scope.showdiv2= true;
+     		$scope.showdiv3= false;
+    	});
     };
+    
+    $scope.SubmitMultipleIndexData = function() 
+    {
+    	//File Validation
+    	var indexFile = $scope.myFile;
+    	var sFile = $scope.SecurityMapFile;
+    	
+		if( $scope.SecurityMapFile == undefined)
+		{
+			alert("Please select a file to upload.");
+			return;
+		}
+		var extn =  $scope.SecurityMapFile.name.split(".").pop();
+        if(extn != 'csv')
+    	{
+        	alert("File should be in CSV Format only.");
+			return;
+    	}
+        
+        // Add Single Index Details
+    	console.log('inside SubmitMultipleIndexData');
+        var baseUrl = baseURL + '/ICal2Rest/rest/index/add';
+    	console.log('inside uploadFileToAddIndex');
+    	$http.post(baseUrl, indexFile, {transformRequest: angular.identity,headers: {'Content-Type': undefined}}) 
+        .success(function(data) 
+		{
+        	if(data == 'SUCCESS')
+    		{
+        		console.log('Multile Indices added successfully');
+        		var Url = baseURL + '/ICal2Rest/rest/index/map';
+            	console.log('inside uploadFileToAddIndex');
+            	$http.post(Url, sFile, {transformRequest: angular.identity,headers: {'Content-Type': undefined}})        
+            	.success(function(data1)
+            	{
+            		if(data1 == 'SUCCESS')
+                	{
+                		alert("Multiple Indices has been Submitted Successfully");
+                		$scope.index.setupType = '';
+                		$scope.showdiv= true;
+                		$scope.showdiv1= false;
+                		$scope.showdiv2= false;
+        	     		$scope.showdiv3= false;
+                	}
+                	else
+            		{
+                		console.log('Error in Mapping Securities with Index.' + data1);
+                		alert('Error in uploading Security Map input file.Please check the file.' + data1);       		
+            		}
+            	})
+            	.error(function(data1){
+            		console.log('Error in Mapping Securities with Index.' + data1);
+            		alert('Error in uploading Security Map input file.Please check the file.' + data1);  
+            	});
+    		}
+    		else
+    		{
+    			console.log('Error in adding Miltiple Index.' + data);
+        		alert('Error in uploading Multiple Index input file.Please check the file.' + data);
+        		$scope.showdiv= true;
+        		$scope.showdiv1= true;
+        		$scope.showdiv2= false;
+         		$scope.showdiv3= false;
+    		}
+		}).
+		error(function(data)
+		{
+			console.log('Error in adding Miltiple Index.' + data);
+    		alert('Error in uploading Multiple Index input file.Please check the file.' + data);
+    		$scope.showdiv= true;
+    		$scope.showdiv1= true;
+    		$scope.showdiv2= false;
+     		$scope.showdiv3= false;
+    	});
+    }
+    
+    $scope.SubmitIndexData = function() 
+    {
+    	$scope.showdiv= false;
+    	
+    	if($scope.index.setupType =='SI')
+		{
+    		 $scope.SubmitSingleIndexData();
+		}
+    	if($scope.index.setupType =='MI')
+		{
+    		 $scope.SubmitMultipleIndexData();
+    	}  
+    }
     
     $scope.updateIndexSetup = function () 
     {
@@ -77,95 +276,80 @@ iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$htt
 		{
     		$scope.showdiv1= false;
     		$scope.showdiv2= false;
+    		$scope.showdiv3= false;
 		}
     	if($scope.index.setupType =='SI')
 		{
     		$scope.showdiv1= false;
     		$scope.showdiv2= true;
+    		$scope.showdiv3= false;
 		}
     	if($scope.index.setupType =='MI')
 		{
     		$scope.showdiv1= true;
     		$scope.showdiv2= false;
+    		$scope.showdiv3= false;
 		}    	
     }
     
-	$scope.upload = function()
-    {
-		var baseUrl = '/ICal2Rest/rest/index/add';
-		console.log('inside upload');
-        var file = $scope.myFile;
-        var addUrl = baseUrl;
-        indexService.uploadFileToAddIndex(file, addUrl);
-    };
-	    
+//	$scope.uploadIndexFile = function()
+//    {
+//		if( $scope.myFile == undefined)
+//		{
+//			alert("Please select a file to upload.");
+//			return;
+//		}
+//		var baseUrl = '/ICal2Rest/rest/index/add';
+//		console.log('inside upload');
+//        var file = $scope.myFile;
+//        var extn =  $scope.myFile.name.split(".").pop();
+//        if(extn != 'csv')
+//    	{
+//        	alert("File should be in CSV Format only.");
+//			return;
+//    	}
+//        return  indexService.uploadFileToAddIndex(file, baseUrl);
+//    };
+    	    
     $scope.getTemplate = function()
     {
-    	indexService.getTemplate();
+    	var baseUrl = '/ICal2Rest/rest/template/getIndexTemplate';
+    	indexService.getTemplate(baseUrl);
     };
-}]);
-
-iCal.controller('mapSecurityIndexController',  ['$scope','$window', 'indexService','securityService', 'icalFactory',
-function($scope,$window, indexService,securityService,icalFactory)
-{
-	var baseURL = icalFactory.baseUrl
-	$scope.title = "Map Securities with Index";
-	$scope.upload = function()
-	{
-		var baseUrl = '/ICal2Rest/rest/index/map';
-		var file = $scope.myFile;
-		var mapUrl = baseUrl;
-		indexService.uploadFileToMapSecurities(file, mapUrl);
-	};
-	$scope.getTemplate = function()
+    
+    $scope.getSecurityMapTemplate = function()
 	{
 		var baseUrl = '/ICal2Rest/rest/template/getMapSecuritiesTemplate';
-		securityService.getTemplate(baseUrl);
+		indexService.getTemplate(baseUrl);
 	};
 }]);
-
 
 iCal.service('indexService', ['$http','icalFactory', function ($http,icalFactory)
 {
 	var baseURL = icalFactory.baseUrl
 	//add indices
-    this.uploadFileToAddIndex = function(file, uploadUrl)
-    {
-		var Url = baseURL + uploadUrl;
-    	console.log('inside uploadFileToAddIndex');
-    	$http.post(Url, file, {transformRequest: angular.identity,headers: {'Content-Type': undefined}})        
-    	.success(function(data)
-    	{
-    		console.log("indices added successfully")
-    		console.log(data)
-    		alert("indices added successfully");
-    	})
-    	.error(function(data){
-            console.log("Ërror in adding indices")
-            console.log(data)
-            alert(data);
-    	});
-    }
-    
-  //map securities to index
-  this.uploadFileToMapSecurities = function(file, uploadUrl)
-  {
-	  var Url = baseURL + uploadUrl;
-	  $http.post(Url, file, {transformRequest: angular.identity,headers: {'Content-Type': undefined}})        
-    		.success(function(data){
-    		console.log("Securities mapped successfully")
-    		alert("Securities mapped successfully");
-    	})
-    	.error(function(){
-            console.log("Ërror in mapping securities")
-    	});
-    }
-  
-  //Get Template
-	this.getTemplate = function()
+//    this.uploadFileToAddIndex = function(file, uploadUrl)
+//    {
+//		var Url = baseURL + uploadUrl;
+//    	console.log('inside uploadFileToAddIndex');
+//    	$http.post(Url, file, {transformRequest: angular.identity,headers: {'Content-Type': undefined}})        
+//    	.success(function(data)
+//    	{
+//    		console.log(data)
+//    		return data;
+//    	})
+//    	.error(function(data){
+//            console.log("Ërror in adding indices")
+//            console.log(data)
+//            return data;
+//    	});
+//    }
+	
+  	//Get Template
+	this.getTemplate = function(url)
 	{
-		var baseUrl = baseURL + '/ICal2Rest/rest/template/getIndexTemplate';	
-		$http.get(baseUrl, {responseType: 'arraybuffer'})
+		var Url = baseURL + url;
+		$http.get(Url, {responseType: 'arraybuffer'})
 		.then(function (response) 
 		{
 			var header = response.headers('Content-Disposition')
@@ -204,5 +388,4 @@ iCal.service('indexService', ['$http','icalFactory', function ($http,icalFactory
             return response.data;
         });
     }
-		
 }]);

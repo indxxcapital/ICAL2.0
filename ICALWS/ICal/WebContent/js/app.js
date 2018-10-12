@@ -139,7 +139,10 @@ iCal.factory('icalFactory', function($location,$http)
 	  var portValue = $location.port();	  
 	  var baseValue = hostValue + ':' + portValue;
 	  var baseUrl = 'http://' + baseValue;
+//	  var configData;
 	  factory.baseUrl = 'http://' + baseValue;
+	  factory.currencyList = [];
+	  factory.permissionList = [];
 //
 	  factory.configValues = function() 
 	  {
@@ -149,7 +152,9 @@ iCal.factory('icalFactory', function($location,$http)
 	            headers	: {"Content-Type": "application/json"},
 	            url		: baseUrl + '/ICal2Rest/rest/Config/readConfigData'
 	        }).then(function (response) {
-	            console.log(response.data);
+//	            console.log(response.data);
+	            factory.configData = response.data;
+//	            console.log(factory.configData);
 	        	return response.data;
 	        });
 	  };
@@ -161,29 +166,29 @@ iCal.factory('icalFactory', function($location,$http)
 	  return factory ;
 
 });
-
-iCal.controller('mainController', ['$scope','$window','icalFactory','$http', 
-	function($scope,$window,icalFactory,$http)
-{
-	
-	var values = icalFactory.configValues();
-	console.log("configValues::" + values);
-//	//Get All New Indices List
-//	this.getAllNewIndex = function (indexDdata)
-//    {
-//    	var baseUrl = baseURL + '/ICal2Rest/rest/index/getnewindex';
-//        return $http({
-//            method	: 'POST',
-//            data	: indexDdata,
-//            headers	: {"Content-Type": "application/json"},
-//            url		: baseUrl 
-//        }).then(function (response) {
-//            return response.data;
-//        });
-//    }
-	
-
-}]);
+//
+//iCal.controller('mainController', ['$scope','$window','icalFactory','$http', 
+//	function($scope,$window,icalFactory,$http)
+//{
+//	
+//	var values = icalFactory.configValues();
+//	console.log("configValues::" + values);
+////	//Get All New Indices List
+////	this.getAllNewIndex = function (indexDdata)
+////    {
+////    	var baseUrl = baseURL + '/ICal2Rest/rest/index/getnewindex';
+////        return $http({
+////            method	: 'POST',
+////            data	: indexDdata,
+////            headers	: {"Content-Type": "application/json"},
+////            url		: baseUrl 
+////        }).then(function (response) {
+////            return response.data;
+////        });
+////    }
+//	
+//
+//}]);
 
 
 

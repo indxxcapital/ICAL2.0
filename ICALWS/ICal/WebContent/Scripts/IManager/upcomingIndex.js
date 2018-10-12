@@ -135,25 +135,25 @@ iCal.controller('upcomingIndexController', ['$scope','$window','IManagerService'
      	}
     };
     
-    $scope.closingFile = function(row) 
-    {
-		 if (window.confirm("Are you sure you want to generate closing file for this Index?")) $scope.result = "Yes";  
-		 else $scope.result = "No";  
-		 if ($scope.result == "Yes")
-		 { 
-			 IManagerService.getIndexClosingFile(row.entity);
-		 }
-	};
-	
-	 $scope.openingFile = function(row) 
-    {
-		 if (window.confirm("Are you sure you want to generate opening file for this Index?")) $scope.result = "Yes";  
-		 else $scope.result = "No";  
-		 if ($scope.result == "Yes")
-		 { 
-			 IManagerService.getIndexOpeningFile(row.entity);
-		 }
-	};
+//    $scope.closingFile = function(row) 
+//    {
+//		 if (window.confirm("Are you sure you want to generate closing file for this Index?")) $scope.result = "Yes";  
+//		 else $scope.result = "No";  
+//		 if ($scope.result == "Yes")
+//		 { 
+//			 IManagerService.getIndexClosingFile(row.entity);
+//		 }
+//	};
+//	
+//	 $scope.openingFile = function(row) 
+//    {
+//		 if (window.confirm("Are you sure you want to generate opening file for this Index?")) $scope.result = "Yes";  
+//		 else $scope.result = "No";  
+//		 if ($scope.result == "Yes")
+//		 { 
+//			 IManagerService.getIndexOpeningFile(row.entity);
+//		 }
+//	};
 	
 	$scope.view = function(row) 
 	{

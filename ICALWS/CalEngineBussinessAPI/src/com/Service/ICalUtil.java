@@ -125,7 +125,7 @@ public class ICalUtil
 //			if(row[9].toString().toLowerCase().contains("divisor"))
 //				indexBean.setSpecialCashDivAdj("DA");
 //			else if(row[9].toString().toLowerCase().contains("stock"))
-				indexBean.setNormalCashDivAdj(row[8].toString());//"SA");
+				indexBean.setSpecialCashDivAdj(row[9].toString());//"SA");
 		}
 		if(row[10] != null)
 		{

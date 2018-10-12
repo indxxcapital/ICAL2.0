@@ -21,6 +21,7 @@ body {
 
 .mainMenu a:hover {
     background-color: grey;
+    
 }
 
 .mainMenu a:focus {
@@ -35,7 +36,7 @@ body {
     padding: 5px 5px;
 }
 .one {
-    width: 18%;
+    width: 20%;
     height: 790px;
     background: grey;
     float: left;
@@ -49,22 +50,27 @@ body {
     text-decoration: none;
 }
 
-.one a.active{
-    color: red;
-    background-color: grey;
-}
-.one a:focus {
-     color: red;
-     background-color: grey;
-}
+
 
 .two {
 	overflow:hidden;
-	width: 82%;
+	width: 80%;
     margin-left: 15%;
     height: 790px;
     background: white;
+    
 }
+
+.two a {
+    float: left;
+    font-size: 16px;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+
 
 
 #content {
@@ -90,8 +96,30 @@ a,input,select{
 }
 .divtwo {
 	overflow:hidden;
-	width: 50%;
+	width: 00%;
     margin-left: 15%;
     height: 800px;
     background: white;
 }
+
+
+
+
+
+
+.two a:hover {
+  background-color: #6C6C6C !important;
+  // feeling like it's a rounded corners kind of day
+  border-color: #6C6C6C !important;
+  border-radius: 25px;
+    
+}
+
+.nav-pills > li.active > a  {
+  background-color: #6C6C6C !important;
+  // feeling like it's a rounded corners kind of day
+  border-color: #6C6C6C !important;
+  border-radius: 25px; 
+}
+
+

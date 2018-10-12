@@ -31,7 +31,17 @@ iCal.controller('currencyController',  ['$scope','$window', 'currencyService',
 	$scope.uploadFile = function()
 	{
 		var file = $scope.myFile;
-		
+		if( $scope.myFile == undefined)
+		{
+			alert("Please select a file to upload.");
+			return;
+		}
+		var extn =  $scope.myFile.name.split(".").pop();
+        if(extn != 'csv')
+    	{
+        	alert("File should be in CSV Format only.");
+			return;
+    	}
 		console.log('file upload started' );
 		console.log(file);
 	       

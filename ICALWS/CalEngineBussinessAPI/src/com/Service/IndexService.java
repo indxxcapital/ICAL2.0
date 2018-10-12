@@ -551,4 +551,9 @@ public class IndexService {
 		}
 		csvWriter.close();
 	}
+	public void goLiveIndex() throws ClassNotFoundException, SQLException
+	{
+		IndexDao dao = new IndexDao();
+		dao.goLiveIndex();
+	}
 }
