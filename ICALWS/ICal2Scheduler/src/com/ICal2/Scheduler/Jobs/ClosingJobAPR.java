@@ -28,22 +28,30 @@ public class ClosingJobAPR implements Job{
 		String strDate = DateTimeFormatter.ofPattern("yyy-MM-dd").format(localDate);
 		
 		IndexService iservice = new IndexService();
-		List<IndexBean> iList = iservice.getAllLiveIndexForFileGeneration("APR");
-		System.out.println("Total Index:::"+ iList.size());
-		for(int i=0;i < iList.size();i++)
+		List<IndexBean> iList;
+		try
 		{
-			IndexBean iBean = iList.get(i);
-			
-			String fileName = "Closing-" + iBean.getIndexTicker() +"-"+ strDate + ".csv" ;
-			String fileCompletePath = JobsUtil.INDEX_CLOSE_FILE_PATH +fileName;
-			try 
+			iList = iservice.getAllLiveIndexForFileGeneration("APR");
+		
+			System.out.println("Total Index:::"+ iList.size());
+			for(int i=0;i < iList.size();i++)
 			{
-				System.out.println("START generating closing file for index ::::" + iBean.getIndexTicker());
-				iservice.generateClosingFile(iBean,strDate,fileCompletePath);
-				System.out.println("END generating closing file for index ::::" + iBean.getIndexTicker());
-			} catch (Exception e) {
-				e.printStackTrace();
+				IndexBean iBean = iList.get(i);
+				
+				String fileName = "Closing-" + iBean.getIndexTicker() +"-"+ strDate + ".csv" ;
+				String fileCompletePath = JobsUtil.INDEX_CLOSE_FILE_PATH +fileName;
+				try 
+				{
+					System.out.println("START generating closing file for index ::::" + iBean.getIndexTicker());
+					iservice.generateClosingFile(iBean,strDate,fileCompletePath);
+					System.out.println("END generating closing file for index ::::" + iBean.getIndexTicker());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
-		}	
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 }

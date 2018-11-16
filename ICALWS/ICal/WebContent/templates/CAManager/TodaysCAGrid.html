@@ -6,37 +6,56 @@
     	</div>
     	<div class="col-sm-4"> <button ng-click="search()" class="btn btn-primary">Go</button></div>
     	<label for="SelectEffectiveDate" class="col-sm-4 col-form-label"></label>
-   	</nav>
+   	</nav>	
 	
-	
-  <div class="row" >
-  	<div class="col-sm-12">
-  		<ul class="nav nav-pills nav-stacked">
-       	<li ng-class="{ active: isSet(1) }">
-          	<a href ng-click="setTab(1)">Dividend</a>
-       	</li>
-       	<li ng-class="{ active: isSet(2) }">
-          	<a href ng-click="setTab(2)">Stock Split</a>
-       	</li>
-       	<li ng-class="{ active: isSet(3) }">
-          	<a href ng-click="setTab(3)">Spin Off</a>
-       	</li>
-     	</ul>
-  	</div>
-    <div class="col-sm-12">
-  		<div class="jumbotron">
-       		<div ng-show="isSet(1)">
-          		<div class="gridStyle" style="border: 5px solid #d4d4d4; width: 1000px;  height: 300px" ng-grid="divGridOptions" ></div>
-       		</div>
-			<div ng-show="isSet(2)">
-         		<div class="gridStyle" style="border: 5px solid #d4d4d4; width: 1000px;  height: 300px" ng-grid="splitGridOptions" ></div>
-   			</div>
-        	<div ng-show="isSet(3)">
-          		<div class="gridStyle" style="border: 5px solid #d4d4d4; width: 1000px;  height: 300px" ng-grid="spinGridOptions" ></div>
-     		</div>
-  		</div>
-  	</div>
-</div>
+	<div class="row" >
+	  	<div class="col-sm-12">
+	  		<ul class="nav nav-pills nav-stacked">
+	       	<li ng-class="{ active: isSet(1) }">
+	          	<a href ng-click="setTab(1)">Dividend</a>
+	       	</li>
+	       	<li ng-class="{ active: isSet(2) }">
+	          	<a href ng-click="setTab(2)">Stock Dividend/Split/Bonus</a>
+	       	</li>	       	
+	       	<li ng-class="{ active: isSet(3) }">
+	          	<a href ng-click="setTab(3)">Id change</a>
+	       	</li>
+	       	<li ng-class="{ active: isSet(4) }">
+	          	<a href ng-click="setTab(4)">Rights Offering/Spin Off</a>
+	       	</li>
+	       	<li ng-class="{ active: isSet(5) }">
+	          	<a href ng-click="setTab(5)">Others</a>
+	       	</li>
+	     	</ul>
+	  	</div>
+		<div class="col-sm-12">
+	  		<div class="jumbotron">
+	  			<div>
+       				<button ng-click="CACMDownload()" class="btn btn-primary">Download CACM</button>
+       				<button ng-click="updateCA()" class="btn btn-primary">Update</button>
+       				
+   				</div>
+	       		<div ng-show="isSet(1)">
+	       			<br>
+	          		<div class="gridStyle" style="border: 5px solid #d4d4d4; width: 1000px;  height: 400px" ng-grid="divGridOptions" ></div>
+				</div>
+				<div ng-show="isSet(2)">
+	         		<br>
+	         		<div class="gridStyle" style="border: 5px solid #d4d4d4; width: 1000px;  height: 300px" ng-grid="splitGridOptions" ></div>
+	   			</div>
+	        	<div ng-show="isSet(3)">
+	          		<br>
+	          		<div class="gridStyle" style="border: 5px solid #d4d4d4; width: 1000px;  height: 300px" ng-grid="idChangeGridOptions" ></div>
+	     		</div>
+	     		<div ng-show="isSet(4)">
+	          		<!--<div class="gridStyle" style="border: 5px solid #d4d4d4; width: 1000px;  height: 300px" ng-grid="idChangeGridOptions" ></div>-->
+	     		</div>
+	     		<div ng-show="isSet(5)">
+	          		<!--<div class="gridStyle" style="border: 5px solid #d4d4d4; width: 1000px;  height: 300px" ng-grid="otherGridOptions" ></div>-->
+	     		</div>
+	  		</div>
+		</div>
+	</div>
 	
 </div>
 

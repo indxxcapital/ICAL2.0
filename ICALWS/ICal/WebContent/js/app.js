@@ -1,4 +1,4 @@
-var iCal = angular.module("myApp", ['ui.router','ngGrid']);
+var iCal = angular.module("myApp", ['ui.router','ngGrid','ui.bootstrap']);
 iCal.config(function($stateProvider, $urlRouterProvider) {
     $stateProvider
     //module1
@@ -96,6 +96,11 @@ iCal.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: 'templates/CAManager/TodaysCAGrid.html',
             controller: 'TodaysCAController'
         })
+        .state('CAManager.UploadCA', {
+        	url: '/UploadCA',
+            templateUrl: 'templates/CAManager/UploadCA.html',
+            controller: 'CAUploadController'
+        })
        ;
 //    $urlRouterProvider.otherwise('/settings/profile');
     $urlRouterProvider.otherwise('');
@@ -141,22 +146,25 @@ iCal.factory('icalFactory', function($location,$http)
 	  var baseUrl = 'http://' + baseValue;
 //	  var configData;
 	  factory.baseUrl = 'http://' + baseValue;
-	  factory.currencyList = [];
+//	  factory.currencyList = [];
 	  factory.permissionList = [];
+//	  factory.configData = {};
 //
 	  factory.configValues = function() 
 	  {
-//	      return $http.get(baseUrl + '/readConfig');
-	      return $http({
-	    	  	method	: 'GET',
-	            headers	: {"Content-Type": "application/json"},
-	            url		: baseUrl + '/ICal2Rest/rest/Config/readConfigData'
-	        }).then(function (response) {
-//	            console.log(response.data);
-	            factory.configData = response.data;
-//	            console.log(factory.configData);
-	        	return response.data;
-	        });
+		  if(factory.configData == undefined )
+		  {
+		      return $http({
+		    	  	method	: 'GET',
+		            headers	: {"Content-Type": "application/json"},
+		            url		: baseUrl + '/ICal2Rest/rest/Config/readConfigData'
+		        }).then(function (response) {
+	//	            console.log(response.data);
+		            factory.configData = response.data;
+	//	            console.log(factory.configData);
+		        	return response.data;
+		        });
+		  }
 	  };
 //
 //	  service.getUser = function(id){

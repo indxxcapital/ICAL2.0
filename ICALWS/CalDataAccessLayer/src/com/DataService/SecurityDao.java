@@ -16,10 +16,9 @@ public class SecurityDao extends DefaultDao
 	private String SECURITY_TABLE_NAME = "security";
 	private String SECURITY_PRICE_TABLE_NAME = "closeprice";
 	private String INDEX_SECURITY_TABLE_NAME = "indexcomposition";
-//	private String GET_SECURITY_ID = "SELECT top 1 securityid  FROM ical2.security order by securityid desc limit 1";
-	private String GET_SECURITY_ID = "SELECT top 1 securityid  FROM " + ConfigUtil.propertiesMap.get("dbName") + ".security order by securityid desc";
+	private String GET_SECURITY_ID = "SELECT top 1 id  FROM " + ConfigUtil.propertiesMap.get("dbName") + ".security where flag ='1' order by id desc";
 	
-	public int getNextSecurityId() throws ClassNotFoundException, SQLException
+	public int getNextSecurityId() throws Exception
 	{
 		int nextId = 0;
 		ResultSet rs = ExecuteQuery(GET_SECURITY_ID);
@@ -32,34 +31,43 @@ public class SecurityDao extends DefaultDao
 	}
 	public void insertSecurity(List<SecurityBean> securityList) throws Exception  
 	{
-		LocalDate localDate = LocalDate.now();
-		String strDate = DateTimeFormatter.ofPattern("yyy-MM-dd").format(localDate);
-      
-		for (SecurityBean security : securityList)
+		try
 		{
-			int securityId = getNextSecurityId();
-			Map<String,Object> keyValueMap = new HashMap<String,Object>();
-			keyValueMap.put("securityid", securityId);
-			
-			keyValueMap.put("ISIN", security.getISIN());
-			keyValueMap.put("BBGTicker", security.getBBGTicker());
-			keyValueMap.put("fullName", security.getFullName());
-			keyValueMap.put("currency", security.getCurrency());
-			keyValueMap.put("SEDOL", security.getSEDOL());
-			
-			keyValueMap.put("CUSIP", security.getCUSIP());
-			keyValueMap.put("Country", security.getCountry());
-			keyValueMap.put("Sector", security.getSector());
-			keyValueMap.put("Industry", security.getIndustry());
-			keyValueMap.put("Subindustry", security.getSubIndustry());
-			
-			keyValueMap.put("flag","1");
-			keyValueMap.put("vd", strDate);
-			keyValueMap.put("vf", strDate);
-			keyValueMap.put("vt","9999-12-31");
-			
-			insertData(SECURITY_TABLE_NAME,keyValueMap);
+			LocalDate localDate = LocalDate.now();
+//			String strDate = DateTimeFormatter.ofPattern("yyy-MM-dd").format(localDate);
+			String strDate = DateTimeFormatter.ofPattern("yyyMMdd").format(localDate);
+	      
+			for (SecurityBean security : securityList)
+			{
+				int securityId = getNextSecurityId();
+				Map<String,Object> keyValueMap = new HashMap<String,Object>();
+//				keyValueMap.put("securityid", securityId);
+				keyValueMap.put("id", securityId);
+				
+				keyValueMap.put("ISIN", security.getISIN());
+				keyValueMap.put("BBGTicker", security.getBBGTicker());
+				keyValueMap.put("fullName", security.getFullName());
+				keyValueMap.put("currency", security.getCurrency());
+				keyValueMap.put("SEDOL", security.getSEDOL());
+				
+				keyValueMap.put("CUSIP", security.getCUSIP());
+				keyValueMap.put("Country", security.getCountry());
+				keyValueMap.put("Sector", security.getSector());
+				keyValueMap.put("Industry", security.getIndustry());
+				keyValueMap.put("Subindustry", security.getSubIndustry());
+				
+				keyValueMap.put("flag","1");
+				keyValueMap.put("vd", strDate);
+				keyValueMap.put("vf", strDate);
+				keyValueMap.put("vt","99991231");
+				
+				insertData(SECURITY_TABLE_NAME,keyValueMap);
+			}
 		}
+		catch (Exception e)
+		{
+			throw new Exception("Please enter valid data." + e.toString());
+	    }
 	}
 	
 	public void insertSecurityPrice(List<SecurityPriceBean> securityPriceList) throws Exception  
@@ -77,51 +85,61 @@ public class SecurityDao extends DefaultDao
 		}
 	}
 	
-	public ResultSet getSecutiry(SecurityBean sBean) throws ClassNotFoundException, SQLException
+	public ResultSet getSecutiry(SecurityBean sBean) throws Exception
 	{		
-		String strWhereClause = "Where  ISIN = '" +sBean.getISIN().trim() + "' and BBGTicker = '" +sBean.getBBGTicker().trim() + "' "
-				+ " AND CAST(GETDATE() AS DATE) BETWEEN vf AND vt and flag = 1";
+		return getSecutiry(sBean.getISIN(),sBean.getBBGTicker(),sBean.getCurrency());
+//		String strWhereClause = getSecurityExistQuerty(sBean.getISIN(),sBean.getBBGTicker(),sBean.getCurrency());
+//		String strSelectQuery = DataUtill.createSelect(SECURITY_TABLE_NAME, strWhereClause);
+//		ResultSet rs = ExecuteQuery(strSelectQuery);
+//		return rs;		
+	}
+	
+	public ResultSet getSecutiry(String ISIN ,String bbgTicker,String currency) throws Exception
+	{		
+		String strWhereClause = getSecurityExistQuerty( ISIN , bbgTicker,currency);
 		String strSelectQuery = DataUtill.createSelect(SECURITY_TABLE_NAME, strWhereClause);
+		System.out.println(strSelectQuery);
 		ResultSet rs = ExecuteQuery(strSelectQuery);
 		return rs;		
 	}
 	
-	public ResultSet getSecutiry(String ISIN ,String bbgTicker) throws ClassNotFoundException, SQLException
-	{		
-		String strWhereClause = "Where  ISIN = '" +ISIN.trim() + "' and BBGTicker = '" +bbgTicker.trim() + "' "
-				+ " AND CAST(GETDATE() AS DATE) BETWEEN vf AND vt";
-		String strSelectQuery = DataUtill.createSelect(SECURITY_TABLE_NAME, strWhereClause);
-		ResultSet rs = ExecuteQuery(strSelectQuery);
-		return rs;		
+	private String getSecurityExistQuerty(String ISIN ,String bbgTicker,String currency)
+	{
+		String strWhereClause = "Where  ISIN = '" +ISIN.trim() + "' and BBGTicker = '" +bbgTicker.trim() + "' and currency = '" +currency.trim()
+		+ "' and flag = '1' AND CONVERT(char(10), GetDate(),112) BETWEEN vf AND vt";
+//		+ "' AND CAST(GETDATE() AS DATE) BETWEEN vf AND vt";
+		// CONVERT(char(10), GetDate(),112)
+		return strWhereClause;
+		
 	}
 	
 	public void deleteSecurityFromIndex(SecurityBean sBean) throws Exception 
 	{
 		String securityId = getSecurityId(sBean).toString();
-		String filter = "Where indexCode ='"+ sBean.getIndexCode() + "' AND securityId='" + securityId + "'" ;
+		String filter = "Where indexCode ='"+ sBean.getIndexCode() + "' AND id='" + securityId + "'" ;
 		deleteData(INDEX_SECURITY_TABLE_NAME,filter);
 	}
 	
-	public Integer getSecurityId(String ISIN ,String bbgTicker) throws ClassNotFoundException, SQLException
+	public Integer getSecurityId(String ISIN ,String bbgTicker,String currency) throws Exception
 	{
 		Integer id =0;
 		SecurityDao sDao = new SecurityDao();
-		ResultSet rs = sDao.getSecutiry(ISIN ,bbgTicker);
+		ResultSet rs = sDao.getSecutiry(ISIN ,bbgTicker,currency);
 		while (rs.next())
 		{
-            id = rs.getInt(2);
+            id = rs.getInt(1);
 		}
 		return  id;
 	}
 	
-	public Integer getSecurityId(SecurityBean sBean) throws ClassNotFoundException, SQLException
+	public Integer getSecurityId(SecurityBean sBean) throws Exception
 	{
 		Integer id =0;
 		SecurityDao sDao = new SecurityDao();
 		ResultSet rs = sDao.getSecutiry(sBean);
 		while (rs.next())
 		{
-            id = rs.getInt(2);
+            id = rs.getInt(1);
 		}
 		return  id;
 	}
@@ -243,7 +261,7 @@ public class SecurityDao extends DefaultDao
 		sBean.setCurrency(rs.getString("Currency"));
 	}
 	
-	public List<SecurityBean> getSecurityListForIndex(String indexTicker) throws SQLException, ClassNotFoundException
+	public List<SecurityBean> getSecurityListForIndex(String indexTicker) throws Exception
 	{
 		System.out.println("in security dao");
 		List<SecurityBean> securityList = new ArrayList<>();
@@ -253,11 +271,25 @@ public class SecurityDao extends DefaultDao
 		return securityList;
 	}
 	
-	public ResultSet getSecurityForIndex(String indexTicker)
+	public ResultSet getSecurityForIndex(String indexTicker) throws Exception
 	{
 		System.out.println("print query");
+//		String STR_CLOSE_FILE_QUERY = 
+//				"SELECT IC.indexcode,S.securityid securityId, (Select  top 1 CloseIndexValue FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription where flag ='1' and indexTicker = '" +indexTicker + "') IndexValue ,"
+//				+ "S.BBGTicker,S.fullName,S.ISIN,S.SEDOL,S.CUSIP,S.Country,IC.weight,IC.shares,S.currency Currency,"
+//				+ "(SELECT top 1 closePrice  FROM " + ConfigUtil.propertiesMap.get("dbName") + ".closeprice where ISIN =S.ISIN and BBGTicker = S.BBGTicker order by vd desc ) Price,"
+//				+ "(SELECT top 1 rate FROM " + ConfigUtil.propertiesMap.get("dbName") + ".currencyrate where fromCurrency = S.currency and toCurrency = "
+//				+ "(Select currency FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription where flag ='1' and indexTicker = '" + indexTicker+ "') "
+//				+ " order by vd desc) CurrencyFactor ,"
+//				+ "(SELECT top 1 rate FROM " + ConfigUtil.propertiesMap.get("dbName") + ".currencyrate where toCurrency = S.currency and fromCurrency = "
+//				+ "(Select currency FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription where flag ='1' and  indexTicker = '" + indexTicker+ "') " 
+//				+ " order by vd desc ) CurrencyDivisor "
+//				+ " FROM " + ConfigUtil.propertiesMap.get("dbName") + ".security S, " + ConfigUtil.propertiesMap.get("dbName") + ".indexcomposition IC "
+//				+ " where IC.flag='1' and IC.indexcode = '" + indexTicker+ "' and IC.securityId = S.securityid"
+//				;
+		
 		String STR_CLOSE_FILE_QUERY = 
-				"SELECT IC.indexcode,S.securityid securityId, (Select  top 1 CloseIndexValue FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription where flag ='1' and indexTicker = '" +indexTicker + "') IndexValue ,"
+				"SELECT IC.indexcode,S.id securityId, (Select  top 1 CloseIndexValue FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription where flag ='1' and indexTicker = '" +indexTicker + "') IndexValue ,"
 				+ "S.BBGTicker,S.fullName,S.ISIN,S.SEDOL,S.CUSIP,S.Country,IC.weight,IC.shares,S.currency Currency,"
 				+ "(SELECT top 1 closePrice  FROM " + ConfigUtil.propertiesMap.get("dbName") + ".closeprice where ISIN =S.ISIN and BBGTicker = S.BBGTicker order by vd desc ) Price,"
 				+ "(SELECT top 1 rate FROM " + ConfigUtil.propertiesMap.get("dbName") + ".currencyrate where fromCurrency = S.currency and toCurrency = "
@@ -267,7 +299,7 @@ public class SecurityDao extends DefaultDao
 				+ "(Select currency FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription where flag ='1' and  indexTicker = '" + indexTicker+ "') " 
 				+ " order by vd desc ) CurrencyDivisor "
 				+ " FROM " + ConfigUtil.propertiesMap.get("dbName") + ".security S, " + ConfigUtil.propertiesMap.get("dbName") + ".indexcomposition IC "
-				+ " where IC.flag='1' and IC.indexcode = '" + indexTicker+ "' and IC.securityId = S.securityid"
+				+ " where IC.flag='1' and S.flag='1' and IC.indexcode = '" + indexTicker+ "' and IC.securityId = S.id"
 				;
 		
 		System.out.println(STR_CLOSE_FILE_QUERY);
@@ -284,4 +316,71 @@ public class SecurityDao extends DefaultDao
 		
 		return securityList;
 	}
+	
+	public void deleteSecurity(String securityId) throws Exception 
+	{
+		LocalDate localDate = LocalDate.now();
+		String strDate = DateTimeFormatter.ofPattern("yyy-MM-dd").format(localDate.minusDays(1));
+		strDate = strDate.replaceAll("-", "");
+		String UPDATE_SECURITY_QUERT = "UPDATE " + ConfigUtil.propertiesMap.get("dbName") + "." + SECURITY_TABLE_NAME + " SET flag = 0, vt = '" 
+										+ strDate + "'  Where id = '" + securityId + "'";
+		
+		System.out.println(UPDATE_SECURITY_QUERT);
+		int iValue =ConnectionFactory.ExecuteUpdateInsertDelete(UPDATE_SECURITY_QUERT);
+	}
+	
+	public void insertNewSecurityForIdChange(SecurityBean newSecurityBean) throws Exception  
+	{
+		try
+		{
+			LocalDate localDate = LocalDate.now();
+			String strDate = DateTimeFormatter.ofPattern("yyyMMdd").format(localDate);
+			SecurityBean oldSecurityBean = getAllSecurityList("Where id = " + newSecurityBean.getId() ).get(0);
+			Map<String,Object> keyValueMap = new HashMap<String,Object>();
+			
+			keyValueMap.put("id", oldSecurityBean.getId());
+			
+			if(newSecurityBean.getISIN() != null && !newSecurityBean.getISIN().trim().equalsIgnoreCase(""))
+				keyValueMap.put("ISIN", newSecurityBean.getISIN());
+			else
+				keyValueMap.put("ISIN", oldSecurityBean.getISIN());
+			
+			if(newSecurityBean.getBBGTicker() != null && !newSecurityBean.getBBGTicker().trim().equalsIgnoreCase(""))
+				keyValueMap.put("BBGTicker", newSecurityBean.getBBGTicker());
+			else
+				keyValueMap.put("BBGTicker", oldSecurityBean.getBBGTicker());
+			
+			if(newSecurityBean.getFullName() != null && !newSecurityBean.getFullName().trim().equalsIgnoreCase(""))
+				keyValueMap.put("fullName", newSecurityBean.getFullName());
+			else
+				keyValueMap.put("fullName", oldSecurityBean.getFullName());
+			
+			keyValueMap.put("currency", oldSecurityBean.getCurrency());
+			
+			if(oldSecurityBean.getSEDOL() != null && !oldSecurityBean.getSEDOL().trim().equalsIgnoreCase(""))
+				keyValueMap.put("SEDOL", oldSecurityBean.getSEDOL());
+			if(oldSecurityBean.getCUSIP() != null && !oldSecurityBean.getCUSIP().trim().equalsIgnoreCase(""))
+				keyValueMap.put("CUSIP", oldSecurityBean.getCUSIP());
+			if(oldSecurityBean.getCountry() != null && !oldSecurityBean.getCountry().trim().equalsIgnoreCase(""))
+				keyValueMap.put("Country", oldSecurityBean.getCountry());
+			if(oldSecurityBean.getSector() != null && !oldSecurityBean.getSector().trim().equalsIgnoreCase(""))
+				keyValueMap.put("Sector", oldSecurityBean.getSector());
+			if(oldSecurityBean.getIndustry() != null && !oldSecurityBean.getIndustry().trim().equalsIgnoreCase(""))
+				keyValueMap.put("Industry", oldSecurityBean.getIndustry());
+			if(oldSecurityBean.getSubIndustry() != null && !oldSecurityBean.getSubIndustry().trim().equalsIgnoreCase(""))
+				keyValueMap.put("Subindustry", oldSecurityBean.getSubIndustry());
+			
+			keyValueMap.put("flag","1");
+			keyValueMap.put("vd", strDate);
+			keyValueMap.put("vf", strDate);
+			keyValueMap.put("vt","99991231");
+			
+			insertData(SECURITY_TABLE_NAME,keyValueMap);
+		}
+		catch (Exception e)
+		{
+			throw new Exception("Please enter valid data." + e.toString());
+	    }
+	}
+	
 }

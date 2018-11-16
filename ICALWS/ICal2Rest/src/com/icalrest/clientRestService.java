@@ -9,9 +9,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.Bean.ClientBean;
-import com.Bean.CurrencyBean;
 import com.Service.ClientService;
-import com.Service.CurrencyService;
 
 @Path("/client")
 public class clientRestService
@@ -23,7 +21,13 @@ public class clientRestService
 		System.out.println("in getAllClients");
 		List<ClientBean> cList = new ArrayList<ClientBean>();
 		ClientService cService = new ClientService();
-		cList = cService.getAllClients();
+		try
+		{
+			cList = cService.getAllClients();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		ResponseBuilder rb = Response.ok( cList);
 		System.out.println(rb);
 	    return rb.build(); 

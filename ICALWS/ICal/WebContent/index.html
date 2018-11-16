@@ -18,15 +18,8 @@
 		<script type="text/javascript" src="systemjs/2.0.11_ng-grid.min.js"></script>
 	    <link rel="stylesheet" type="text/css" href="systemcss/2.0.11_ng-grid.min.css" />
 	    
-	  	
-			
-	
-	
-	
-	
 	  
-	  
-	  <!-- Bootstrap CSS CDN -->
+	  <!-- Bootstrap CSS CDN  -->
 <link rel="stylesheet"
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
 	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
@@ -46,11 +39,24 @@
 			src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
 			integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
 			crossorigin="anonymous"></script>
-			
-			
-			
 		
+		
+		
+		<!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">-->
+        <script src="https://rawgithub.com/angular-ui/bootstrap/gh-pages/ui-bootstrap-tpls-0.10.0.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.11/angular.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.js"></script>	
+ 		<link rel="stylesheet" type="text/css" href="https://rawgithub.com/angular-ui/ng-grid/v2.0.7/ng-grid.css" />
+        <script type="text/javascript" src="https://rawgithub.com/angular-ui/ng-grid/v2.0.7/build/ng-grid.js"></script>
+         
+			
 	
+	
+	
+	
+	  
+	  
+        	
 	
 	
 	
@@ -63,7 +69,12 @@
 		<script src="js/mainController.js"></script>
 	    
 	    <script src="Scripts/CAManager/CAController.js"></script>
+	    <script src="Scripts/CAManager/caManagerService.js"></script>
+	    <script src="Scripts/CAManager/CAUploadController.js"></script>	    
+	    <script src="Scripts/CAManager/ModifyCAController.js"></script>
 	    <script src="Scripts/CAManager/TodaysCAController.js"></script>
+	    
+	    <script src="Scripts/CommonService/CommonService.js"></script>
 	    
 	    <script src="Scripts/IManager/iManagerService.js"></script>
 	    <script src="Scripts/IManager/liveIndex.js"></script>
@@ -89,16 +100,16 @@
     </head>
     
     <body ng-app="myApp" >
-    	<div ng-controller="mainController" class="mainMenu" >
+    	<div ng-controller="mainController" class="mainMenu"  ng-cloak>
 		    <div style="background-color: #f1f1f1; padding: 10px;">
 				<img src="images/logo.png" alt="Website Logo" height="35" width="120" />
 			</div>
-			<div class="nav nav-tabs" id="nav-tab" role="tablist">
-   				<a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" ui-sref="ISubmission" role="tab" aria-controls="nav-home" aria-selected="true">Proprietary Index Submission</a>
-   				<a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" ui-sref="MCapISubmission" role="tab" aria-controls="nav-profile" aria-selected="false">Market Cap Index Submission</a>
-   				<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" ui-sref="IManager" role="tab" aria-controls="nav-contact" aria-selected="false">Index Manager</a>
-   				<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" ui-sref="SManager" role="tab" aria-controls="nav-contact" aria-selected="false">Data Manager</a>
-   				<!--<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" ui-sref="CAManager" role="tab" aria-controls="nav-contact" aria-selected="false">Corporate Actions</a>-->
+			<div class="nav nav-tabs" id="nav-tab" role="tablist" class="ng-cloak">
+   				<a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" ui-sref="ISubmission" role="tab" aria-controls="nav-home" aria-selected="true" ng-show="makeActive">Proprietary Index Submission</a>
+   				<a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" ui-sref="MCapISubmission" role="tab" aria-controls="nav-profile" aria-selected="false" ng-show="makeActive">Market Cap Index Submission</a>
+   				<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" ui-sref="IManager" role="tab" aria-controls="nav-contact" aria-selected="false" ng-show="makeActive">Index Manager</a>
+   				<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" ui-sref="SManager" role="tab" aria-controls="nav-contact" aria-selected="false" ng-show="makeActive">Data Manager</a>
+   				<a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" ui-sref="CAManager" role="tab" aria-controls="nav-contact" aria-selected="false" ng-show="makeActive">Corporate Actions</a>
   			</div>
   			
 	       

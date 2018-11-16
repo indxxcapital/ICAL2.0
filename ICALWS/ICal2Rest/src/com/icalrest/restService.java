@@ -12,7 +12,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
@@ -24,23 +23,23 @@ public class restService {
 	
 	@POST
 	@Path("/parse")
-	public void parse(File file)
+	public Response parse(File file)
 	{
-		parseSecurityList(file);
+		return parseSecurityList(file);
 	}
 	
 	@POST
 	@Path("/addnew")
-	public void AddNewSecurities(File file)
+	public Response AddNewSecurities(File file)
 	{
-		addNewSecurities(file);
+		return addNewSecurities(file);
 	}
 	
 	@POST
 	@Path("/addprice")
-	public void AddSecurityPrice(File file)
+	public Response AddSecurityPrice(File file)
 	{
-		addSecuritiesPrice(file);
+		return addSecuritiesPrice(file);
 	}
 
 	@GET
@@ -54,56 +53,80 @@ public class restService {
 		return response.build();
 	}
 	
-	private void parseSecurityList(File file)
+	private Response parseSecurityList(File file)
 	{
-		SecurityService secService = new SecurityService();
-		
 		System.out.println("inside parseSecurityList");
+		SecurityService secService = new SecurityService();
+		String strMsg = "";
 		System.out.println(file.getName());
 	    try
 	    {
 	    	RestUtil.writeToFile(new FileInputStream(file),RestUtil.INPUT_FILE_PATH);
 			secService.parseSecurityFile(RestUtil.INPUT_FILE_PATH,RestUtil.OUT_FILE_PATH);
+			strMsg = "SUCCESS";
 		} 
 	    catch (FileNotFoundException e) {
 			e.printStackTrace();
+			strMsg = e.toString();
 		}
 	    catch (IOException e) {
 			e.printStackTrace();
-		}		
+			strMsg = e.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			strMsg = e.toString();
+		}	
+	    System.out.println(strMsg);
+		ResponseBuilder rb = Response.ok(strMsg);
+	    return rb.build();
 	}
 	
-	private void addNewSecurities(File file)
+	private Response addNewSecurities(File file)
 	{
 		System.out.println("inside addNewSecurities");
-		// save it
+		String strMsg = "";
 		try 
 		{
 			RestUtil.writeToFile(new FileInputStream(file),RestUtil.ADD_SECURITY_FILE_PATH);
+			SecurityService secService = new SecurityService();
+			secService.importSecurityDataFromCsv(RestUtil.ADD_SECURITY_FILE_PATH);
+			strMsg = "SUCCESS";
 		} 
 		catch (FileNotFoundException e) 
 		{
 			e.printStackTrace();
+			strMsg = e.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			strMsg = e.toString();
 		}
-		SecurityService secService = new SecurityService();
-		secService.importSecurityDataFromCsv(RestUtil.ADD_SECURITY_FILE_PATH);
+		System.out.println(strMsg);
+		ResponseBuilder rb = Response.ok(strMsg);
+	    return rb.build();
 	}
 	
-	private void addSecuritiesPrice(File file) 
+	private Response addSecuritiesPrice(File file) 
 	{
 		System.out.println("inside addSecuritiesPrice");
-		// save it
+		String strMsg = "";
 		try 
 		{
 			RestUtil.writeToFile(new FileInputStream(file),RestUtil.ADD_SECURITY_PRICE_FILE_PATH);
+			SecurityService secService = new SecurityService();
+			secService.importSecurityPriceDataFromCsv(RestUtil.ADD_SECURITY_PRICE_FILE_PATH);
+			strMsg = "SUCCESS";
 		} 
 		catch (FileNotFoundException e) 
 		{
 			e.printStackTrace();
+			strMsg = e.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			strMsg = e.toString();			
 		}
-		SecurityService secService = new SecurityService();
-		secService.importSecurityPriceDataFromCsv(RestUtil.ADD_SECURITY_PRICE_FILE_PATH);
-		
+		System.out.println(strMsg);
+		ResponseBuilder rb = Response.ok(strMsg);
+	    return rb.build();
 	}
 	
 	@GET
@@ -132,7 +155,11 @@ public class restService {
 		List<SecurityBean> sList = new ArrayList<SecurityBean>();
 		SecurityService secService = new SecurityService();
 		
-		sList = secService.getAllSecuritiesForIndex(indexTicker);
+		try {
+			sList = secService.getAllSecuritiesForIndex(indexTicker);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		ResponseBuilder rb = Response.ok( sList);
 	    return rb.build(); 
 	}	

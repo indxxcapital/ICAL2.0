@@ -20,7 +20,7 @@ public class SecurityBean {
 //	  `vt` date DEFAULT NULL,
 //	  `vd` date DEFAULT NULL,
 	  
-	private Integer securityId;	 	
+	private Integer id;	 	
     private String isin;
     private String bbgTicker;
     private String fullName;
@@ -48,14 +48,14 @@ public class SecurityBean {
     public SecurityBean() {
     }
     
-    public Integer getSecurityId() {
-        return securityId;
+    public Integer getId() {
+        return id;
     }
     
-    public void setSecurityId(int aSecurityId) {
-        securityId = aSecurityId;
+    public void setId(int aId) {
+        id = aId;
     }
-    
+//    
     public Integer getFlag() {
         return flag;
     }

@@ -19,11 +19,12 @@ iCal.directive('fileModel', ['$parse', function ($parse) {
 iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$http','icalFactory',
 	function($scope,$window, indexService,$http,icalFactory)
 {
+	$scope.minDate = new Date();
 	console.log('inside addIndexController');
-	$scope.user = {};
+	$scope.SingleIndex = {};
 	$scope.CData=[];
 	$scope.ClientData=[];
-	$scope.user.weightType = 'PWI';
+	$scope.SingleIndex.weightType = 'PWI';
 	$scope.title = "Add Multiple Indices";
 	$scope.index = {};
 	$scope.index.setupType = '';
@@ -33,22 +34,25 @@ iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$htt
 	
 	$scope.loadCurrencies = function () 
     {
-		indexService.getAllCurrencies().then(function (response) 
-    	{
-			console.log(response);
-            $scope.CData = response;
-            console.log($scope.CData);
-            icalFactory.currencyList =  $scope.CData;
-        });
+		$scope.CData = icalFactory.currencyList;
+//		indexService.getAllCurrencies().then(function (response) 
+//    	{
+//			console.log(response);
+//            $scope.CData = response;
+//            console.log($scope.CData);
+////            icalFactory.currencyList =  $scope.CData;
+//        });
     }
 	$scope.loadClient = function () 
     {
-		indexService.getAllClient().then(function (response) 
-    	{
-			console.log(response);
-            $scope.ClientData = response;
-            console.log( $scope.CData);
-        });
+		
+		$scope.ClientData = icalFactory.clientList;
+//		indexService.getAllClient().then(function (response) 
+//    	{
+//			console.log(response);
+//            $scope.ClientData = response;
+//            console.log( $scope.CData);
+//        });
     }
   	 
     $scope.loadCurrencies();
@@ -58,6 +62,7 @@ iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$htt
     {
     	if($scope.index.setupType =='SI')
 		{
+//    		if()
     		$scope.showdiv= false;
     		$scope.showdiv2= false;
     		$scope.showdiv3= true;
@@ -122,7 +127,7 @@ iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$htt
         // Add Single Index Details
 		var baseUrl = baseURL + '/ICal2Rest/rest/index/addIndex';
     	console.log('inside SubmitSingleIndexData');
-    	var indexData = $scope.user;
+    	var indexData = $scope.SingleIndex;
         console.log(indexData);
         $http({ 
         	method  : 'POST',
@@ -144,7 +149,7 @@ iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$htt
                 	{
                 		alert("Index has been Submitted Successfully");
                 		$scope.index.setupType = '';
-                		$scope.user = {};
+                		$scope.SingleIndex = {};
                 		$scope.showdiv= true;
                 		$scope.showdiv1= false;
                 		$scope.showdiv2= false;
@@ -200,11 +205,24 @@ iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$htt
 			return;
     	}
         
-        // Add Single Index Details
+        // Add Multiple Index Details
     	console.log('inside SubmitMultipleIndexData');
         var baseUrl = baseURL + '/ICal2Rest/rest/index/add';
     	console.log('inside uploadFileToAddIndex');
-    	$http.post(baseUrl, indexFile, {transformRequest: angular.identity,headers: {'Content-Type': undefined}}) 
+    	$http.post(baseUrl, indexFile, {transformRequest: angular.identity,headers: {'Content-Type': undefined}})
+//    	$http({
+//            method: 'POST',
+//            url: baseUrl,
+//            headers: { 'Content-Type': 'multipart/form-data'},
+//            transformRequest: function (data) 
+//            {
+//                var formData = new FormData();
+//                formData.append("model", angular.toJson(data.model));
+//                formData.append("file", angular.toJson(data.file));
+//                return formData;
+//            },
+//            data: { model: $scope.SingleIndex.weightType, file: indexFile}
+//        })
         .success(function(data) 
 		{
         	if(data == 'SUCCESS')
@@ -212,7 +230,7 @@ iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$htt
         		console.log('Multile Indices added successfully');
         		var Url = baseURL + '/ICal2Rest/rest/index/map';
             	console.log('inside uploadFileToAddIndex');
-            	$http.post(Url, sFile, {transformRequest: angular.identity,headers: {'Content-Type': undefined}})        
+            	$http.post(Url, sFile, {transformRequest: angular.identity,headers: {'Content-Type': undefined}})
             	.success(function(data1)
             	{
             		if(data1 == 'SUCCESS')
@@ -327,24 +345,6 @@ iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$htt
 iCal.service('indexService', ['$http','icalFactory', function ($http,icalFactory)
 {
 	var baseURL = icalFactory.baseUrl
-	//add indices
-//    this.uploadFileToAddIndex = function(file, uploadUrl)
-//    {
-//		var Url = baseURL + uploadUrl;
-//    	console.log('inside uploadFileToAddIndex');
-//    	$http.post(Url, file, {transformRequest: angular.identity,headers: {'Content-Type': undefined}})        
-//    	.success(function(data)
-//    	{
-//    		console.log(data)
-//    		return data;
-//    	})
-//    	.error(function(data){
-//            console.log("Ërror in adding indices")
-//            console.log(data)
-//            return data;
-//    	});
-//    }
-	
   	//Get Template
 	this.getTemplate = function(url)
 	{
@@ -363,29 +363,29 @@ iCal.service('indexService', ['$http','icalFactory', function ($http,icalFactory
 		})
 	}
 	
-	this.getAllCurrencies = function ()
-	{
-		var baseUrl = baseURL + '/ICal2Rest/rest/currency/getCurrencies';
-	    return $http({ 
-	    	method  : 'GET',
-	    	url     : baseUrl,
-	    	
-	    }).then(function (response) {
-	    	console.log(response.data);
-            return response.data;
-        });
-    }
+//	this.getAllCurrencies = function ()
+//	{
+//		var baseUrl = baseURL + '/ICal2Rest/rest/currency/getCurrencies';
+//	    return $http({ 
+//	    	method  : 'GET',
+//	    	url     : baseUrl,
+//	    	
+//	    }).then(function (response) {
+//	    	console.log(response.data);
+//            return response.data;
+//        });
+//    }
 	
-	this.getAllClient = function ()
-	{
-		var baseUrl = baseURL + '/ICal2Rest/rest/client/getAllClients';
-	    return $http({ 
-	    	method  : 'GET',
-	    	url     : baseUrl,
-	    	
-	    }).then(function (response) {
-	    	console.log(response.data);
-            return response.data;
-        });
-    }
+//	this.getAllClient = function ()
+//	{
+//		var baseUrl = baseURL + '/ICal2Rest/rest/client/getAllClients';
+//	    return $http({ 
+//	    	method  : 'GET',
+//	    	url     : baseUrl,
+//	    	
+//	    }).then(function (response) {
+//	    	console.log(response.data);
+//            return response.data;
+//        });
+//    }
 }]);

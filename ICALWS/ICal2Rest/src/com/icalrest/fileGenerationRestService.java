@@ -48,7 +48,7 @@ public class fileGenerationRestService {
 	@Produces("application/vnd.ms-excel")
 	public Response generatePreOpeningFiles(JsonObject  jsonObject)
 	{
-		List<IndexBean> indexBeanList = new ArrayList();
+		List<IndexBean> indexBeanList = new ArrayList<IndexBean>();
 		
 		try 
 		{
@@ -83,7 +83,7 @@ public class fileGenerationRestService {
 				String fileCompletePath = RestUtil.INDEX_PRE_OPEN_FILE_PATH +fileName;
 				System.out.println(fileCompletePath);
 					
-				iService.generatePreClosingile(iBean,fileCompletePath);
+				iService.generatePreOpeningFile(iBean,fileCompletePath);
 				indexBeanList.add(iBean);
 			}
 			String strIndexList = strIndexTickers.toString();

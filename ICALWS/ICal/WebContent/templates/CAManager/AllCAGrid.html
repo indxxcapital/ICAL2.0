@@ -1,20 +1,16 @@
 <div >
-	<h1>{{title}}</h1>
-	<div class="form-row">
-	 		<div class="form-group col-md-4">
-    			<label for="date" >Effective Date From :</label >
-   				<input type="date" id="date" ng-model="corporateAction.effectiveDateFrom" class="form-control" value="2018-12-31"/>
-			</div>
-			<div  class="form-group col-md-4">
-				<label for="date" >Effective Date To :</label >
-		    	<input type="date" id="date" ng-model="corporateAction.effectiveDateTo"  value="2018-12-31" class="form-control">
-	    	</div >
-	    	<div class="form-group col-md-4">
-	    		<label></label >
-				<button name="insert"  ng-click="search()" class="btn btn-primary btn-lg btn-block">Search</button>
-			</div>
- 		</div>	
-	<br>
-	<div class="gridStyle" style="border: 5px solid #d4d4d4; width: 1100px;  height: 300px" ng-grid="gridOptions"></div>
+	<nav class="navbar navbar-light bg-light">
+    	<label for="EffectiveDateFrom" class="col-sm-3 col-form-label">Effective Date From:</label>
+    	<div class="col-sm-3">
+     		 <input type="date" id="date" ng-model="corporateAction.effectiveDateFrom" class="form-control" value="2018-12-31"/>     		
+    	</div>
+    	<label for="EffectiveDateTo" class="col-sm-2 col-form-label">Effective Date To:</label>
+    	<div class="col-sm-3">
+     		 <input type="date" id="date" ng-model="corporateAction.effectiveDateTo" class="form-control" value="2018-12-31"/>     		
+    	</div>
+    	<div class="col-sm-1"> <button ng-click="search()" class="btn btn-primary">Go</button></div>
+   	</nav>
+   	<br>
+	<div class="gridStyle" style="border: 5px solid #d4d4d4; width: 1100px;  height: 500px" ng-grid="gridOptions"></div>
 </div>
 

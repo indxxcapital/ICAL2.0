@@ -1,7 +1,10 @@
 package com.icalrest;
 
 import java.io.File;
+
+import javax.json.JsonObject;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
@@ -76,7 +79,16 @@ public class fileTemplateRestService {
 	{
 		String fileName = "CurrencyAddInputFile." +TEMPLATE_FILE_FORMAT;
 		return getTemplate(fileName);
-	}	
+	}
+	
+	@GET
+	@Path("/getCATemplate")//8
+	@Produces("application/vnd.ms-excel")
+	public Response getCATemplate()
+	{
+		String fileName = "CorporateActions." +TEMPLATE_FILE_FORMAT;
+		return getTemplate(fileName);
+	}
 	
 	private Response getTemplate(String fileName)
 	{

@@ -2,85 +2,100 @@ package com.Service;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.Bean.SecurityBean;
 import com.Bean.SecurityPriceBean;
+import com.DataService.ConfigUtil;
+import com.DataService.ConnectionFactory;
 import com.DataService.SecurityDao;
+import com.Validations.SecurityValidations;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.CSVWriter;
 
 public class SecurityService 
 {
-	public boolean parseSecurityFile(String inputFilePath,String outFilePath) throws IOException
+	public boolean parseSecurityFile(String inputFilePath,String outFilePath) throws IOException,Exception
 	{
 		try
 		{
 			parseCsvFile(inputFilePath, outFilePath);
 			return true;
 		}
-		catch (Exception e) {
-			return true;
+		catch (Exception e)
+		{
+//			e.printStackTrace();
+			throw e;
 		}
 	}
 	
-    public void parseCsvFile(String inputFilePath,String outFilePath) throws IOException
-	{	
-    	FileReader filereader = new FileReader(inputFilePath);
-   	 
-        // create csvReader object and skip first Line
-        CSVReader csvReader = new CSVReaderBuilder(filereader).withSkipLines(1).build();
-        List<String[]> allData = csvReader.readAll();
-        CSVWriter csvWriter = ICalUtil.generateCsvTemplate(ICalUtil.getSecurityHeaderListForMissingSecurities(), outFilePath);
-        // print Data
-        for (String[] row : allData) 
-        {
-        	if (!row[2].isEmpty()) 	
-        	{
-	        	SecurityBean securityBean = new SecurityBean();
-	
-	        	ICalUtil.setSecurityBeanForSecurityCheck(securityBean,row);        	
-	 			
-				try 
-				{
-					if(!checkForExistingSecurities(securityBean))
-					{
-					    csvWriter.writeNext(ICalUtil.getSecurityValueListForMisiingSecurities(securityBean));
-					}
-				} catch (ClassNotFoundException | SQLException e) {
-					e.printStackTrace();
-				}
-        	}
-		}  
-        csvReader.close();
-        csvWriter.close();
-	}
-
-	public boolean checkForExistingSecurities(SecurityBean sBean) throws ClassNotFoundException, SQLException
+	public boolean importSecurityDataFromCsv(String filePath) throws IOException,Exception
 	{
-		SecurityDao sDao = new SecurityDao();
-		ResultSet rs = sDao.getSecutiry(sBean);
-		if(rs == null || !rs.next())
-			return false;
-		else
+		try
+		{
+			addSerurities(filePath);
 			return true;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw e;
+		}
 	}
 	
-	public String importSecurityDataFromCsv(String outFilePath) {
-		List<SecurityBean> securityList = new ArrayList<>();
-		try {
-	        // Create an object of file reader
-	        // class with CSV file as a parameter.
-	        FileReader filereader = new FileReader(outFilePath);
-	 
+	 public void parseCsvFile(String inputFilePath,String outFilePath) throws IOException,Exception
+		{	
+	    	FileReader filereader = new FileReader(inputFilePath);
+	    	CSVReader csvReader = new CSVReaderBuilder(filereader).withSkipLines(1).build();
+	    	List<String[]> allData = csvReader.readAll();
+	    	
+	    	//Add validations to fix issues raised by testing team
+	    	SecurityValidations.validateSecurityCheckFile(inputFilePath,allData);
+	        
 	        // create csvReader object and skip first Line
+	        CSVWriter csvWriter = ICalUtil.generateCsvTemplate(ICalUtil.getSecurityHeaderListForMissingSecurities(), outFilePath);
+	      
+	        for (String[] row : allData) 
+	        {
+	        	if (!row[2].isEmpty()) 	
+	        	{
+		        	SecurityBean securityBean = new SecurityBean();
+		
+		        	ICalUtil.setSecurityBeanForSecurityCheck(securityBean,row);        	
+		 			
+					try 
+					{
+						if(!SecurityValidations.checkForExistingSecurities(securityBean))
+						{
+						    csvWriter.writeNext(ICalUtil.getSecurityValueListForMisiingSecurities(securityBean));
+						}
+					} catch (ClassNotFoundException | SQLException e) {
+						e.printStackTrace();
+					}
+	        	}
+			}  
+	        csvReader.close();
+	        csvWriter.close();
+		}
+	 
+	public void addSerurities(String filePath) throws Exception 
+	{
+		try 
+		{
+			List<SecurityBean> securityList = new ArrayList<>();
+			SecurityDao sDao = new SecurityDao();
+			
+	        FileReader filereader = new FileReader(filePath);
 	        CSVReader csvReader = new CSVReaderBuilder(filereader).withSkipLines(1).build();
 	        List<String[]> allData = csvReader.readAll();
-	 
+	        //Add validations to fix issues raised by testing team
+	        SecurityValidations.validateSecurityAddFile(filePath,allData);
+	       
 	        // print Data
 	        for (String[] row : allData) 
 	        {
@@ -92,34 +107,28 @@ public class SecurityService
 		 			securityList.add(securityBean);
 	        	}
 	        }
-	    }
-	    catch (Exception e) {
-	        e.printStackTrace();
-	    }
-		
-		SecurityDao sDao = new SecurityDao();
-		try {
-			sDao.insertSecurity(securityList);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println(e.getMessage());
+	        sDao.insertSecurity(securityList);
 		}
-		System.out.println("Success import excel to mysql table");
-		return "bussinessAPI";
+	    catch (Exception e)
+		{
+	        throw e;
+	    }
 	}
 	
-	public String importSecurityPriceDataFromCsv(String outFilePath) {
+	public void importSecurityPriceDataFromCsv(String filePath) throws Exception 
+	{
 		List<SecurityPriceBean> securityPriceList = new ArrayList<>();
-		try {
+		SecurityDao sDao = new SecurityDao();
+		try 
+		{
 	        // Create an object of file reader
 	        // class with CSV file as a parameter.
-	        FileReader filereader = new FileReader(outFilePath);
-	 
-	        // create csvReader object and skip first Line
+	        FileReader filereader = new FileReader(filePath);
 	        CSVReader csvReader = new CSVReaderBuilder(filereader).withSkipLines(1).build();
 	        List<String[]> allData = csvReader.readAll();
 	 
+	        //Add validations to fix issues raised by testing team
+	        SecurityValidations.validateSecurityPriceFile(filePath,allData);
 	        // print Data
 	        for (String[] row : allData) 
 	        {
@@ -130,28 +139,18 @@ public class SecurityService
 		        	securityPriceList.add(securityPriceBean);
 	        	}
 	        }
+	        sDao.insertSecurityPrice(securityPriceList);
 	    }
 	    catch (Exception e) {
 	        e.printStackTrace();
+	        throw e;
 	    }
-		
-		SecurityDao sDao = new SecurityDao();
-		try {
-			sDao.insertSecurityPrice(securityPriceList);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-		}
-		System.out.println("Success import excel to mysql table");
-		System.out.println("Import rows " );
-		return "bussinessAPI";
 	}
 	
-	
-	public String mapSecurityWithIndex(String outFilePath) throws IOException
+	public String mapSecurityWithIndex(String outFilePath) throws Exception
 	{	
 		List<SecurityBean> securityList = new ArrayList<>();
+		SecurityDao sDao = new SecurityDao();
 		try {
 	        // Create an object of file reader
 	        // class with CSV file as a parameter.
@@ -172,18 +171,12 @@ public class SecurityService
 		        	securityList.add(securityBean);
 	        	}
 	        }
+	        sDao.insertSecurityForIndex(securityList);
 	    }
 	    catch (Exception e) {
 	        e.printStackTrace();
-	    }
-		
-		SecurityDao sDao = new SecurityDao();
-		try {
-			sDao.insertSecurityForIndex(securityList);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-		}
+	        throw e;
+	    }	
 		System.out.println("Success import excel to mysql table");
 		System.out.println("Import rows " );
 		return "mapSecurityWithIndex bussinessAPI";
@@ -202,7 +195,7 @@ public class SecurityService
 		return securityList;
 	}
 	
-	public List<SecurityBean> getAllSecuritiesForIndex(String indexTicker)
+	public List<SecurityBean> getAllSecuritiesForIndex(String indexTicker) throws Exception
 	{
 		System.out.println("in security service API");
 		SecurityDao sDao = new SecurityDao();
@@ -211,10 +204,8 @@ public class SecurityService
 		try {
 			securityList = sDao.getSecurityListForIndex(indexTicker);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return securityList;
@@ -225,4 +216,16 @@ public class SecurityService
 		SecurityDao sDao = new SecurityDao();
 		sDao.deleteSecurityFromIndex(sBean);
 	}
+	
+	public void insertNewSecurityForIdChange(SecurityBean newSecurityBean) throws Exception  
+	{
+		SecurityDao sDao = new SecurityDao();
+		sDao.insertNewSecurityForIdChange(newSecurityBean);;
+	}
+	
+	public void deleteSecurity(String securityId) throws Exception 
+	{
+		SecurityDao sDao = new SecurityDao();
+		sDao.deleteSecurity(securityId);
+	}	
 }

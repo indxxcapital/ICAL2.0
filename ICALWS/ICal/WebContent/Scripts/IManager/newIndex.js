@@ -91,10 +91,14 @@ iCal.controller('indexManagerController', ['$scope','$window','$location','IMana
         	width: '150px'
         },{
 	    	name: 'actions', 
-        	width: '80px',
+        	width: '180px',
         	displayName: 'Actions', 
         	enableCellEdit: false,
         	cellTemplate: 
+//        		'<select name="flag" ng-model="flag" id="flag" class="form-control" >'
+//        		+ '<option value="EDI" >EDI</option >'
+//        		+ '<option value="FDS" >FDS</option >'
+//        		+ '<option value="MAN" >MAN</option ></select >'+
         		'<button id="deleteBtn" type="button" ng-click="view(row)" >View</button>'
 		}]
 	};  
@@ -155,5 +159,6 @@ iCal.controller('indexManagerController', ['$scope','$window','$location','IMana
     {
     	var $popup = $window.open("securityPopUp.html");
     	$popup.indexTicker =row.entity.indexTicker;
+    	$popup.indexData =row.entity;
     }	
 }]);

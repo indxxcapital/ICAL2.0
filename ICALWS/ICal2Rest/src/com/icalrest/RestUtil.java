@@ -25,11 +25,13 @@ public class RestUtil {
 	public static final String CURRENCY_INPUT_FILE_PATH 	= BASE_FILE_PATH + "currency-input-file.csv";
 	public static final String CURRENCY_OUT_FILE_PATH 		= BASE_FILE_PATH + "missing-currencies.csv";
 	public static final String ADD_CURRENCY_FILE_PATH 		= BASE_FILE_PATH + "add-currencies.csv";
-	
+	public static final String ADD_NEW_CA_FILE_PATH 		= BASE_FILE_PATH + "new-corporateactions.csv";
+//	public static final String ADD_NEW_CA_FILE_PATH 		= "C://ICAL2//temp/" + "new-corporateactions.csv";
 //	public static final String INDEX_CLOSE_FILE_PATH = "c://temp//closing";
 //	public static final String INDEX_OPEN_FILE_PATH = "c://temp//opening";
 	
 	public static final String INDEX_PRE_OPEN_FILE_PATH = ConfigUtil.propertiesMap.get("INDEX_PRE_OPEN_FILE_PATH");
+	public static final String CACM_FILE_PATH = ConfigUtil.propertiesMap.get("CACMPath");
 	
 	public static void writeToFile(InputStream uploadedInputStream,String uploadedFileLocation) 
 	{

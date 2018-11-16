@@ -2,7 +2,6 @@ package com.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
-
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -16,29 +15,27 @@ import org.apache.poi.ss.util.CellUtil;
 public class ExcelTemplateGenerator {
 
 	private HSSFWorkbook workbook;
-	  private HSSFSheet sheet;
-	  private HSSFFont boldFont;
-	  private HSSFDataFormat format;
-	  private FormatType[] formatTypes;
-	  List<String> columnSet;
-	  int currentRow = 0;
+	private HSSFSheet sheet;
+	private HSSFFont boldFont;
+	private HSSFDataFormat format;
+	private FormatType[] formatTypes;
+	List<String> columnSet;
+	int currentRow = 0;
 	  
+	public ExcelTemplateGenerator(List<String> aColumnsList,String sheetName) {
+		workbook = new HSSFWorkbook();
+		this.columnSet = aColumnsList;
+		sheet = workbook.createSheet(sheetName);
+		boldFont = workbook.createFont();
+		boldFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+		format = workbook.createDataFormat();
+		currentRow = 0;
+		writeHeaderRow();
+	}
 	  
-	  public ExcelTemplateGenerator(List<String> aColumnsList,String sheetName) {
-		  workbook = new HSSFWorkbook();
-		  this.columnSet = aColumnsList;
-		  sheet = workbook.createSheet(sheetName);
-		  boldFont = workbook.createFont();
-		  boldFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-		  format = workbook.createDataFormat();
-		  currentRow = 0;
-		  writeHeaderRow();
-		 
-	  }
-	  
-	  public ExcelTemplateGenerator(List<String> aColumnsList, FormatType[] formatTypes, String sheetName) {
-	    workbook = new HSSFWorkbook();
-	    this.columnSet = aColumnsList;
+	public ExcelTemplateGenerator(List<String> aColumnsList, FormatType[] formatTypes, String sheetName) {
+		workbook = new HSSFWorkbook();
+    	this.columnSet = aColumnsList;
 	    sheet = workbook.createSheet(sheetName);
 	    boldFont = workbook.createFont();
 	    boldFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
@@ -46,24 +43,23 @@ public class ExcelTemplateGenerator {
 	    this.formatTypes = formatTypes;
 	    currentRow = 0;
 	    writeHeaderRow();
-	    
-	  }
-	  
-	  public void writeHeaderRow() {
-		  HSSFRow row = sheet.createRow(currentRow);
-	      int numCols = columnSet.size();
-	      boolean isAutoDecideFormatTypes;
-	      if (isAutoDecideFormatTypes = (formatTypes == null)) {
-	        formatTypes = new FormatType[numCols];
-	      }
-	      int iCell = 0;
-	      for (String cloumnName : columnSet)
-	      {
-	    	  writeCell(row, iCell, cloumnName, FormatType.TEXT, null, boldFont);
-	    	  iCell++;
-	      }		
-	      currentRow++;
 	}
+	  
+	public void writeHeaderRow() {
+		HSSFRow row = sheet.createRow(currentRow);
+		int numCols = columnSet.size();
+		boolean isAutoDecideFormatTypes;
+		if (isAutoDecideFormatTypes = (formatTypes == null)) {
+			formatTypes = new FormatType[numCols];
+		}
+		int iCell = 0;
+		for (String cloumnName : columnSet)
+		{
+			writeCell(row, iCell, cloumnName, FormatType.TEXT, null, boldFont);
+			iCell++;
+		}		
+		currentRow++;
+	  }
 
 	  public void writeValueRow(List<String> cellValues) 
 	  {
@@ -80,24 +76,24 @@ public class ExcelTemplateGenerator {
 	    	  iCell++;
 	      }		
 	     currentRow++;
-	}
+	  }
 	  
 	  public HSSFWorkbook getWorkBook()
 	  {
 		  return workbook;
 	  }
 
-	private FormatType getFormatType(Class _class) {
-	    if (_class == Integer.class || _class == Long.class) {
-	      return FormatType.INTEGER;
-	    } else if (_class == Float.class || _class == Double.class) {
-	      return FormatType.FLOAT;
-	    } else if (_class == Timestamp.class || _class == java.sql.Date.class) {
-	      return FormatType.DATE;
-	    } else {
-	      return FormatType.TEXT;
-	    }
-	  }
+//	private FormatType getFormatType(Class _class) {
+//	    if (_class == Integer.class || _class == Long.class) {
+//	      return FormatType.INTEGER;
+//	    } else if (_class == Float.class || _class == Double.class) {
+//	      return FormatType.FLOAT;
+//	    } else if (_class == Timestamp.class || _class == java.sql.Date.class) {
+//	      return FormatType.DATE;
+//	    } else {
+//	      return FormatType.TEXT;
+//	    }
+//	  }
 	  
 //	  public void generate(OutputStream outputStream) throws Exception 
 //	  {

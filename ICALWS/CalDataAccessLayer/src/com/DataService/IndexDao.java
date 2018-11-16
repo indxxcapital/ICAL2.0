@@ -170,7 +170,7 @@ public class IndexDao extends DefaultDao
 	}
 	
 	
-	public Map<String,Object> getCurrencyRateMap(String toCurrency,String toDate)
+	public Map<String,Object> getCurrencyRateMap(String toCurrency,String toDate) throws Exception
 	{
 		Map<String,Object> keyValueMap = new HashMap<String,Object>();
 //		String strQuery = "SELECT * FROM ical2.currencyrate where toCurrency = '" + toCurrency +
@@ -227,7 +227,7 @@ public class IndexDao extends DefaultDao
 		return iValue;
 	}
 	
-	public Map<String,Object> getIndexFileDetails(String indexTicker,String tableName) throws ClassNotFoundException, SQLException
+	public Map<String,Object> getIndexFileDetails(String indexTicker,String tableName) throws Exception
 	{
 		Map<String,Object> closingFileDetailsMap = new HashMap<String,Object>();
 		
@@ -258,7 +258,7 @@ public class IndexDao extends DefaultDao
 		return closingFileDetailsMap;
 	}
 	
-	public Map<String,Object> getIndexOpeningFileDetails(String indexTicker)
+	public Map<String,Object> getIndexOpeningFileDetails(String indexTicker) throws Exception
 	{
 		Map<String,Object> closingFileDetailsMap = new HashMap<String,Object>();
 		
@@ -315,7 +315,7 @@ public class IndexDao extends DefaultDao
 		return iValue;
 	}
 	
-	public List<IndexBean> getAllLiveIndexForClosingFile(String zone) throws SQLException, ClassNotFoundException
+	public List<IndexBean> getAllLiveIndexForClosingFile(String zone) throws Exception
 	{
 		List<IndexBean> indexList = new ArrayList<>();
 //		String strQuery  = "SELECT * FROM ical2.indexdescription "
@@ -323,7 +323,7 @@ public class IndexDao extends DefaultDao
 //				+ "where  status='LI' and flag=1 and indexLiveDate >= CAST(GETDATE() AS DATE)  "
 //				+ "AND CAST(GETDATE() AS DATE) BETWEEN vf AND vt AND zoneType='" + zone + "'";
 		String strQuery  = "SELECT * FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription "
-				+ "where  status='RI' and flag=1 "
+				+ "where  status In ('RI','AI','LI') and flag=1 "
 				+ "AND CAST(GETDATE() AS DATE) BETWEEN vf AND vt AND zoneType='" + zone + "'";
 		
 		System.out.println(strQuery);

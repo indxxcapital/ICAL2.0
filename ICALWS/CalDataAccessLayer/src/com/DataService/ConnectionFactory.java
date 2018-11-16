@@ -13,8 +13,6 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
 
-import com.CalCommon.ICalCommonUtill;
-
 /**
  * Connect to Database
  * @author hany.said
@@ -23,8 +21,7 @@ public class ConnectionFactory
 {
 	static Connection conn = null;
 	
-	public static Map<String,String> readPropertyFile() 
-	{
+	public static Map<String,String> readPropertyFile(){
 		Properties prop = new Properties();
     	InputStream input = null;
     	try 

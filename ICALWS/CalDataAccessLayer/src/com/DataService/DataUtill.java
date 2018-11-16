@@ -1,4 +1,5 @@
 package com.DataService;
+
 import java.util.Map;
 
 public class DataUtill
@@ -38,24 +39,29 @@ public class DataUtill
 		
 	}
 	
-	public String createUpdate(String tableName,Map<String,Object> keyValueMap)
+	public static String createUpdate(String tableName,Map<String,Object> keyValueMap)
 	{
-		String strInsertQuery = "insert into ";
+		String strUpdateQuery = "UPDATE  " + ConfigUtil.propertiesMap.get("dbName") + "." + tableName + " SET ";
+		String strUpdateValues = "";
 		
-		for (String cloumnName : keyValueMap.keySet()) 
+		for (Map.Entry<String,Object> Entry : keyValueMap.entrySet()) 
 		{
-			Object columnValue = keyValueMap.get(cloumnName);
-			if (columnValue instanceof String)
+			
+			String columnName = Entry.getKey();
+			if(!columnName.trim().equals("id"))
 			{
-				
-				
+				if(!strUpdateValues.trim().equalsIgnoreCase(""))
+					strUpdateValues += ",";
+				Object columnValue = Entry.getValue();
+				if (columnValue instanceof Double)
+					strUpdateValues += columnName + "= " + columnValue ;//+ ",";
+				else
+					strUpdateValues += columnName + "= '" + columnValue + "'";	
 			}
-			
-			
 		}
+		strUpdateQuery += strUpdateValues + " Where id ='"+ keyValueMap.get("id") + "'";
 		
-		return strInsertQuery;
-		
+		return strUpdateQuery;		
 	}
 	
 	

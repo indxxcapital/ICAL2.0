@@ -48,7 +48,7 @@ iCal.controller('securityController',  ['$scope','$window', 'securityService', f
 	       
 		var uploadUrl = "/ICal2Rest/rest/security/parse";
 		securityService.uploadFileToParse(file, uploadUrl);
-		console.log('file is uploaded' );
+		console.log('file upload End' );
     };
 	    
 	  //to add securities
@@ -71,7 +71,7 @@ iCal.controller('securityController',  ['$scope','$window', 'securityService', f
 	        
     	var uploadUrl1 = "/ICal2Rest/rest/security/addnew";
     	securityService.uploadFileToAddSecurities(file, uploadUrl1);
-    	console.log('file is uploaded' );
+    	console.log('file upload End' );
      };
      
 	 //to Add price securities
@@ -115,27 +115,34 @@ iCal.service('securityService', ['$http','icalFactory', function ($http,icalFact
 	this.uploadFileToParse = function(file, uploadUrl)
 	{
 		var Url = baseURL + uploadUrl;
-		$http.post(Url ,file,{transformRequest: angular.identity,headers: {'Content-Type': undefined}
-		})        
+		$http.post(Url ,file,{transformRequest: angular.identity,headers: {'Content-Type': undefined}})        
 		.success(function(data)
 		{
 			console.log(data)
-	                
-			$http.get(baseURL + "/ICal2Rest/rest/security/get", {responseType: 'arraybuffer'})
-			.then(function (response) 
-			{
-				var header = response.headers('Content-Disposition')
-				var fileName = header.split("=")[1].replace(/\"/gi,'');
-				console.log(fileName);
-	        
-				var blob = new Blob([response.data],{type : 'application/vnd.openxmlformats-officedocument.presentationml.presentation;charset=UTF-8'});
-				var objectUrl = (window.URL || window.webkitURL).createObjectURL(blob);
-				var link = angular.element('<a/>');
-				link.attr({	href : objectUrl,download : fileName})[0].click();
-			})
+            if(data == 'SUCCESS')
+        	{
+				$http.get(baseURL + "/ICal2Rest/rest/security/get", {responseType: 'arraybuffer'})
+				.then(function (response) 
+				{
+					var header = response.headers('Content-Disposition')
+					var fileName = header.split("=")[1].replace(/\"/gi,'');
+					console.log(fileName);
+		        
+					var blob = new Blob([response.data],{type : 'application/vnd.openxmlformats-officedocument.presentationml.presentation;charset=UTF-8'});
+					var objectUrl = (window.URL || window.webkitURL).createObjectURL(blob);
+					var link = angular.element('<a/>');
+					link.attr({	href : objectUrl,download : fileName})[0].click();
+				})
+        	}
+            else
+        	{
+            	console.log('Input File Cannot be parsed.' + data);
+        		alert('Input File Cannot be parsed.' + data);
+        	}
 		})
-		.error(function(){
-			console.log("status code for error is ")
+		.error(function(data){
+			console.log('Input File Cannot be parsed.'+ data);
+    		alert('Input File Cannot be parsed.'+ data);
 		});
 	}
 		
@@ -143,10 +150,18 @@ iCal.service('securityService', ['$http','icalFactory', function ($http,icalFact
     {
 		var Url = baseURL + uploadUrl;
     	$http.post(Url, file, {transformRequest: angular.identity,headers: {'Content-Type': undefined}})        
-    	.success(function(data){
-    		
-    		console.log("Securities added successfully")
-    		alert("Securities added successfully");
+    	.success(function(data)
+    	{
+    		if(data == 'SUCCESS')
+        	{
+    			console.log("Securities added successfully")
+    			alert("Securities added successfully");
+        	}
+    		else
+        	{
+            	console.log(data);
+        		alert(data);
+        	}
     	})
     	.error(function(){
     		console.log("Ërror in adding securities")
@@ -158,12 +173,23 @@ iCal.service('securityService', ['$http','icalFactory', function ($http,icalFact
     {
     	var Url = baseURL + uploadUrl;
     	$http.post(Url, file, {transformRequest: angular.identity,headers: {'Content-Type': undefined}})        
-    	.success(function(data){
-    		console.log("Securities price added successfully")
-    		alert("Securities price added successfully");
+    	.success(function(data)
+    	{
+    		if(data == 'SUCCESS')
+        	{
+    			console.log("Securities price added successfully")
+        		alert("Securities price added successfully");
+        	}
+    		else
+        	{
+            	console.log(data);
+        		alert(data);
+        	}
+    		
     	})
-    	.error(function(){
+    	.error(function(data){
             console.log("Ërror in adding securities price")
+            alert(data);
     	});
     }
 	    

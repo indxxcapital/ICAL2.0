@@ -1,7 +1,5 @@
 package com.Bean;
 
-import java.util.Date;
-
 public class SecurityPriceBean
 {
 	
@@ -11,8 +9,8 @@ public class SecurityPriceBean
 //	  `closePrice` float DEFAULT NULL,
 //	  `crrysymbol` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
 	
-	private Integer id;
- 	private String securityId;
+//	private Integer id;
+// 	private String securityId;
  	private String vd;
  	private Float closePrice;
     private String crrySymbol;

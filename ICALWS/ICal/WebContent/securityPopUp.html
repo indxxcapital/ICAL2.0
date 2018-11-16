@@ -1,4 +1,4 @@
-<html>
+<html ng-app="myApp">
     <head>
 	    
 	   <!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.min.js"></script>
@@ -11,6 +11,29 @@
 		
 		<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>-->
 		
+	  
+	  <!-- Bootstrap CSS CDN -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+	crossorigin="anonymous">
+	
+	<!-- jQuery CDN - Slim version (=without AJAX) -->
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+			integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+			crossorigin="anonymous"></script>
+		<!-- Popper.JS -->
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+			integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+			crossorigin="anonymous"></script>
+		<!-- Bootstrap JS -->
+		<script
+			src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
+			integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+			crossorigin="anonymous"></script>
+			
+		
 		
 	    <script type="text/javascript" src="systemjs/1.2.9_angular.min.js"></script>
 		<script type="text/javascript" src="systemjs/1.2.9_angular-route.min.js"></script>
@@ -19,23 +42,123 @@
 		<script type="text/javascript" src="systemjs/2.0.11_ng-grid.min.js"></script>
 	    <link rel="stylesheet" type="text/css" href="systemcss/2.0.11_ng-grid.min.css" />
 	 
+	 
+	 
+	 <!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">-->
+        <script src="https://rawgithub.com/angular-ui/bootstrap/gh-pages/ui-bootstrap-tpls-0.10.0.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.js"></script>	
+ 		<link rel="stylesheet" type="text/css" href="https://rawgithub.com/angular-ui/ng-grid/v2.0.7/ng-grid.css" />
+        <script type="text/javascript" src="https://rawgithub.com/angular-ui/ng-grid/v2.0.7/build/ng-grid.js"></script>
+         
+         
+         
+         
 		<script src="js/app.js"></script>
+		<script src="js/mainController.js"></script>
+	    
+	    <script src="Scripts/CAManager/CAController.js"></script>
+	    <script src="Scripts/CAManager/caManagerService.js"></script>
+	    <script src="Scripts/CAManager/TodaysCAController.js"></script>
+	    <script src="Scripts/CAManager/ModifyCAController.js"></script>
 	    
 	    <script src="Scripts/IManager/iManagerService.js"></script>
+	    <script src="Scripts/IManager/liveIndex.js"></script>
+	    <script src="Scripts/IManager/newIndex.js"></script>
+	    <script src="Scripts/IManager/runIndex.js"></script>
+	    <script src="Scripts/IManager/runIndexPopUp.js"></script>
 	    <script src="Scripts/IManager/securitypopup.js"></script>
+		<script src="Scripts/IManager/sManagerService.js"></script>
+	    <script src="Scripts/IManager/upcomingIndex.js"></script>
+	    
+	    <script src="Scripts/IndexSubmission/index.js"></script>
+	    <script src="Scripts/IndexSubmission/index2.js"></script>
+	    
+	    <script src="Scripts/SManager/currency.js"></script>
+	    <script src="Scripts/SManager/security.js"></script>
+	    <script src="Scripts/SManager/smanager.js"></script>
 
+		
 		<link rel="stylesheet" href="css/nav.css">
 		
     </head>
     
-    <body ng-app="myApp">
-    
+    <body >
+    <div style="font-family: Arial;padding: 10px 10px;" ng-controller="indexSecurityController">
+	 <form name="userForm" ng-show="false">
+	 	<div class="form-row" >
+	 		<div class="form-group col-md-3">
+      			<label for="IndexName">Index Name:</label>
+      			<input type="text" ng-model="index.indexName" class="form-control" id="IndexName" cols="10" rows="30" ng-required="true">
+      			
+    		</div>
+	 		<div class="form-group col-md-3">
+    			<label for="ClientName">Client Name:</label>
+   				<select ng-model="index.clientName" id="ClientName" class="form-control" >
+					<option value="">-Select Client-</option>
+			    	<option data-ng-repeat="client  in ClientData">{{client.clientName}}</option>
+				</select>
+			</div>
+			<div  class="form-group col-md-3" >
+				<label for="date" >Index live Date:</label >
+		    	<input type="date" id="date" ng-model="index.indexLiveDateStr"  value="2018-12-31"/ class="form-control">
+	    	</div >
+	    	<div class="form-group col-md-3" >
+			    <label for="Currency" >Currency:</label >
+				<select name="Currency" ng-model="index.currency" id="Currency" class="form-control">
+				    <option value="">-Select Currency-</option>
+				    <option data-ng-repeat="currency in CData">{{currency.currencySymbol}}</option>
+				</select>			
+			</div >			
+ 		</div>  
+	 	<div class="form-row">
+    		
+    		<div class="form-group col-md-3" >
+			   <label for="Zone" >Zone:</label >
+			   <select name="Zone" ng-model="index.zoneType" id="Zone" class="form-control" >
+				    <option value="" >Please Select</option >
+				    <option value="AR" >Americas Region</option >
+				    <option value="ER" >European Region</option >
+				    <option value="APR" >Asia/Pacific Region</option >
+			  	</select >
+		  	</div >
+    		<div class="form-group col-md-3"  >
+				<label for="Type of Index" >Type of Index</label >
+		    	<select name="Type of Index" id="TypeofIndex" ng-model="index.indexType" class="form-control">
+		    		<option value="" >Please Select</option >
+		        	<option value="PR" >PR</option >
+		        	<option value="GTR" >GTR</option >
+		        	<option value="NTR" >NTR</option >
+				</select >
+			</div >
+			<div class="form-group col-md-3" >
+				<label for="Normal cash dividend adjustment" >Normal Cash Dividend Adjustment:</label >
+			    <select name="Normal cash dividend adjustment" ng-model="index.normalCashDivAdj" id="Normalcashdividendadjustment" class="form-control" >
+					<option value="" >Please Choose</option >
+			        <option value="DA" >Divisor Adjustment</option >
+			        <option value="SA" >Stock Adjustment</option >
+				</select >
+			</div >
+			<div class="form-group col-md-3" >
+				<label for="Special cash dividend adjustment" >Special Cash Dividend Adjustment:</label >
+			    <select name="Special cash dividend adjustment" ng-model="index.specialCashDivAdj" id="Specialcashdividendadjustment" class="form-control" >
+					<option value="" >Please Select</option >
+			        <option value="DA" >Divisor Adjustment</option >
+			        <option value="SA" >Stock Adjustment</option >
+				</select >
+			</div >				
+		</div>
+		<div>
+			<button name="update"  ng-click="update()" class="btn btn-primary">Update Index</button>
+		</div>
+	</form>
+	</div> 
+	
 	<div ng-controller="indexSecurityController" >
 		<h1>Securities List</h1>
 		<div>
 			<!--<button ng-click="approve()">Delete Selected Securities</button>-->
 		</div>
-		<div class="gridStyle" style="border: 5px solid #d4d4d4; width: 1100px;  height: 500px" ng-grid="gridOptionsS"></div>
+		<div class="gridStyle" style="border: 5px solid #d4d4d4;padding: 10px 10px;height: 500px" ng-grid="gridOptionsS"></div>
 	</div>
 	
 </body>

@@ -2,64 +2,46 @@ package com.Bean;
 
 public class CorporateActionsFinal 
 {	
-//	 [id]
-//	,[eventId]
-//  ,[eventCode]
-//  ,[ISIN]
-//  ,[BBGTicker]
-//  ,[effectivedate]
-	
-//  ,[ratioOld]
-//  ,[ratioNew]
-//  ,[grossAmount]
-//  ,[netAmount]
-//  ,[currency]
-	
-//  ,[exCountry]
-//  ,[exCode]
-//  ,[createddate]
-//  ,[changeddate]
-//  ,[date]
-//  ,[version]
-	
 	private Integer id;
- 	private Integer eventId;
- 	private String eventCode;
+ 	
+ 	private String source;
  	private String ISIN;
  	private String BBGTicker;
+ 	private Integer securityId;
+ 	private String eventCode;
  	private String effectivedate;
  	
- 	private Double ratioOldEDI;
- 	private Double ratioNewEDI;
- 	private Double grossAmountEDI;
- 	private Double netAmountEDI;
- 	private String currencyEDI;
+ 	private Double grossAmount;
+ 	private Double netAmount;
+ 	private String currency;
  	
- 	private Double ratioOldFDS;
- 	private Double ratioNewFDS;
- 	private Double grossAmountFDS;
- 	private Double netAmountFDS;
- 	private String currencyFDS;
+ 	private Double ratio;
  	
- 	private Double ratioOldMAN;
- 	private Double ratioNewMAN;
- 	private Double grossAmountMAN;
- 	private Double netAmountMAN;
- 	private String currencyMAN;
+ 	private String oldValue;
+ 	private String newValue;
  	
+ 	private String flag;
  	
- 	 public Integer getId(){
-         return id;
+ 	public Integer getId(){
+ 		return id;
+ 	} 	 
+ 	public void setId(Integer aId){
+ 		this.id = aId;
+ 	}
+ 	 
+ 	public String getSource(){
+        return source;
+    }
+    public void setSource(String aSource){
+        this.source = aSource;
+    }   
+    
+     public Integer getSecurityId(){
+         return securityId;
      }
-     public void setId(Integer aId){
-         this.id = aId;
-     }
-     
-     public Integer getEventId(){
-         return eventId;
-     }
-     public void setEventId(Integer aEventId){
-         this.eventId = aEventId;
+    
+     public void setSecurityId(Integer aSecurityId){
+         this.securityId = aSecurityId;
      }
      
      public String getEventCode(){
@@ -89,100 +71,50 @@ public class CorporateActionsFinal
      public void setEffectiveDate(String aEffectiveDate){
          this.effectivedate = aEffectiveDate;
      }  
-     public String getcurrencyEDI(){
-         return currencyEDI;
+     public String getCurrency(){
+         return currency;
      }
-     public void setcurrencyEDI(String acurrencyEDI){
-         this.currencyEDI = acurrencyEDI;
+     public void setCurrency(String acurrency){
+         this.currency = acurrency;
      }
-     public Double getRatioOldEDI(){
-         return ratioOldEDI;
+     public Double getRatio(){
+         return ratio;
      }
-     public void setRatioOldEDI(Double aRatioOldEDI){
-         this.ratioOldEDI = aRatioOldEDI;
+     public void setRatio(Double aRatio){
+         this.ratio = aRatio;
      }  
-     public Double getRatioNewEDI(){
-         return ratioNewEDI;
+     
+     public Double getGrossAmount(){
+         return grossAmount;
      }
-     public void setRatioNewEDI(Double aRatioNewEDI){
-         this.ratioNewEDI = aRatioNewEDI;
+     public void setGrossAmount(Double aGrossAmount){
+         this.grossAmount = aGrossAmount;
+     }  
+     public Double getNetAmount(){
+         return netAmount;
+     }
+     public void setNetAmount(Double aNetAmount){
+         this.netAmount = aNetAmount;
      }
      
-     public Double getGrossAmountEDI(){
-         return grossAmountEDI;
+     public String getOldValue(){
+         return oldValue;
      }
-     public void setGrossAmountEDI(Double aGrossAmountEDI){
-         this.grossAmountEDI = aGrossAmountEDI;
-     }  
-     public Double getNetAmountEDI(){
-         return netAmountEDI;
-     }
-     public void setNetAmountEDI(Double aNetAmountEDI){
-         this.netAmountEDI = aNetAmountEDI;
-     }
+     public void setOldValue(String aOldValue){
+         this.oldValue = aOldValue;
+     } 
      
-     public String getcurrencyFDS(){
-         return currencyFDS;
+     public String getNewValue(){
+         return newValue;
      }
-     public void setcurrencyFDS(String acurrencyFDS){
-         this.currencyFDS = acurrencyFDS;
-     }
-     public Double getRatioOldFDS(){
-         return ratioOldFDS;
-     }
-     public void setRatioOldFDS(Double aRatioOldFDS){
-         this.ratioOldFDS = aRatioOldFDS;
-     }  
-     public Double getRatioNewFDS(){
-         return ratioNewFDS;
-     }
-     public void setRatioNewFDS(Double aRatioNewFDS){
-         this.ratioNewFDS = aRatioNewFDS;
-     }
+     public void setNewValue(String aNewValue){
+         this.newValue = aNewValue;
+     } 
      
-     public Double getGrossAmountFDS(){
-         return grossAmountFDS;
+     public String getFlag(){
+         return flag;
      }
-     public void setGrossAmountFDS(Double aGrossAmountFDS){
-         this.grossAmountFDS = aGrossAmountFDS;
-     }  
-     public Double getNetAmountFDS(){
-         return netAmountFDS;
-     }
-     public void setNetAmountFDS(Double aNetAmountFDS){
-         this.netAmountFDS = aNetAmountFDS;
-     }
-     
-     public String getcurrencyMAN(){
-         return currencyMAN;
-     }
-     public void setcurrencyMAN(String acurrencyMAN){
-         this.currencyMAN = acurrencyMAN;
-     }
-     
-     public Double getRatioOldMAN(){
-         return ratioOldMAN;
-     }
-     public void setRatioOldMAN(Double aRatioOldMAN){
-         this.ratioOldMAN = aRatioOldMAN;
-     }  
-     public Double getRatioNewMAN(){
-         return ratioNewMAN;
-     }
-     public void setRatioNewMAN(Double aRatioNewMAN){
-         this.ratioNewMAN = aRatioNewMAN;
-     }
-     
-     public Double getGrossAmountMAN(){
-         return grossAmountMAN;
-     }
-     public void setGrossAmountMAN(Double aGrossAmountMAN){
-         this.grossAmountMAN = aGrossAmountMAN;
-     }  
-     public Double getNetAmountMAN(){
-         return netAmountMAN;
-     }
-     public void setNetAmountMAN(Double aNetAmountMAN){
-         this.netAmountMAN = aNetAmountMAN;
-     }
+     public void setFlag(String aFlag){
+         this.flag = aFlag;
+     }     
 }

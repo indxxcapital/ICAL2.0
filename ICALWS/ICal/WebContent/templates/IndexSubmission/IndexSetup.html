@@ -28,22 +28,22 @@
 	</div>
 	
 	<div class="divone"  style="font-family: Arial;width: 100%"   ng-show="showdiv2" >
-	 <form name="userForm" ng-submit=" next()" >
+	 <form name="indexForm" ng-submit=" next()" >
 	 	<div class="form-row">
 	 		<div class="form-group col-md-4">
     			<label for="ClientName">Client Name:</label>
-   				<select ng-model="user.ClientName" class="form-control" >
+   				<select ng-model="SingleIndex.ClientName" class="form-control" required>
 					<option value="">-Select Client-</option>
 			    	<option data-ng-repeat="client  in ClientData"  value="{{client.clientName}}">{{client.clientName}}</option>
 				</select>
 			</div>
 			<div  class="form-group col-md-4" >
 				<label for="date" >Index live Date:</label >
-		    	<input type="date" id="date" ng-model="user.IndexLiveDate"  value="2018-12-31"/ class="form-control">
+		    	<input type="date" name="date" ng-model="SingleIndex.IndexLiveDate"  value="2018-12-31" class="form-control" min="{{minDate}}"  required>
 	    	</div >
 	    	<div class="form-group col-md-4" >
 			    <label for="Currency" >Currency:</label >
-				<select ng-model="user.Currency" class="form-control">
+				<select ng-model="SingleIndex.Currency" class="form-control" required>
 				    <option value="">-Select Currency-</option>
 				    <option data-ng-repeat="currency in CData"  value="{{currency.currencySymbol}}">{{currency.currencySymbol}}</option>
 				</select>			
@@ -52,15 +52,15 @@
 	 	<div class="form-row">
     		<div class="form-group col-md-4">
       			<label for="IndexName">Index Name:</label>
-      			<input type="text" ng-model="user.IndexName" class="form-control" id="IndexName" cols="10" rows="30" ng-required="true">
+      			<input type="text" ng-model="SingleIndex.IndexName" class="form-control" id="IndexName" cols="10" rows="30" required >
     		</div>
     		<div class="form-group col-md-4">
       			<label for="IndexTicker">Index Ticker:</label>
-      			 <input type="text" ng-model="user.IndexTicker"  id="IndexTicker"  class="form-control" >
+      			 <input type="text" ng-model="SingleIndex.IndexTicker"  id="IndexTicker"  class="form-control" required>
     		</div>
     		<div class="form-group col-md-4" >
 			   <label for="Zone" >Zone:</label >
-			   <select name="Zone" ng-model="user.Zone" id="Zone" class="form-control" >
+			   <select name="Zone" ng-model="SingleIndex.Zone" id="Zone" class="form-control" required>
 				    <option value="" >Please Select</option >
 				    <option value="AR" >Americas Region</option >
 				    <option value="ER" >European Region</option >
@@ -71,15 +71,15 @@
 	 	<div class="form-row">
     		<div class="form-group col-md-4">
       			<label for="Index Value" >Index Value:</label >
-      			<input type="text" ng-model="user.IndexValue"  id="IndexValue" class="form-control">
+      			<input type="number" ng-model="SingleIndex.IndexValue"  id="IndexValue" class="form-control" ng-required="true" min="1.0" value="0.0" step=".01">
     		</div>
     		<div class="form-group col-md-4">
       			<label for="Index Market Value" >Index Market Value:</label >
-      			 <input type="text" ng-model="user.IndexMarketValue"  id="IndexMarketValue" class="form-control" >
+      			 <input type="number" ng-model="SingleIndex.IndexMarketValue"  id="IndexMarketValue" class="form-control" ng-required="true" min="1.0" value="0.0" step=".01" >
     		</div>
     		<div class="form-group col-md-4"  >
 				<label for="Type of Index" >Type of Index</label >
-		    	<select name="Type of Index" id="TypeofIndex" ng-model="user.IndexType" class="form-control">
+		    	<select name="Type of Index" id="TypeofIndex" ng-model="SingleIndex.IndexType" class="form-control" required>
 		    		<option value="" >Please Select</option >
 		        	<option value="PR" >PR</option >
 		        	<option value="GTR" >GTR</option >
@@ -90,7 +90,7 @@
 		<div class="form-row">
 		<div class="form-group col-md-4" >
 			<label for="Normal cash dividend adjustment" >Normal Cash Dividend Adjustment:</label >
-		    <select name="Normal cash dividend adjustment" ng-model="user.NCashDivAdj" id="Normalcashdividendadjustment" class="form-control" >
+		    <select name="Normal cash dividend adjustment" ng-model="SingleIndex.NCashDivAdj" id="Normalcashdividendadjustment" class="form-control" required >
 				<option value="" >Please Choose</option >
 		        <option value="DA" >Divisor Adjustment</option >
 		        <option value="SA" >Stock Adjustment</option >
@@ -98,7 +98,7 @@
 		</div >
 		<div class="form-group col-md-4" >
 			<label for="Special cash dividend adjustment" >Special Cash Dividend Adjustment:</label >
-		    <select name="Special cash dividend adjustment" ng-model="user.SNCashDivAdj" id="Specialcashdividendadjustment" class="form-control" >
+		    <select name="Special cash dividend adjustment" ng-model="SingleIndex.SNCashDivAdj" id="Specialcashdividendadjustment" class="form-control" required>
 				<option value="" >Please Select</option >
 		        <option value="DA" >Divisor Adjustment</option >
 		        <option value="SA" >Stock Adjustment</option >
@@ -106,7 +106,7 @@
 		</div >
 		<div class="form-group col-md-4" >
 		    <label for="Dissemination Source" >Dissemination Source:</label >
-		    <select name="Dissemination Source" ng-model="user.DisseminationSource" id="DisseminationSource" class="form-control"  >
+		    <select name="Dissemination Source" ng-model="SingleIndex.DisseminationSource" id="DisseminationSource" class="form-control"  >
 				<option value="" >Please Choose</option >
 		        <option value="Email" >Email</option >
 		        <option value="SFTP" >SFTP</option >
@@ -114,7 +114,8 @@
 		</div >
 		</div>
 		<div >
-			<button name="insert"  ng-click="next()" class="btn btn-primary btn-lg btn-block">Next </button>
+			<input type="submit" value="Next"  class="btn btn-primary btn-lg btn-block"/>
+			<!-- <button name="next"  ng-click="next()" class="btn btn-primary btn-lg btn-block">Next </button>-->
 		</div>
 		</form>
 	</div>  

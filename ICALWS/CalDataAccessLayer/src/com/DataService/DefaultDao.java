@@ -23,8 +23,14 @@ public class DefaultDao
 		return rs;
 	}
 	
-	 public ResultSet ExecuteQuery(String sqlQuery) throws SQLException, ClassNotFoundException
+	 public void readConfig() throws SQLException, ClassNotFoundException
 	 {
+		 ConnectionFactory.readPropertyFile() ;
+	 }
+	
+	 public ResultSet ExecuteQuery(String sqlQuery) throws SQLException, ClassNotFoundException,Exception
+	 {
+		 System.out.println(sqlQuery);
 		 ConnectionFactory.getConnection();
 		 ResultSet rs = ConnectionFactory.Execute(sqlQuery);
 		 return rs;		 
@@ -38,27 +44,27 @@ public class DefaultDao
 	{
 		ConnectionFactory.getConnection();
 		String query = DataUtill.createInsert(tableName,keyValueMap);
-	      
+		System.out.println(query);
 		int iValue =ConnectionFactory.ExecuteUpdateInsertDelete(query);
-//		ConnectionFactory.closeConnection();
 		return iValue;
 	}
+	
+	
+	
 	
 	public int updatetData(String updateQuery) throws SQLException, ClassNotFoundException
 	{
 		System.out.println(updateQuery);
 		int iValue =ConnectionFactory.ExecuteUpdateInsertDelete(updateQuery);
-//		ConnectionFactory.closeConnection();
 		return iValue;
 	}
 	
 	public int updateData(String tableName,Map<String,Object> keyValueMap) throws SQLException, ClassNotFoundException
 	{
 		ConnectionFactory.getConnection();
-		String query = DataUtill.createInsert(tableName,keyValueMap);
-	      
+		String query = DataUtill.createUpdate(tableName,keyValueMap);
+		System.out.println(query);
 		int iValue =ConnectionFactory.ExecuteUpdateInsertDelete(query);
-//		ConnectionFactory.closeConnection();
 		return iValue;
 	}
 	
@@ -67,7 +73,6 @@ public class DefaultDao
 		try {
 			ConnectionFactory.getConnection();
 			ConnectionFactory.ExecuteUpdateInsertDelete(strInsertQuery);
-//			ConnectionFactory.closeConnection();
 		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
 			throw e;
@@ -80,7 +85,6 @@ public class DefaultDao
 		String query = DataUtill.createDelete(tableName,filter);
 		System.out.println(query);
 		int iValue =ConnectionFactory.ExecuteUpdateInsertDelete(query);
-//		ConnectionFactory.closeConnection();
 		return iValue;
 	}
 }

@@ -101,7 +101,7 @@ iCal.controller('runIndexController', ['$scope','$window','IManagerService','$ro
     
     $scope.viewPreClosing = function(row) 
     {
-		 if (window.confirm("Are you sure you want to view Pre Closing file for this Index?")) $scope.result = "Yes";  
+		 if (window.confirm("Are you sure you want to view Pre Opening file for this Index?")) $scope.result = "Yes";  
 		 else $scope.result = "No";  
 		 if ($scope.result == "Yes")
 		 { 
@@ -151,5 +151,6 @@ iCal.controller('runIndexController', ['$scope','$window','IManagerService','$ro
 	{
 		var $popup = $window.open("securityPopUp.html");
 		$popup.indexTicker =row.entity.indexTicker;
+		$popup.indexData =row.entity;
     }	
 }]);

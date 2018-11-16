@@ -11,7 +11,7 @@ import com.DataService.DefaultDao;
 
 public class ClientService 
 {
-	public List<ClientBean> getAllClients()
+	public List<ClientBean> getAllClients() throws Exception
 	{
 		List<ClientBean> clientsList = new ArrayList<>();
 		

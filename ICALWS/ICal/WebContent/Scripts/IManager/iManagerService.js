@@ -19,7 +19,7 @@ iCal.directive('indexManager', ['$parse', function ($parse) {
 
 iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFactory)
 {
-	console.log("configValues::" + icalFactory.configData.INDEX_CLOSE_FILE_PATH);
+//	console.log("configValues::" + icalFactory.configData.INDEX_CLOSE_FILE_PATH);
 	console.log('Host: :::;' + icalFactory.baseUrl);
 	var baseURL = icalFactory.baseUrl
 	//Get All New Indices List
@@ -182,17 +182,18 @@ iCal.service('IManagerService', ['$http','icalFactory', function ($http,icalFact
          		data	: indexData,
          	    headers	: {"Content-Type": "application/json","responseType": 'arraybuffer'}
          })
-        .then(function (response)
-         {
-        	var header = response.headers('Content-Disposition')
+        .then(function (response) 
+		{
+			var header = response.headers('Content-Disposition')
 			var fileName = header.split("=")[1].replace(/\"/gi,'');
 			console.log(fileName);
-        
+	    
 			var blob = new Blob([response.data],{type : 'application/vnd.openxmlformats-officedocument.presentationml.presentation;charset=UTF-8'});
+//			var blob = new Blob([response.data],{type : 'application/vnd.ms-excel;charset=UTF-8'});
 			var objectUrl = (window.URL || window.webkitURL).createObjectURL(blob);
 			var link = angular.element('<a/>');
 			link.attr({	href : objectUrl,download : fileName})[0].click();
-         });
+		})
     }
 	
 	this.runIndices = function (indexDataList,runDate)

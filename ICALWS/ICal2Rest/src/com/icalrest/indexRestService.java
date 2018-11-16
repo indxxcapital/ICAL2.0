@@ -27,12 +27,36 @@ import com.Service.SecurityService;
 @Path("/index") 
 public class indexRestService {
 	
+//	@POST
+//	@Path("/add")
+//	@Consumes("multipart/form-data")
+//	@Produces("multipart/form-data")
+////	public Response addIndex( @FormParam("model") String  weightType,  @FormParam("file") File file) 
+//	public Response addIndex( @FormParam("model") String  weightType,  @FormParam("file") File file)
+//	{
+//		System.out.println("in addMultipleIndex");
+////		System.out.println(jsonObject);
+////		String weightType = jsonObject.getString("weightType");
+////		System.out.println(weightType);
+//		boolean flag;
+////		File file = (File) jsonObject.et("file");
+//		
+//		
+////		System.out.println(file);
+//		if(weightType.equalsIgnoreCase("PWI"))
+//			flag = true;
+//		else
+//			flag = false;
+//		return addMultipleIndex(file,flag);
+//	}
+//	
 	@POST
 	@Path("/add")
 	public Response addIndex(File file) 
 	{
 		return addMultipleIndex(file,true);
 	}
+	
 	
 	@POST
 	@Path("/add2")
@@ -48,12 +72,12 @@ public class indexRestService {
 		return addSingleIndex(true,jsonObject);
 	}
 	
-	@POST
-	@Path("/addIndex2")
-	public Response addSingleIndexM(JsonObject  jsonObject) throws Exception
-	{
-		return addSingleIndex(false,jsonObject);
-	}
+//	@POST
+//	@Path("/addIndex2")
+//	public Response addSingleIndexM(JsonObject  jsonObject) throws Exception
+//	{
+//		return addSingleIndex(false,jsonObject);
+//	}
 	
 	@POST
 	@Path("/map")
@@ -201,8 +225,9 @@ public class indexRestService {
 	
 	private Response addMultipleIndex(File file,boolean isProprietaryWeightedIndices)
 	{
+		//File file = (File) jsonObject.get("file");
 		String strMsg = "";
-		System.out.println("in add index");
+		System.out.println("in add Multiple index");
 		try
 		{
 			InputStream uploadedInputStream = new FileInputStream(file);
@@ -231,13 +256,17 @@ public class indexRestService {
 		ResponseBuilder rb = Response.ok(strMsg);
 	    return rb.build();
 	}
-	
+	//iList = iService.getAllIndex(strFilter);
 	private Response addSingleIndex(boolean isProprietaryWeightedIndices,JsonObject  jsonObject)
 	{
+		
+		
 		String strMsg = "";
 		System.out.println("in side addIndex");
 		try 
 		{
+			String tickerValue = jsonObject.getString("IndexTicker");
+			isDuplicateIndex(tickerValue);
 			LocalDate localDate = LocalDate.now();
 			String strDate = DateTimeFormatter.ofPattern("YYYY-MM-dd").format(localDate);
 			
@@ -267,18 +296,22 @@ public class indexRestService {
 	            System.out.println(key);
 	            String strDbColumnName = columnsNameMap.get(key);
 	            System.out.println(strDbColumnName);
-	            String strDbColumnValue = jsonObject.getString(key);
+	            String strDbColumnValue;
+	            if(key.equalsIgnoreCase("IndexMarketValue") || key.equalsIgnoreCase("IndexValue"))
+	            	strDbColumnValue = jsonObject.getJsonNumber(key).toString();//jsonObject.getString(key);
+	            else
+	            	strDbColumnValue = jsonObject.getString(key);
 	            System.out.println(strDbColumnValue);
 	            System.out.println(strDbColumnName + "::::::::::" + strDbColumnValue);
 	            columnsValuesMap.put(strDbColumnName, strDbColumnValue);
 	            
 	        }
 	        columnsValuesMap.put("status", "NI");
-	        if(isProprietaryWeightedIndices)
-	        	columnsValuesMap.put("indexWeightType", "PWI");
-			else
-				columnsValuesMap.put("indexWeightType", "MWI");
-	        columnsValuesMap.put("indexWeightType", "PWI");
+//	        if(isProprietaryWeightedIndices)
+//	        	columnsValuesMap.put("indexWeightType", "PWI");
+//			else
+//				columnsValuesMap.put("indexWeightType", "MWI");
+//	        columnsValuesMap.put("indexWeightType", "PWI");
 	        columnsValuesMap.put("flag","1");
 	        columnsValuesMap.put("vf", strDate);
 	        columnsValuesMap.put("vt","9999-12-31");
@@ -288,16 +321,36 @@ public class indexRestService {
 	        IndexService iService = new IndexService();
 		
 			iService.insertIndexData(columnsValuesMap);
-			strMsg = "SUCCESS";
+			strMsg = "SUCCESS";// + tickerValue;
 		} catch (Exception e) {
 			e.printStackTrace();
 			strMsg = e.toString();
 		}		
 		System.out.println(strMsg);
 		ResponseBuilder rb = Response.ok(strMsg);
+		
 	    return rb.build();
 	}
 	
+	private void isDuplicateIndex(String  tickerValue) throws Exception
+	{
+		
+		IndexService iService = new IndexService();	
+		String	strFilter =" Where indexTicker = '" + tickerValue + "'";
+		List<IndexBean> iList = new ArrayList<IndexBean>();
+		try
+		{
+			iList = iService.getAllIndex(strFilter);
+			if(iList != null && iList.size() > 0)
+				throw new Exception("Index with ticker (" +tickerValue+ ") already exist");
+		} 
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
 	private Response getIndexList(String status,String weightType)
 	{
 		String strFilter = "";

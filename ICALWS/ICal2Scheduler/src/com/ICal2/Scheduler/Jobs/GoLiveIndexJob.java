@@ -2,7 +2,6 @@ package com.ICal2.Scheduler.Jobs;
 
 import java.sql.SQLException;
 import java.util.Date;
-
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

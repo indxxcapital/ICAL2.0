@@ -4,14 +4,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.Bean.CorporateActionsFinal;
 import com.Bean.IndexBean;
+import com.CalCommon.ICalCommonUtill;
 import com.DataService.ConfigUtil;
 import com.DataService.IndexDao;
 import com.opencsv.CSVReader;
@@ -20,6 +23,7 @@ import com.opencsv.CSVWriter;
 
 public class IndexService {
 
+	
 	public void testConn()
 	{
 		IndexDao iDao = new IndexDao();
@@ -30,6 +34,28 @@ public class IndexService {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private boolean isDuplicateIndex(String  tickerValue) throws Exception
+	{
+		
+		IndexService iService = new IndexService();	
+		String	strFilter =" Where indexTicker = '" + tickerValue + "'";
+		List<IndexBean> iList = new ArrayList<IndexBean>();
+		try
+		{
+			iList = iService.getAllIndex(strFilter);
+			if(iList != null && iList.size() > 0)
+//				throw new Exception("Index with ticker (" +tickerValue+ ") already exist");
+				return true;
+			else
+				return false;
+		} 
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw e;
 		}
 	}
 	
@@ -46,6 +72,7 @@ public class IndexService {
 	        CSVReader csvReader = new CSVReaderBuilder(filereader).withSkipLines(1).build();
 	        List<String[]> allData = csvReader.readAll();
 	 
+	        List <String> duplicateTickers = new ArrayList<>();
 	        // print Data
 	        for (String[] row : allData) 
 	        {
@@ -54,10 +81,14 @@ public class IndexService {
 		        	IndexBean indexBean = new IndexBean();
 		        	ICalUtil.setIndexBean(indexBean,row,isProprietaryWeightedIndices);
 					
+		        	if(isDuplicateIndex(indexBean.getIndexTicker()))
+		        		duplicateTickers.add(indexBean.getIndexTicker());
 		        	indexList.add(indexBean);
 	        	}
 	        }
 	        csvReader.close();
+	        if(duplicateTickers.size() > 0)
+				throw new Exception("Index with ticker (" +duplicateTickers.toString()+ ") already exist");
 	        IndexDao iDao = new IndexDao();
 			iDao.insertIndex(indexList);
 			System.out.println("Success import index data into table");
@@ -135,11 +166,25 @@ public class IndexService {
 		iDao.updateIndicesStatusAsRun(tickers,status,runDate);
 	}
 	
-	public ResultSet getAllSecuritiesForIndex(String indexTicker)
+	public ResultSet getAllSecuritiesForIndex(String indexTicker) throws Exception
 	{
 		
+//		String STR_CLOSE_FILE_QUERY = 
+//				"SELECT IC.id,S.securityid securityId, (Select top 1 CloseIndexValue FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription where flag ='1' and  indexTicker = '" +indexTicker + "') IndexValue ,"
+//				+ "S.BBGTicker,S.fullName,S.ISIN,S.SEDOL,S.CUSIP,S.Country,IC.weight,IC.shares,S.currency Currency,"
+//				+ "(SELECT top 1 closePrice  FROM " + ConfigUtil.propertiesMap.get("dbName") + ".closeprice where ISIN =S.ISIN and BBGTicker = S.BBGTicker order by vd desc) Price,"
+//				+ "(SELECT top 1 rate FROM " + ConfigUtil.propertiesMap.get("dbName") + ".currencyrate where fromCurrency = S.currency and toCurrency = "
+//				+ "(Select currency FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription where flag ='1' and  indexTicker = '" + indexTicker+ "') "
+//				+ " order by vd desc) CurrencyFactor ,"
+//				+ "(SELECT top 1 rate FROM " + ConfigUtil.propertiesMap.get("dbName") + ".currencyrate where toCurrency = S.currency and fromCurrency = "
+//				+ "(Select currency FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription where flag ='1' and  indexTicker = '" + indexTicker+ "') " 
+//				+ " order by vd desc) CurrencyDivisor "
+//				+ " FROM " + ConfigUtil.propertiesMap.get("dbName") + ".security S, " + ConfigUtil.propertiesMap.get("dbName") + ".indexcomposition IC "
+//				+ " where IC.flag='1' and S.flag ='1' and  IC.indexcode = '" + indexTicker+ "' and IC.securityId = S.securityid";
+//		
+		
 		String STR_CLOSE_FILE_QUERY = 
-				"SELECT IC.id,S.securityid securityId, (Select top 1 CloseIndexValue FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription where flag ='1' and  indexTicker = '" +indexTicker + "') IndexValue ,"
+				"SELECT IC.id,S.id securityId, (Select top 1 CloseIndexValue FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription where flag ='1' and  indexTicker = '" +indexTicker + "') IndexValue ,"
 				+ "S.BBGTicker,S.fullName,S.ISIN,S.SEDOL,S.CUSIP,S.Country,IC.weight,IC.shares,S.currency Currency,"
 				+ "(SELECT top 1 closePrice  FROM " + ConfigUtil.propertiesMap.get("dbName") + ".closeprice where ISIN =S.ISIN and BBGTicker = S.BBGTicker order by vd desc) Price,"
 				+ "(SELECT top 1 rate FROM " + ConfigUtil.propertiesMap.get("dbName") + ".currencyrate where fromCurrency = S.currency and toCurrency = "
@@ -149,8 +194,8 @@ public class IndexService {
 				+ "(Select currency FROM " + ConfigUtil.propertiesMap.get("dbName") + ".indexdescription where flag ='1' and  indexTicker = '" + indexTicker+ "') " 
 				+ " order by vd desc) CurrencyDivisor "
 				+ " FROM " + ConfigUtil.propertiesMap.get("dbName") + ".security S, " + ConfigUtil.propertiesMap.get("dbName") + ".indexcomposition IC "
-				+ " where IC.flag='1' and S.flag ='1' and  IC.indexcode = '" + indexTicker+ "' and IC.securityId = S.securityid"
-				;
+				+ " where IC.flag='1' and S.flag ='1' and  IC.indexcode = '" + indexTicker+ "' and IC.securityId = S.id";
+		
 		
 		System.out.println(STR_CLOSE_FILE_QUERY);
 		
@@ -194,7 +239,7 @@ public class IndexService {
 		return "bussinessAPI";
 	}
 	
-	public Map<String,Object> getCurrencyRateMap(String toCurrency,String toDate)
+	public Map<String,Object> getCurrencyRateMap(String toCurrency,String toDate) throws Exception
 	{
 		Map<String,Object> currencyVsCurrencyFactorMap = new HashMap<String,Object>();
 		IndexDao iDao = new IndexDao();
@@ -216,7 +261,7 @@ public class IndexService {
 		return "bussinessAPI";
 	}
 	
-	public List<IndexBean> getAllLiveIndexForFileGeneration(String zoneType)
+	public List<IndexBean> getAllLiveIndexForFileGeneration(String zoneType) throws Exception
 	{
 		IndexDao iDao = new IndexDao();
 		List<IndexBean> indexList = new ArrayList<>();  
@@ -229,7 +274,7 @@ public class IndexService {
 		return indexList;
 	}
 	
-	public String generatePreClosingile(IndexBean iBean,String fileCompletePath) throws Exception 
+	public String generatePreOpeningFile(IndexBean iBean,String fileCompletePath) throws Exception 
 	{
 		IndexDao iDao = new IndexDao();
 		ResultSet securityList =  getAllSecuritiesForIndex( iBean.getIndexTicker());
@@ -241,7 +286,7 @@ public class IndexService {
 		
 		String runDate = iBean.getIndexRunDate();
 		
-		List<String[]> securityDataList = new ArrayList();
+		List<String[]> securityDataList = new ArrayList<String[]>();
 		
 		
 		String[] strDateHeaderArray = {"Date",runDate};		
@@ -346,35 +391,40 @@ public class IndexService {
 		
 		return fileCompletePath;
 	}
+	
 
 	public void generateOpeningFile(IndexBean iBean,String toDate,String fileCompletePath) throws Exception 
 	{
 		IndexDao iDao = new IndexDao();
 		Map<String,Object> lastClosingFileDetailsMap = iDao.getIndexFileDetails(iBean.getIndexTicker(),"closingfiledetails");
 		
-		ResultSet securityList =  getAllSecuritiesForIndex( iBean.getIndexTicker());
-		List<String[]> securityDataList = new ArrayList();
-		
-		Float divisor = (float) 0.0 ;
-		Float marketValue = (float) 0.0 ;
+		ResultSet securityList = getAllSecuritiesForIndex( iBean.getIndexTicker());
+		List<String[]> securityDataList = new ArrayList<String[]>();
+		Double divisor = (double) 0.0 ;
+		Double divisorFactor = (double) 0.0 ;
+		Double marketValue = (double) 0.0 ;
 		Float indexValue = (float) 0.0 ;
 		Float sumOfWeights = (float) 0.0 ;
 		
-		indexValue = (Float) lastClosingFileDetailsMap.get("indexValue");
+		if(lastClosingFileDetailsMap.get("indexValue") == null)
+			indexValue = iBean.getCloseIndexValue();
+		else
+			indexValue = ICalUtil.roundOff((Float) lastClosingFileDetailsMap.get("indexValue"));
 		securityDataList.add(ICalUtil.getClosingFileHeaderList());
 		
 		if(securityList !=null)
 		{
 			while(securityList.next())
 			{
-				Float shares = (float) 0.0 ;
-				Float securityPrice = (float) 0.0 ;
+				String strSecurityId = securityList.getString("securityId");
+				Double shares = (double) 0.0 ;
+				Double securityPrice = (double) 0.0 ;
 				Float weights = (float) 1 ;
 				
-				shares = (securityList.getFloat("shares"));
-				securityPrice =(securityList.getFloat("Price"));
-				Float currencyFactor = (securityList.getFloat("CurrencyFactor"));
-				Float currencyDivisor = (securityList.getFloat("CurrencyDivisor"));
+				shares = ICalUtil.roundOff(securityList.getDouble("shares"));
+				securityPrice =ICalUtil.roundOff(securityList.getDouble("Price"));
+				Float currencyFactor = ICalUtil.roundOff(securityList.getFloat("CurrencyFactor"));
+				Float currencyDivisor = ICalUtil.roundOff(securityList.getFloat("CurrencyDivisor"));
 				String cuerrency = (securityList.getString("Currency"));
 				if(cuerrency.compareTo(cuerrency.toUpperCase()) != 0)
 					securityPrice = securityPrice/100;
@@ -387,16 +437,23 @@ public class IndexService {
 						currencyFactor = 1/currencyDivisor;
 					}
 				}
-				
+				securityPrice = ICalUtil.roundOff(securityPrice*currencyFactor);
 				weights = (securityList.getFloat("weight"));
 				
-				adjustCorporateActions(shares,weights,securityPrice);
+				CAAdjustmentsService caAdjustment = new CAAdjustmentsService();
+				Map<String,Double> map = caAdjustment.adjustCorporateActions(shares,securityPrice,strSecurityId,toDate,iBean);
+				if(map != null && map.get("PriceFactor") != null)
+					securityPrice = ICalUtil.roundOff(securityPrice* map.get("PriceFactor"));
+				if(map != null &&  map.get("SharesFactor") != null)
+					shares = ICalUtil.roundOff( shares* map.get("SharesFactor"));
+				if(map != null &&  map.get("DivisorFactor") != null)
+					divisorFactor  = ICalUtil.roundOff(divisorFactor + map.get("DivisorFactor"));
 				
 				sumOfWeights +=  weights;
-				marketValue += shares*securityPrice*currencyFactor;
+				marketValue += ICalUtil.roundOff(shares*securityPrice);//*currencyFactor;
 				
 				String[] strValueArray = new String[12];
-				
+				securityPrice = securityPrice/currencyFactor;
 				strValueArray[0] = toDate;
 				strValueArray[1] = securityList.getString("BBGTicker");
 				strValueArray[2] = securityList.getString("fullName");
@@ -404,9 +461,9 @@ public class IndexService {
 				strValueArray[4] = securityList.getString("SEDOL");
 				strValueArray[5] = securityList.getString("CUSIP");
 				strValueArray[6] = securityList.getString("Country");			
-				strValueArray[7] = securityList.getString("shares");
+				strValueArray[7] = shares.toString();//securityList.getString("shares");
 				strValueArray[8] = securityList.getString("weight");
-				strValueArray[9] = securityList.getString("Price");			
+				strValueArray[9] = securityPrice.toString();//securityList.getString("Price");			
 				strValueArray[10] = securityList.getString("Currency");		
 				strValueArray[11] = currencyFactor.toString();//securityList.getString("CurrencyFactor");		
 				
@@ -414,7 +471,8 @@ public class IndexService {
 			}
 		}
 		
-		divisor = marketValue/indexValue;
+		divisor = ICalUtil.roundOff(marketValue/indexValue);
+//		divisor = divisor - divisorFactor;
 		
 		String[] strDateHeaderArray = {"Date",toDate};	
 		CSVWriter csvWriter = ICalUtil.generateCsvTemplate(strDateHeaderArray, fileCompletePath);
@@ -441,10 +499,6 @@ public class IndexService {
 		insertIndexFileData(columnsValuesMap,"openingfiledetails");
 	}
 	
-	private void adjustCorporateActions(Float shares, Float weights, Float securityPrice) {
-		
-	}
-
 	public void generateClosingFile(IndexBean iBean,String toDate,String fileCompletePath) throws Exception 
 	{
 		IndexDao iDao = new IndexDao();
@@ -452,7 +506,7 @@ public class IndexService {
 		if(lastOpeningFileDetailsMap.get("divisor") == null)
 			return;
 		ResultSet securityList =  getAllSecuritiesForIndex( iBean.getIndexTicker());
-		List<String[]> securityDataList = new ArrayList();
+		List<String[]> securityDataList = new ArrayList<String[]>();
 		
 		Float divisor = (float) 0.0 ;
 		Float marketValue = (float) 0.0 ;
@@ -556,4 +610,78 @@ public class IndexService {
 		IndexDao dao = new IndexDao();
 		dao.goLiveIndex();
 	}
+		
+	public List<IndexBean> getAllIndexBySecurity(String ISIN,String BBGTicker) throws Exception
+	{
+		IndexDao iDao = new IndexDao();
+		List<IndexBean> indexList = new ArrayList<>();  
+		try
+		{
+			String sqlQuery ="";
+			ResultSet rs = iDao.ExecuteQuery(sqlQuery);
+			indexList = converResultToIndexBean(rs);
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+			throw(e);
+		}
+		return indexList;
+	}
+	public List<IndexBean> converResultToIndexBean(ResultSet rs) throws SQLException, ClassNotFoundException
+	{
+		List<IndexBean> indexList = new ArrayList<>();
+		while (rs.next())
+		{
+			IndexBean iBean = new IndexBean(); 
+			getBeanFromResultSet(rs,iBean);
+			indexList.add(iBean);
+	    }
+		
+		return indexList;
+	}
+	private void getBeanFromResultSet(ResultSet rs,IndexBean iBean ) throws SQLException
+	{
+		iBean.setId(rs.getInt("id"));
+		if(rs.getString("clientName") != null)
+			iBean.setClientName(rs.getString("clientName"));	
+		if(rs.getString("indexLiveDate") != null)
+		{
+			System.out.println(rs.getString("indexLiveDate"));
+			iBean.setIndexLiveDateStr(rs.getString("indexLiveDate"));
+			System.out.println(iBean.getIndexLiveDateStr());
+		}
+		if(rs.getString("indexName") != null)
+			iBean.setIndexlName(rs.getString("indexName"));
+		if(rs.getString("indexTicker") != null)
+			iBean.setIndexTicker(rs.getString("indexTicker"));
+		if(rs.getString("indexType") != null)
+			iBean.setIndexType(rs.getString("indexType"));
+		if(rs.getString("normalCashDivAdj") != null)
+			iBean.setNormalCashDivAdj(rs.getString("normalCashDivAdj"));
+		if(rs.getString("specialCashDivAdj") != null)
+			iBean.setSpecialCashDivAdj(rs.getString("specialCashDivAdj"));
+		if(rs.getString("zoneType") != null)
+			iBean.setZoneType(rs.getString("zoneType"));
+		if(rs.getString("currency") != null)
+			iBean.setCurrency(rs.getString("currency"));
+		if(rs.getString("disseminationSource") != null)
+			iBean.setDisseminationSource(rs.getString("disseminationSource"));
+//		if(rs.getString("OutputFileFormat") != null)
+//			iBean.setOutputFilesFormat(rs.getString("OutputFileFormat"));
+		if(rs.getString("status") != null)
+		{
+			String strStatus = ICalCommonUtill.getIndexStatusCodeNameMap().get(rs.getString("status"));
+			iBean.setStatus(strStatus);
+		}
+		if(rs.getString("indexWeightType") != null)
+		{
+			String strWeightType = ICalCommonUtill.getIndexWeightCodeTypeMap().get(rs.getString("indexWeightType"));
+			iBean.setIndexWeightType(strWeightType);
+		}
+		iBean.setCloseIndexValue(rs.getFloat("CloseIndexValue"));
+		iBean.setIndexMarketValue(rs.getFloat("IndexMarketValue"));
+		if(rs.getString("runIndexDate") != null)
+			iBean.setIndexRunDate(rs.getString("runIndexDate"));
+		System.out.println(iBean.getIndexMarketValue());
+	}
+	
 }

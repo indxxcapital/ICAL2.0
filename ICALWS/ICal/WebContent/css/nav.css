@@ -1,3 +1,6 @@
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
 
 body {
 	font-family: 'Poppins', sans-serif;
@@ -108,18 +111,18 @@ a,input,select{
 
 
 .two a:hover {
-  background-color: #6C6C6C !important;
-  // feeling like it's a rounded corners kind of day
-  border-color: #6C6C6C !important;
-  border-radius: 25px;
+  background-color: grey;
+ 
+ 
+  color: white;
     
 }
 
 .nav-pills > li.active > a  {
-  background-color: #6C6C6C !important;
-  // feeling like it's a rounded corners kind of day
-  border-color: #6C6C6C !important;
-  border-radius: 25px; 
+  background-color: grey;
+  
+  
+  color: white;
 }
 
 

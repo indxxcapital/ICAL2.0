@@ -1,10 +1,67 @@
-iCal.controller('indexSecurityController', function ($scope, $window, IManagerService) 
+iCal.directive('dir1', function () {
+    return {
+        link: function(scope, element, attrs) {
+            scope.$watch(attrs.dir1, function(value) {
+                if(value === true) {
+                    element[0].focus();
+                    element[0].select();
+                }
+            });
+        }
+    };
+});
+iCal.controller('indexSecurityController', function ($scope, $window, IManagerService,icalFactory,$http) 
 {
+	var baseURL = icalFactory.baseUrl;
+	$scope.getAllCurrencies = function ()
+	{
+		var baseUrl = baseURL + '/ICal2Rest/rest/currency/getCurrencies';
+	    return $http({ 
+	    	method  : 'GET',
+	    	url     : baseUrl,
+	    	
+	    }).then(function (response) {
+	    	console.log(response.data);
+	    	icalFactory.currencyList = response.data;
+	    	$scope.CData = response.data;
+            return response.data;
+        });
+    }
+	$scope.getAllClient = function ()
+	{
+		var baseUrl = baseURL + '/ICal2Rest/rest/client/getAllClients';
+	    return $http({ 
+	    	method  : 'GET',
+	    	url     : baseUrl,
+	    	
+	    }).then(function (response) {
+	    	console.log(response.data);
+	    	icalFactory.clientList = response.data;
+	    	$scope.ClientData = response.data;
+            return response.data;
+        });
+    }
+	
+	icalFactory.configValues()
+	.then(function (response)
+	{
+		$scope.getAllCurrencies();
+		$scope.getAllClient();
+//		console.log("configValues::" + icalFactory.configData);
+    });
+	
+	$scope.index = {};
 	$scope.indexCode = $window.indexTicker;
 	$scope.index = $window.indexData;
-	console.log($scope.indexCode);
+//	console.log($scope.indexCode);
+//	$scope.index.indexName = $window.indexData.indexName;
 	console.log($scope.index);
-	 
+//	console.log($scope.index.indexName);
+	$scope.CData = icalFactory.currencyList;
+	console.log($scope.CData);
+	$scope.ClientData = icalFactory.clientList;
+	console.log($scope.ClientData);
+	
 	$scope.loadIndexSecurities = function() 
 	{
 		IManagerService.getAllIndexSecurities($scope.indexCode).then(function (response) 
@@ -69,6 +126,10 @@ iCal.controller('indexSecurityController', function ($scope, $window, IManagerSe
 		]
 	}; 
     
+    $scope.update = function(row) 
+    {
+    	alert($scope.index);
+    };
     $scope.remove = function(row) 
     {
         if (window.confirm("Are you sure you want to Delete this record?")) $scope.result = "Yes";  

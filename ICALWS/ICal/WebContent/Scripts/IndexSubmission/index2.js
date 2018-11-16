@@ -20,10 +20,10 @@ iCal.controller('addIndexController2',  ['$scope','$window', 'indexService','$ht
 	function($scope,$window, indexService,$http,icalFactory)
 {
 	console.log('inside addIndexController2');
-	$scope.user = {};
+	$scope.SingleIndex = {};
 	$scope.CData=[];
 	$scope.ClientData=[];
-	$scope.user.weightType = 'MWI';
+	$scope.SingleIndex.weightType = 'MWI';
 	$scope.title = "Add Multiple Indices";
 	$scope.index = {};
 	$scope.index.setupType = '';
@@ -33,21 +33,23 @@ iCal.controller('addIndexController2',  ['$scope','$window', 'indexService','$ht
 	
 	$scope.loadCurrencies = function () 
     {
-		indexService.getAllCurrencies().then(function (response) 
-    	{
-			console.log(response);
-            $scope.CData = response;
-            console.log( $scope.CData);
-        });
+		$scope.CData = icalFactory.currencyList;
+//		indexService.getAllCurrencies().then(function (response) 
+//    	{
+//			console.log(response);
+//            $scope.CData = response;
+//            console.log( $scope.CData);
+//        });
     }
 	$scope.loadClient = function () 
     {
-		indexService.getAllClient().then(function (response) 
-    	{
-			console.log(response);
-            $scope.ClientData = response;
-            console.log( $scope.CData);
-        });
+		$scope.ClientData = icalFactory.clientList;
+//		indexService.getAllClient().then(function (response) 
+//    	{
+//			console.log(response);
+//            $scope.ClientData = response;
+//            console.log( $scope.CData);
+//        });
     }
   	 
     $scope.loadCurrencies();
@@ -119,9 +121,9 @@ iCal.controller('addIndexController2',  ['$scope','$window', 'indexService','$ht
     	}
         
         // Add Single Index Details
-		var baseUrl = baseURL + '/ICal2Rest/rest/index/addIndex1';
+		var baseUrl = baseURL + '/ICal2Rest/rest/index/addIndex';
     	console.log('inside SubmitSingleIndexData');
-    	var indexData = $scope.user;
+    	var indexData = $scope.SingleIndex;
         console.log(indexData);
         $http({ 
         	method  : 'POST',
@@ -143,7 +145,7 @@ iCal.controller('addIndexController2',  ['$scope','$window', 'indexService','$ht
                 	{
                 		alert("Index has been Submitted Successfully");
                 		$scope.index.setupType = '';
-                		$scope.user = {};
+                		$scope.SingleIndex = {};
                 		$scope.showdiv= true;
                 		$scope.showdiv1= false;
                 		$scope.showdiv2= false;
@@ -199,9 +201,9 @@ iCal.controller('addIndexController2',  ['$scope','$window', 'indexService','$ht
 			return;
     	}
         
-        // Add Single Index Details
+        // Add Multiple Index Details
     	console.log('inside SubmitMultipleIndexData');
-        var baseUrl = baseURL + '/ICal2Rest/rest/index/add1';
+        var baseUrl = baseURL + '/ICal2Rest/rest/index/add2';
     	console.log('inside uploadFileToAddIndex');
     	$http.post(baseUrl, indexFile, {transformRequest: angular.identity,headers: {'Content-Type': undefined}}) 
         .success(function(data) 

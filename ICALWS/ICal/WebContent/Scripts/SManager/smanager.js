@@ -15,6 +15,7 @@ iCal.controller('securityManagerController', ['$scope','$window','IManagerServic
     $scope.gridOptions = 
 	{
 		data: 'SData', 
+		enableHorizontalScrollbar: 1,
 		columnDefs: 
 		[
 			{

@@ -159,6 +159,7 @@ iCal.controller('upcomingIndexController', ['$scope','$window','IManagerService'
 	{
 		var $popup = $window.open("securityPopUp.html");
 		$popup.indexTicker =row.entity.indexTicker;
+		$popup.indexData =row.entity;
     }	
 	
 	$scope.openRunIndex = function(row) 

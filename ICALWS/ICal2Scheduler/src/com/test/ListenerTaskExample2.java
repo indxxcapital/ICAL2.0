@@ -1,8 +1,6 @@
 package com.test;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -23,7 +21,7 @@ import com.ICal2.Scheduler.Jobs.OpeningJobAR;
 
 public class ListenerTaskExample2 implements ServletContextListener {
     private Thread t1 = null;
-    private Thread t2 = null;
+//    private Thread t2 = null;
     private ServletContext context;
     public void contextInitialized(ServletContextEvent contextEvent)
     {

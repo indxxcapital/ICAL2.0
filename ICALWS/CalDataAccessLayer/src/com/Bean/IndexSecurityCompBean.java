@@ -12,10 +12,10 @@ public class IndexSecurityCompBean
 	private String country;
 	private Float shares;
 	private float weight;
-	private float securityPrice;
-	private float currencyFactor;
-    private String securityCurrency;
-    private float securityIndexValue;
+//	private float securityPrice;
+//	private float currencyFactor;
+//    private String securityCurrency;
+//    private float securityIndexValue;
     
     public String getIndexCode() {
         return indexTicker;
