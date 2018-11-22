@@ -43,6 +43,9 @@ public class CACMService {
 			cBean.setSecurityId(rs.getInt("securityid"));
 		if(rs.getString("ISIN") != null)
 			cBean.setISIN(rs.getString("ISIN"));
+		if(rs.getString("Name") != null)
+			cBean.setName(rs.getString("Name"));
+		
 		if(rs.getString("BBGTicker") != null)
 			cBean.setBBGTicker(rs.getString("BBGTicker"));
 		
@@ -65,6 +68,9 @@ public class CACMService {
 			cBean.setSecurityId(rs.getInt("securityid"));
 		if(rs.getString("ISIN") != null)
 			cBean.setISIN(rs.getString("ISIN"));	
+		if(rs.getString("Name") != null)
+			cBean.setName(rs.getString("Name"));
+		
 		if(rs.getString("BBGTicker") != null)
 			cBean.setBBGTicker(rs.getString("BBGTicker"));
 		

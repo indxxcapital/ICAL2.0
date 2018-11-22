@@ -13,6 +13,7 @@ import com.Bean.CACMBean;
 import com.Bean.CorporateActionsFinal;
 import com.Bean.SecurityBean;
 import com.CalCommon.ICalCommonUtill;
+import com.DataService.ConfigUtil;
 import com.DataService.CorporateActionsDao;
 import com.Validations.CorporateActionsValidations;
 import com.opencsv.CSVReader;
@@ -366,7 +367,35 @@ public class CorporateActionsService
 		return caMap;
 	}
 	
+	public static Double taxAmount(Integer securityId) throws ClassNotFoundException, SQLException, Exception
+	{
+		CorporateActionsDao caDao = new CorporateActionsDao();
+		Double taxAmount = (double) 0;
+		String sqlQuery = "SELECT id ,country,wht  FROM " + ConfigUtil.propertiesMap.get("dbName") 
+							+".taxrate where country = (Select Country from " + ConfigUtil.propertiesMap.get("dbName")
+							+ ".security where id = '" + securityId + "' )";
+		ResultSet rs = caDao.ExecuteQuery(sqlQuery);
+		if(rs != null)
+		{
+			while(rs.next())
+			{
+				taxAmount = rs.getDouble(3);
+			}
+		}
+		return taxAmount;
+	}
 	
-	
-	
+//	public static void main(String[] args) 
+//	{
+//		try
+//		{
+//			ConfigService configService = new ConfigService();
+//			configService.getConfigValues();
+//			Double dbl = taxAmount(2);
+//			
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 }

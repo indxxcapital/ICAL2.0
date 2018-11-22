@@ -25,7 +25,7 @@ public class CorporateActionsFinal
 	private String isPrimaryOnly;
 	private String iconName;
 	private boolean allowEdit = false;
-	
+	private String Name;
  	public Integer getId(){
  		return id;
  	} 	 
@@ -153,6 +153,10 @@ public class CorporateActionsFinal
          this.iconName = aIconName;
      } 
      
-     
-     
+     public String getName(){
+         return Name;
+     }
+     public void setName(String aName){
+         this.Name = aName;
+     }       
 }

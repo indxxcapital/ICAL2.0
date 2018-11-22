@@ -1,7 +1,5 @@
 package com.corporate.actions.service;
 
-import com.Service.CurrencyService;
-
 public class DividendCorporateActionAdjustments extends CorporateActionsAdjustments
 {
 //	String indexType;

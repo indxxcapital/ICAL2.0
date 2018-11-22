@@ -64,6 +64,7 @@ public class CACMDividendService extends CACMService
 				cacmBean.setId(entry.getValue().getId());
 				cacmBean.setSecurityId(entry.getValue().getSecurityId());
 				cacmBean.setISIN(entry.getValue().getISIN());
+				cacmBean.setName(entry.getValue().getName());
 				cacmBean.setBBGTicker(entry.getValue().getBBGTicker());
 				
 				cacmBean.setCurrencyFDS(entry.getValue().getCurrency());

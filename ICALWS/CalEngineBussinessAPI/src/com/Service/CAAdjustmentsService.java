@@ -1,5 +1,6 @@
 package com.Service;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import com.Bean.CorporateActionsFinal;
@@ -16,7 +17,7 @@ public class CAAdjustmentsService
 	Double oldPrice ;
 	Double oldShares ;
 	
-	public Map<String,Double> adjustCorporateActions(Double shares, Double securityPrice,String securityId,String effectiveDate,IndexBean iBean)
+	public Map<String,Double> adjustCorporateActions(Double shares, Double securityPrice,String securityId,String effectiveDate,IndexBean iBean) throws ClassNotFoundException, SQLException, Exception
 	{
 		
 		Map<String,CorporateActionsFinal> caMap =  getAllCAForSecurity(securityId,effectiveDate,ICalCommonUtill.PRIMARY_DATABASE_CA);
@@ -123,9 +124,9 @@ public class CAAdjustmentsService
 		}
 	}
 
-	private Double getAmount(CorporateActionsFinal caFinalBean, IndexBean iBean) 
+	private Double getAmount(CorporateActionsFinal caFinalBean, IndexBean iBean) throws ClassNotFoundException, SQLException, Exception 
 	{
-		Double taxPrecent = getTaxPercent();
+		Double taxPrecent = getTaxPercent(caFinalBean);
 		Double currencyMultiplier = currencyMultiplier(caFinalBean.getCurrency(),iBean.getCurrency());
 		Double amount = (double) 0;
 		
@@ -147,9 +148,11 @@ public class CAAdjustmentsService
 		return currencyMultiplier;
 	}
 
-	private Double getTaxPercent()
+	private Double getTaxPercent(CorporateActionsFinal caFinalBean) throws ClassNotFoundException, SQLException, Exception
 	{
-		return (double) 10;
+		CorporateActionsService caService = new CorporateActionsService();
+		Double taxAmount = caService.taxAmount(caFinalBean.getSecurityId());
+		return taxAmount;
 	}
 	
 	private Map<String,CorporateActionsFinal> getAllCAForSecurity(String securityId,String effectiveDate,String source)

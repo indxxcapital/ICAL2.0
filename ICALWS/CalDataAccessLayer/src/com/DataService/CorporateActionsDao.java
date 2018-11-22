@@ -13,12 +13,13 @@ public class CorporateActionsDao extends DefaultDao
 	
 	public ResultSet getAllCAByDateAndCode(String strCode ,String fromDate,String toDate,String source) throws Exception
 	{
-		
+		//44
 		readConfig();
 //		String GET_ALL_DIVIDEND_CA = "SELECT TOP 10 *  FROM " + ConfigUtil.propertiesMap.get("dbName") + ".corporateactionedi "
 //				+ "where eventCode in(" + strCode + ") AND  effectiveDate between '"+ fromDate + "' and '"+ toDate +  "'  order by date desc ";
 //		
-		String GET_ALL_DIVIDEND_CA = "SELECT *  FROM " + ConfigUtil.propertiesMap.get("dbName") + ".corporateactionfinal "
+		String GET_ALL_DIVIDEND_CA = "SELECT * ,(select fullName  FROM " + ConfigUtil.propertiesMap.get("dbName") + ".[security] S where S.ISIN = CA.ISIN ) Name"
+				+ " FROM " + ConfigUtil.propertiesMap.get("dbName") + ".corporateactionfinal CA"
 				+ "where source='" +source + "' and  eventCode in('" + strCode + "') AND  effectivedate between '"+ fromDate + "' and '"+ toDate +  "'  order by effectivedate desc ";
 		
 		System.out.println(GET_ALL_DIVIDEND_CA);
