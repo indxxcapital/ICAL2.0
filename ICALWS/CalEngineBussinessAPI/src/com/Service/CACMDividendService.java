@@ -8,6 +8,7 @@ import java.util.Map;
 import com.Bean.CACMBean;
 import com.Bean.CorporateActionsFinal;
 import com.Bean.SecurityBean;
+import com.CalCommon.ICalCommonUtill;
 import com.DataService.CorporateActionsDao;
 
 public class CACMDividendService extends CACMService
@@ -134,7 +135,7 @@ public class CACMDividendService extends CACMService
 	{
 		Map<String,Map<String,CorporateActionsFinal>> caMap =  new HashMap<String,Map<String,CorporateActionsFinal>>();
 		CorporateActionsDao caDao = new CorporateActionsDao();
-		ResultSet rs = caDao.getAllCAByDateAndCode(strCode,fromDate,toDate,"FACTSET") ;
+		ResultSet rs = caDao.getAllCAByDateAndCode(strCode,fromDate,toDate,ICalCommonUtill.SECONDARY_DATA_CA) ;
 		caMap =convertListToCorporateActionsFinalList(rs);
 		return caMap;		
 	}

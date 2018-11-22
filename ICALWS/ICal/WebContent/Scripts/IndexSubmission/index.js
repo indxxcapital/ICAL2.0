@@ -19,6 +19,9 @@ iCal.directive('fileModel', ['$parse', function ($parse) {
 iCal.controller('addIndexController',  ['$scope','$window', 'indexService','$http','icalFactory',
 	function($scope,$window, indexService,$http,icalFactory)
 {
+	var today = new Date().toISOString().split('T')[0];
+    document.getElementsByName("index_date")[0].setAttribute('min', today);
+    
 	$scope.minDate = new Date();
 	console.log('inside addIndexController');
 	$scope.SingleIndex = {};

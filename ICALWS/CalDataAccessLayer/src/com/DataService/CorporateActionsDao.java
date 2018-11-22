@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.Bean.CorporateActionsFinal;
+import com.CalCommon.ICalCommonUtill;
 
 public class CorporateActionsDao extends DefaultDao
 {
@@ -25,10 +26,10 @@ public class CorporateActionsDao extends DefaultDao
 		return rs;
 	}
 	
-	public ResultSet getAllCAByDateAndSecurity(String securityId ,String fromDate) throws Exception
+	public ResultSet getAllCAByDateAndSecurity(String securityId ,String fromDate,String source) throws Exception
 	{
 		String GET_ALL_CA_FOR_SECURITY = "SELECT *  FROM " + ConfigUtil.propertiesMap.get("dbName") + ".corporateactionfinal "
-				+ "where source='EDI' and flag = '1' and securityid ='" + securityId + "' AND  effectivedate = '"+ fromDate +  "'";
+				+ "where source='" + source + "' and flag = '1' and securityid ='" + securityId + "' AND  effectivedate = '"+ fromDate +  "'";
 		
 		System.out.println(GET_ALL_CA_FOR_SECURITY);
 		ResultSet rs = ExecuteQuery(GET_ALL_CA_FOR_SECURITY);
@@ -112,7 +113,7 @@ public class CorporateActionsDao extends DefaultDao
 				Map<String,Object> keyValueMap = new HashMap<String,Object>();
 				Integer securityId = getSecurityId(caBean.getISIN(),caBean.getBBGTicker());
 				
-				keyValueMap.put("source", "EDI");
+				keyValueMap.put("source",ICalCommonUtill.PRIMARY_DATABASE_CA);
 				keyValueMap.put("securityid", securityId);
 				keyValueMap.put("flag", "1");
 				
@@ -133,10 +134,10 @@ public class CorporateActionsDao extends DefaultDao
 				if(caBean.getRatio() != null)	
 					keyValueMap.put("ratio", caBean.getRatio());
 				
-//				if(caBean.getOldValue() != null)	
-//					keyValueMap.put("oldValue", caBean.getOldValue());
-//				if(caBean.getNewValue() != null)	
-//					keyValueMap.put("newValue", caBean.getNewValue());
+				if(caBean.getOldValue() != null)	
+					keyValueMap.put("oldValue", caBean.getOldValue());
+				if(caBean.getNewValue() != null)	
+					keyValueMap.put("newValue", caBean.getNewValue());
 					
 				
 				insertData("corporateactionfinal",keyValueMap);

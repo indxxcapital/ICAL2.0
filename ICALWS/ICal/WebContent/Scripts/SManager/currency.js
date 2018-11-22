@@ -85,19 +85,27 @@ iCal.service('currencyService', ['$http','icalFactory', function ($http,icalFact
 		.success(function(data)
 		{
 			console.log(data)
-	                
-			$http.get(baseURL + "/ICal2Rest/rest/currency/get", {responseType: 'arraybuffer'})
-			.then(function (response) 
-			{
-				var header = response.headers('Content-Disposition')
-				var fileName = header.split("=")[1].replace(/\"/gi,'');
-				console.log(fileName);
-	        
-				var blob = new Blob([response.data],{type : 'application/vnd.openxmlformats-officedocument.presentationml.presentation;charset=UTF-8'});
-				var objectUrl = (window.URL || window.webkitURL).createObjectURL(blob);
-				var link = angular.element('<a/>');
-				link.attr({	href : objectUrl,download : fileName})[0].click();
-			})
+			//code changes for Bug fixing 
+			if(data == 'SUCCESS')
+        	{
+				$http.get(baseURL + "/ICal2Rest/rest/currency/get", {responseType: 'arraybuffer'})
+				.then(function (response) 
+				{
+					var header = response.headers('Content-Disposition')
+					var fileName = header.split("=")[1].replace(/\"/gi,'');
+					console.log(fileName);
+		        
+					var blob = new Blob([response.data],{type : 'application/vnd.openxmlformats-officedocument.presentationml.presentation;charset=UTF-8'});
+					var objectUrl = (window.URL || window.webkitURL).createObjectURL(blob);
+					var link = angular.element('<a/>');
+					link.attr({	href : objectUrl,download : fileName})[0].click();
+				})
+        	}
+            else
+        	{
+            	console.log('Input File Cannot be parsed.' + data);
+        		alert('Input File Cannot be parsed.' + data);
+        	} 
 		})
 		.error(function(){
 			console.log("status code for error is ")

@@ -125,4 +125,15 @@ a,input,select{
   color: white;
 }
 
+.highlighted {
+  background-color: green;
+}
+
+.highlightRed {
+  background-color: red;
+}
+.none {
+ 
+}
+
 

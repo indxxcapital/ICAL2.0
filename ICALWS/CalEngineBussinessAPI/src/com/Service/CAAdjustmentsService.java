@@ -5,6 +5,7 @@ import java.util.Map;
 import com.Bean.CorporateActionsFinal;
 import com.Bean.IndexBean;
 import com.Bean.SecurityBean;
+import com.CalCommon.ICalCommonUtill;
 import com.corporate.actions.service.CorporateActionsAdjustments;
 import com.corporate.actions.service.DividendCorporateActionAdjustments;
 import com.corporate.actions.service.SplitCorporateActionAdjustment;
@@ -18,7 +19,7 @@ public class CAAdjustmentsService
 	public Map<String,Double> adjustCorporateActions(Double shares, Double securityPrice,String securityId,String effectiveDate,IndexBean iBean)
 	{
 		
-		Map<String,CorporateActionsFinal> caMap =  getAllCAForSecurity(securityId,effectiveDate);
+		Map<String,CorporateActionsFinal> caMap =  getAllCAForSecurity(securityId,effectiveDate,ICalCommonUtill.PRIMARY_DATABASE_CA);
 		Map<String,Double> factorMap =  new HashMap<String,Double>();
 		
 		oldPrice = securityPrice;
@@ -151,14 +152,14 @@ public class CAAdjustmentsService
 		return (double) 10;
 	}
 	
-	private Map<String,CorporateActionsFinal> getAllCAForSecurity(String securityId,String effectiveDate)
+	private Map<String,CorporateActionsFinal> getAllCAForSecurity(String securityId,String effectiveDate,String source)
 	{		
 		Map<String,CorporateActionsFinal> caMap =  new HashMap<String,CorporateActionsFinal>();
 		CorporateActionsService caService = new CorporateActionsService();
 		
 		try 
 		{
-			caMap = caService.getAllCAByDateAndSecurityMap(securityId,effectiveDate.replaceAll("-", ""));
+			caMap = caService.getAllCAByDateAndSecurityMap(securityId,effectiveDate.replaceAll("-", ""),source);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

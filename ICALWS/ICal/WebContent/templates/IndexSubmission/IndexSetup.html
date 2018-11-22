@@ -37,11 +37,12 @@
 			    	<option data-ng-repeat="client  in ClientData"  value="{{client.clientName}}">{{client.clientName}}</option>
 				</select>
 			</div>
-			<div  class="form-group col-md-4" >
+			<div  class="form-group col-md-4">
 				<label for="date" >Index live Date:</label >
-		    	<input type="date" name="date" ng-model="SingleIndex.IndexLiveDate"  value="2018-12-31" class="form-control" min="{{minDate}}"  required>
+				 
+		    	<input type="date" name="index_date" id="index_date" ng-model="SingleIndex.IndexLiveDate"  value="2018-12-31" class="form-control"  required>
 	    	</div >
-	    	<div class="form-group col-md-4" >
+	    	<div class="form-group col-md-4">
 			    <label for="Currency" >Currency:</label >
 				<select ng-model="SingleIndex.Currency" class="form-control" required>
 				    <option value="">-Select Currency-</option>

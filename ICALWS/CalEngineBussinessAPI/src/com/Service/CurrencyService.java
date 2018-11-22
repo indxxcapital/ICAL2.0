@@ -27,7 +27,8 @@ public class CurrencyService {
 		catch (Exception e) 
 		{
 //			e.printStackTrace();
-			return true;
+//			return true;
+			throw e;
 		}
 	}
 	

@@ -21,7 +21,11 @@ public class CorporateActionsFinal
  	private String newValue;
  	
  	private String flag;
- 	
+	private String hasDifference;
+	private String isPrimaryOnly;
+	private String iconName;
+	private boolean allowEdit = false;
+	
  	public Integer getId(){
  		return id;
  	} 	 
@@ -116,5 +120,39 @@ public class CorporateActionsFinal
      }
      public void setFlag(String aFlag){
          this.flag = aFlag;
-     }     
+     }   
+     
+     //0 for no difference 1 for difference
+     public String getHasDifference(){
+         return hasDifference;
+     }
+     public void setHasDifference(String aHasDifference){
+         this.hasDifference = aHasDifference;
+     } 
+     
+     // 0 for primary only 1 for both
+     public String getIsPrimaryOnly(){
+         return isPrimaryOnly;
+     }
+     public void setIsPrimaryOnly(String aIsPrimaryOnly){
+         this.isPrimaryOnly = aIsPrimaryOnly;
+     } 
+     
+     // 1 for allow 0 for not allow
+     public boolean getAllowEdit(){
+         return allowEdit;
+     }
+     public void setAllowEdit(boolean aAllowEdit){
+         this.allowEdit = aAllowEdit;
+     }
+     
+     public String getIconName(){
+         return iconName;
+     }
+     public void setIconName(String aIconName){
+         this.iconName = aIconName;
+     } 
+     
+     
+     
 }

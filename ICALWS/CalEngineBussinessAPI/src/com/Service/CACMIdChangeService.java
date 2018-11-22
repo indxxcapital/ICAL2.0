@@ -8,6 +8,7 @@ import java.util.Map;
 import com.Bean.CACMBean;
 import com.Bean.CorporateActionsFinal;
 import com.Bean.SecurityBean;
+import com.CalCommon.ICalCommonUtill;
 import com.DataService.CorporateActionsDao;
 
 public class CACMIdChangeService extends CACMService
@@ -65,8 +66,8 @@ public class CACMIdChangeService extends CACMService
 		Map<String,CorporateActionsFinal> fdsCAMap = new HashMap<String,CorporateActionsFinal>();
 		try 
 		{
-			ediCAMap = getAllCAFinalByDateAndCode("CHG_ID','CHG_NAME','CHG_TKR" ,toDate,toDate,"EDI");
-			fdsCAMap = getAllCAFinalByDateAndCode("CHG_ID','CHG_NAME','CHG_TKR",toDate,toDate,"FACTSET");
+			ediCAMap = getAllCAFinalByDateAndCode("CHG_ID','CHG_NAME','CHG_TKR" ,toDate,toDate,ICalCommonUtill.PRIMARY_DATABASE_CA);
+			fdsCAMap = getAllCAFinalByDateAndCode("CHG_ID','CHG_NAME','CHG_TKR",toDate,toDate,ICalCommonUtill.SECONDARY_DATA_CA);
 			
 			for (Map.Entry<String,CorporateActionsFinal> caEntry : ediCAMap.entrySet()) 
 			{

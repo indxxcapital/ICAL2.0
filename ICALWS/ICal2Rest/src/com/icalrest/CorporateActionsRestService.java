@@ -203,6 +203,14 @@ public class CorporateActionsRestService {
 				Double ratio =  caObj.getJsonNumber("ratio").doubleValue();
 				keyValueMap.put("ratio", ratio);
 			}
+			else if( eventCode.trim().equalsIgnoreCase("CHG_ID") ||  eventCode.trim().equalsIgnoreCase("CHG_NAME")
+					|| eventCode.trim().equalsIgnoreCase("CHG_TKR"))
+			{
+				String oldValue = caObj.getString("oldValue");
+				keyValueMap.put("oldValue", oldValue);
+				String newValue = caObj.getString("newValue");
+				keyValueMap.put("newValue", newValue);
+			}
 			
 //			
 //			CorporateActionsFinal caBean = new CorporateActionsFinal();

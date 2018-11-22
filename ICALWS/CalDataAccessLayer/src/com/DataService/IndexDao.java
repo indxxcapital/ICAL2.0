@@ -27,6 +27,7 @@ public class IndexDao extends DefaultDao
 		LocalDate localDate = LocalDate.now();
 		String strDate = DateTimeFormatter.ofPattern("yyy-MM-dd").format(localDate);
 		
+		
 		for (IndexBean indexBean : indexBeanList)
 		{
 			Map<String,Object> keyValueMap = new HashMap<String,Object>();

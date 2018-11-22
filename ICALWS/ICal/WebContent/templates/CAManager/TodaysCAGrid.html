@@ -21,10 +21,13 @@
 	          	<a href ng-click="setTab(3)">Id change</a>
 	       	</li>
 	       	<li ng-class="{ active: isSet(4) }">
-	          	<a href ng-click="setTab(4)">Rights Offering/Spin Off</a>
+	          	<a href ng-click="setTab(4)">Rights Offering</a>
 	       	</li>
-	       	<li ng-class="{ active: isSet(5) }">
-	          	<a href ng-click="setTab(5)">Others</a>
+   			<li ng-class="{ active: isSet(5) }">
+	          	<a href ng-click="setTab(5)">Spin Off</a>
+	       	</li>
+	       	<li ng-class="{ active: isSet(6) }">
+	          	<a href ng-click="setTab(6)">Others</a>
 	       	</li>
 	     	</ul>
 	  	</div>
@@ -48,9 +51,12 @@
 	          		<div class="gridStyle" style="border: 5px solid #d4d4d4; width: 1000px;  height: 300px" ng-grid="idChangeGridOptions" ></div>
 	     		</div>
 	     		<div ng-show="isSet(4)">
-	          		<!--<div class="gridStyle" style="border: 5px solid #d4d4d4; width: 1000px;  height: 300px" ng-grid="idChangeGridOptions" ></div>-->
+	          		<!--<div class="gridStyle" style="border: 5px solid #d4d4d4; width: 1000px;  height: 300px" ng-grid="rightsOfferingGridOptions" ></div>-->
 	     		</div>
 	     		<div ng-show="isSet(5)">
+	          		<!--<div class="gridStyle" style="border: 5px solid #d4d4d4; width: 1000px;  height: 300px" ng-grid="spinOffGridOptions" ></div>-->
+	     		</div>
+	     		<div ng-show="isSet(6)">
 	          		<!--<div class="gridStyle" style="border: 5px solid #d4d4d4; width: 1000px;  height: 300px" ng-grid="otherGridOptions" ></div>-->
 	     		</div>
 	  		</div>

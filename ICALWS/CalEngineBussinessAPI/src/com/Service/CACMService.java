@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.Bean.CACMBean;
 import com.Bean.CorporateActionsFinal;
+import com.CalCommon.ICalCommonUtill;
 import com.DataService.CorporateActionsDao;
 
 public class CACMService {
@@ -15,7 +16,7 @@ public class CACMService {
 	{
 		Map<String,CACMBean> caMap =  new HashMap<String,CACMBean>();
 		CorporateActionsDao caDao = new CorporateActionsDao();
-		ResultSet rs = caDao.getAllCAByDateAndCode(strCode,fromDate,toDate,"EDI") ;
+		ResultSet rs = caDao.getAllCAByDateAndCode(strCode,fromDate,toDate,ICalCommonUtill.PRIMARY_DATABASE_CA) ;
 		caMap = convertResultSetToCACMBean(rs);
 		return caMap;		
 	}

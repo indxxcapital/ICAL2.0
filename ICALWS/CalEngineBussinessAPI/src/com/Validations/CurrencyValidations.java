@@ -41,6 +41,20 @@ public class CurrencyValidations
 	
 	public static void validateCurrencyFileData(List<String[]> allData) throws Exception
 	{
+		boolean isEmpty = true;
+		for (String[] row : allData) 
+        {
+			if(!row[0].isEmpty())
+			{
+				isEmpty = false;
+			}
+        }	
+		if(isEmpty)
+        {
+        	System.out.println("Input file is empty");
+        	throw new Exception("Input file is empty");
+        }
+		
 		for (String[] row : allData) 
         {
 			if(row[0].toString().equalsIgnoreCase(""))

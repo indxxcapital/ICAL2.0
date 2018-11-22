@@ -4,19 +4,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.Bean.CorporateActionsFinal;
 import com.Bean.IndexBean;
 import com.CalCommon.ICalCommonUtill;
 import com.DataService.ConfigUtil;
 import com.DataService.IndexDao;
+import com.Validations.IndexValidations;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.CSVWriter;
@@ -37,26 +35,53 @@ public class IndexService {
 		}
 	}
 	
-	private boolean isDuplicateIndex(String  tickerValue) throws Exception
+	private boolean isDuplicateIndex(String  tickerValue,String indexName) throws Exception
 	{
 		
-		IndexService iService = new IndexService();	
-		String	strFilter =" Where indexTicker = '" + tickerValue + "'";
+//		IndexService iService = new IndexService();	
+//		String	strFilter =" Where indexTicker = '" + tickerValue + "'";
+//		List<IndexBean> iList = new ArrayList<IndexBean>();
+//		try
+//		{
+//			iList = iService.getAllIndex(strFilter);
+//			if(iList != null && iList.size() > 0)
+////				throw new Exception("Index with ticker (" +tickerValue+ ") already exist");
+//				return true;
+//			else
+//				return false;
+//		} 
+//		catch (Exception e)
+//		{
+//			e.printStackTrace();
+//			throw e;
+//		}
+		
+		
+		
+		String	strFilter =" Where indexTicker = '" + tickerValue + "' or indexName ='" + indexName + "'";
 		List<IndexBean> iList = new ArrayList<IndexBean>();
 		try
 		{
-			iList = iService.getAllIndex(strFilter);
+			iList = getAllIndex(strFilter);
 			if(iList != null && iList.size() > 0)
-//				throw new Exception("Index with ticker (" +tickerValue+ ") already exist");
-				return true;
-			else
-				return false;
+			{
+				if(iList.get(0).getIndexTicker().trim().equalsIgnoreCase(tickerValue))
+//					throw new Exception("Index with ticker (" +tickerValue+ ") already exist");
+					return true;
+				else if(iList.get(0).getIndexName().trim().equalsIgnoreCase(indexName))
+//					throw new Exception("Index with Name (" +indexName+ ") already exist");
+					return true;
+//				else
+//					return false;
+			}
 		} 
 		catch (Exception e)
 		{
 			e.printStackTrace();
 			throw e;
 		}
+		return false;
+		
 	}
 	
 	public String importIndexDataFromCsv(String outFilePath,Boolean isProprietaryWeightedIndices) throws Exception
@@ -72,6 +97,7 @@ public class IndexService {
 	        CSVReader csvReader = new CSVReaderBuilder(filereader).withSkipLines(1).build();
 	        List<String[]> allData = csvReader.readAll();
 	 
+	    	IndexValidations.validateIndexFile(outFilePath,allData);
 	        List <String> duplicateTickers = new ArrayList<>();
 	        // print Data
 	        for (String[] row : allData) 
@@ -81,14 +107,18 @@ public class IndexService {
 		        	IndexBean indexBean = new IndexBean();
 		        	ICalUtil.setIndexBean(indexBean,row,isProprietaryWeightedIndices);
 					
-		        	if(isDuplicateIndex(indexBean.getIndexTicker()))
-		        		duplicateTickers.add(indexBean.getIndexTicker());
+		        	if(isDuplicateIndex(indexBean.getIndexTicker(),indexBean.getIndexName()))
+		        		duplicateTickers.add(indexBean.getIndexTicker()+ "-"+indexBean.getIndexName() );
 		        	indexList.add(indexBean);
 	        	}
 	        }
 	        csvReader.close();
 	        if(duplicateTickers.size() > 0)
-				throw new Exception("Index with ticker (" +duplicateTickers.toString()+ ") already exist");
+				throw new Exception("Index with ticker or name (" +duplicateTickers.toString()+ ") already exist");
+	        for (IndexBean indexBean : indexList)
+			{
+				isDuplicateIndex(indexBean.getIndexTicker(),indexBean.getIndexName());
+			}
 	        IndexDao iDao = new IndexDao();
 			iDao.insertIndex(indexList);
 			System.out.println("Success import index data into table");
@@ -683,5 +713,28 @@ public class IndexService {
 			iBean.setIndexRunDate(rs.getString("runIndexDate"));
 		System.out.println(iBean.getIndexMarketValue());
 	}
+	
+//	private void isDuplicateIndex(String  tickerValue,String indexName) throws Exception
+//	{
+//		
+//		String	strFilter =" Where indexTicker = '" + tickerValue + "' or indexName ='" + indexName + "'";
+//		List<IndexBean> iList = new ArrayList<IndexBean>();
+//		try
+//		{
+//			iList = getAllIndex(strFilter);
+//			if(iList != null && iList.size() > 0)
+//			{
+//				if(iList.get(0).getIndexTicker().trim().equalsIgnoreCase(tickerValue))
+//					throw new Exception("Index with ticker (" +tickerValue+ ") already exist");
+//				if(iList.get(0).getIndexName().trim().equalsIgnoreCase(indexName))
+//					throw new Exception("Index with Name (" +indexName+ ") already exist");
+//			}
+//		} 
+//		catch (Exception e)
+//		{
+//			e.printStackTrace();
+//			throw e;
+//		}
+//	}
 	
 }

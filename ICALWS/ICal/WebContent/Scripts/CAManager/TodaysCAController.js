@@ -67,12 +67,12 @@ iCal.controller('TodaysCAController', ['$scope','$window','icalFactory','CAManag
 			field: 'ISIN',
 			displayName: 'ISIN',
 			enableCellEdit: false,
-			width: '180px',
+			width: '180px'
     	},{
 			field: 'BBGTicker',
 			displayName: 'BBG Ticker',
 			enableCellEdit: false,
-			width: '180px',
+			width: '150px'
     	},{
 			field: 'eventCode',
 			displayName: 'Event Type',
@@ -81,9 +81,17 @@ iCal.controller('TodaysCAController', ['$scope','$window','icalFactory','CAManag
         },{
              field: 'grossAmount',
              displayName: 'Gross Amount',
-             editableCellTemplate: '<input type="number" ng-class="\'colt\' + col.index"  ng-model="COL_FIELD" style="height: 20px;width: 150px" />',
+             editableCellTemplate: '<input type="number"  value="0.0"  min="0.0" step=".01" ng-class="\'colt\' + col.index"  ng-model="COL_FIELD" style="height: 20px;width: 130px" />',
              enableCellEdit: true,
-             width: '180px'
+             width: '150px',
+             visible:false
+        },{    	  
+  			field: 'grossAmount', 
+  			displayName:'Gross Amount', 
+  			cellTemplate:
+  				'<div class="ngCellText" ><div ng-show="row.entity.allowEdit" class="ngCellText" ><input type="number"  value="0.0"  min="0.0" step=".01" ng-class="\'colt\' + col.index" ng-model="COL_FIELD" style="height: 20px;width: 130px;margin-top: 0px"></div>'+
+  				'<div ng-show="!row.entity.allowEdit">{{COL_FIELD}}</div></div>',
+			width: '170px'    	  
         },{
         	field: 'currency',
         	displayName: 'Currency',
@@ -92,37 +100,48 @@ iCal.controller('TodaysCAController', ['$scope','$window','icalFactory','CAManag
     		+ '<option data-ng-repeat="currency in cList"  >{{currency.currencySymbol}}</option>'
     		+ '</select>',
     		enableCellEdit: true,
-    		width: '180px'
+    		width: '170px',
+    		visible:false
       },{
-    	  field: 'flag',
-    	  name: 'Status', 
-    	  width: '120px', 
-    	  displayName: 'Actions', 
-    	  enableCellEdit: false,
-    	  cellTemplate: 
-    		  '<button id="inactiveBtn" type="button" ng-click="Inactive(row)" >{{COL_FIELD == 0 ? "Active" : "In Active"}}</button>'//activity.seen == 0 ? 'Mark Read' : 'Mark Unread'
+	      	field: 'currency',
+	    	displayName: 'Currency',
+	    	editableCellTemplate: '<div class="ngCellText" ><div ng-show="row.entity.allowEdit" class="ngCellText" >'+
+	    		'<select ng-model="COL_FIELD"  style="height: 20px;width: 150px;margin-top: 0px" >'
+				+ '<option value="">-Select Currency-</option>'
+				+ '<option data-ng-repeat="currency in cList"  >{{currency.currencySymbol}}</option>'
+				+ '</select></div>'
+				+ '<div ng-show="!row.entity.allowEdit">{{COL_FIELD}}</div></div>',
+			width: '190px',
+			enableCellEdit: true
       },{
-    	  field: 'flag',
-    	  name: 'actions', 
-    	  width: '120px', 
-    	  displayName: 'Actions', 
-    	  enableCellEdit: false,
-    	  cellTemplate: 
-    		  '<button id="inactiveBtn" type="button" ng-click="Inactive(row)" >{{COL_FIELD == 0 ? "Active" : "In Active"}}</button>'//activity.seen == 0 ? 'Mark Read' : 'Mark Unread'
-      }]
+  			field: 'hasDifference',
+  			name: 'status', 
+  			width: '120px', 
+  			displayName: 'Status', 
+  			enableCellEdit: false,
+  			cellTemplate: 
+//  				'<div>{{COL_FIELD == 2 ? "P" : COL_FIELD == 1 ? "C" : ""}} <img width=\"50px\" ng-src=\"images/download.jpg\" lazy-src></div>'
+  				'<div>{{COL_FIELD == 2 ? "P" : COL_FIELD == 1 ? "C" : ""}} <img width=\"20px\" ng-src=\"{{row.entity.iconName}}\" lazy-src></div>'
+      },{
+    	  	field: 'flag',
+    	  	name: 'actions', 
+    	  	width: '120px', 
+    	  	displayName: 'Actions', 
+    	  	enableCellEdit: false,
+    	  	cellTemplate: 
+    	  		'<button id="inactiveBtn1" type="button" ng-click="Edit(row)">edit</button>'+
+    	  		'<button id="inactiveBtn" type="button" ng-click="Inactive(row)">{{COL_FIELD == 0 ? "In Active" : "Active"}}</button>'
+    		 //activity.seen == 0 ? 'Mark Read' : 'Mark Unread'
+      }],
+      rowTemplate:'<div ng-style="rowStyle(row)" ng-class="{highlighted: row.getProperty(\'hasDifference\') ==0}"><div ng-style="{ \'cursor\': row.cursor }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell ">' +
+      '<div class="ngVerticalBar" ng-class="{ ngVerticalBarVisible: !$last }">&nbsp;</div>' +
+      '<div ng-cell></div>' +
+      '</div></div>'	
 	};   
         
     $scope.splitGridOptions = 
     { 	
 		data: 'splitData', 
-		enableCellEdit: false,
-		enableCellEditOnFocus: true,
-		cellEditableCondition: function($scope) {
-
-		      // put your enable-edit code here, using values from $scope.row.entity and/or $scope.col.colDef as you desire
-		      return $scope.row.entity.isActive; // in this example, we'll only allow active rows to be edited
-
-		    },
 		enableHorizontalScrollbar: 1,
 		enableCellSelection: true,
 		columnDefs: [
@@ -136,12 +155,12 @@ iCal.controller('TodaysCAController', ['$scope','$window','icalFactory','CAManag
 			field: 'ISIN',
 			displayName: 'ISIN',
 			enableCellEdit: false,
-			width: '180px',
+			width: '180px'
     	},{
 			field: 'BBGTicker',
 			displayName: 'BBG Ticker',
 			enableCellEdit: false,
-			width: '180px',
+			width: '180px'
     	},{
 			field: 'eventCode',
 			displayName: 'Event Type',
@@ -152,17 +171,38 @@ iCal.controller('TodaysCAController', ['$scope','$window','icalFactory','CAManag
              displayName: 'Ratio',
              editableCellTemplate: '<input type="number" ng-class="\'colt\' + col.index"  ng-model="COL_FIELD" style="height: 20px;width: 120px" />',
              enableCellEdit: true,
-             width: '180px'
+             width: '180px',
+             visible:false
+        },{    	  
+  			field: 'ratio', 
+  			displayName:'Ratio', 
+  			cellTemplate:
+  				'<div class="ngCellText" ><div ng-show="row.entity.allowEdit" class="ngCellText" ><input type="number"  value="0.0"  min="0.0" step=".01" ng-class="\'colt\' + col.index" ng-model="COL_FIELD" style="height: 20px;width: 130px;margin-top: 0px"></div>'+
+  				'<div ng-show="!row.entity.allowEdit">{{COL_FIELD}}</div></div>',
+			width: '170px'    	  
         },{
+  			field: 'hasDifference',
+  			name: 'status', 
+  			width: '120px', 
+  			displayName: 'Status', 
+  			enableCellEdit: false,
+  			cellTemplate: 
+  				'<div>{{COL_FIELD == 2 ? "P" : COL_FIELD == 1 ? "C" : ""}} <img width=\"20px\" ng-src=\"{{row.entity.iconName}}\" lazy-src></div>'
+      },{
         	field: 'flag',
         	name: 'isActive', 
         	width: '120px', 
         	displayName: 'Actions', 
         	enableCellEdit: false,
         	cellTemplate: 
-        		'<button id="inactiveBtn" type="button" ng-click="Inactive(row)" >{{COL_FIELD == 0 ? "Active" : "In Active"}}</button>'//activity.seen == 0 ? 'Mark Read' : 'Mark Unread'
-        		+'<button ng-click="row.entity.isActive = !row.entity.isActive" ng-model="row.entity.isActive">{{ row.entity.isActive ? "Unlocked" : "Locked" }}</button>'
-        }]
+        		'<button id="inactiveBtn1" type="button" ng-click="Edit(row)">edit</button>'+
+        		'<button id="inactiveBtn" type="button" ng-click="Inactive(row)" >{{COL_FIELD == 0 ? "Active" : "In Active"}}</button>'
+        }],
+        rowTemplate:
+        	'<div ng-style="rowStyle(row)" ng-class="{highlighted: row.getProperty(\'hasDifference\') ==0}"><div ng-style="{ \'cursor\': row.cursor }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell ">' +
+        	'<div class="ngVerticalBar" ng-class="{ ngVerticalBarVisible: !$last }">&nbsp;</div>' +
+        	'<div ng-cell></div>' +
+        	'</div></div>'
 	}; 
     
     $scope.idChangeGridOptions = 
@@ -197,22 +237,51 @@ iCal.controller('TodaysCAController', ['$scope','$window','icalFactory','CAManag
              displayName: 'Old Value',
              editableCellTemplate: '<input type="text" ng-class="\'colt\' + col.index"  ng-model="COL_FIELD" style="height: 20px;width: 150px" />',
              enableCellEdit: true,
-             width: '180px'
+             width: '180px',
+             visible:false
+        },{    	  
+  			field: 'oldValue', 
+  			displayName:'Old Value', 
+  			cellTemplate:
+  				'<div class="ngCellText" ><div ng-show="row.entity.allowEdit" class="ngCellText" ><input type="text"  ng-class="\'colt\' + col.index" ng-model="COL_FIELD" style="height: 20px;width: 130px;margin-top: 0px"></div>'+
+  				'<div ng-show="!row.entity.allowEdit">{{COL_FIELD}}</div></div>',
+			width: '170px'    	  
         },{
             field: 'newValue',
             displayName: 'New Value',
             editableCellTemplate: '<input type="text" ng-class="\'colt\' + col.index"  ng-model="COL_FIELD" style="height: 20px;width: 150px" />',
             enableCellEdit: true,
-            width: '180px'
+            width: '180px',
+            visible:false
+         },{    	  
+  			field: 'newValue', 
+  			displayName:'New Value', 
+  			cellTemplate:
+  				'<div class="ngCellText" ><div ng-show="row.entity.allowEdit" class="ngCellText" ><input type="text"  ng-class="\'colt\' + col.index" ng-model="COL_FIELD" style="height: 20px;width: 130px;margin-top: 0px"></div>'+
+  				'<div ng-show="!row.entity.allowEdit">{{COL_FIELD}}</div></div>',
+			width: '170px'    	  
+        },{
+  			field: 'hasDifference',
+  			name: 'status', 
+  			width: '120px', 
+  			displayName: 'Status', 
+  			enableCellEdit: false,
+  			cellTemplate: 
+  				'<div>{{COL_FIELD == 2 ? "P" : COL_FIELD == 1 ? "C" : ""}} <img width=\"20px\" ng-src=\"{{row.entity.iconName}}\" lazy-src></div>'
          },{
-        	  field: 'flag',
-        	  name: 'actions', 
-        	  width: '120px', 
-        	  displayName: 'Actions', 
-        	  enableCellEdit: false,
-        	  cellTemplate: 
-        		  '<button id="inactiveBtn" type="button" ng-click="Inactive(row)" >{{COL_FIELD == 0 ? "Active" : "In Active"}}</button>'//activity.seen == 0 ? 'Mark Read' : 'Mark Unread'
-    	}]
+        	 field: 'flag',
+        	 name: 'actions', 
+        	 width: '120px', 
+        	 displayName: 'Actions', 
+        	 enableCellEdit: false,
+        	 cellTemplate: 
+        		 '<button id="inactiveBtn1" type="button" ng-click="Edit(row)">edit</button>'+
+        		 '<button id="inactiveBtn" type="button" ng-click="Inactive(row)" >{{COL_FIELD == 0 ? "Active" : "In Active"}}</button>'//activity.seen == 0 ? 'Mark Read' : 'Mark Unread'
+    	}],
+        rowTemplate:'<div ng-style="rowStyle(row)" ng-class="{highlighted: row.getProperty(\'hasDifference\') ==0}"><div ng-style="{ \'cursor\': row.cursor }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell ">' +
+        '<div class="ngVerticalBar" ng-class="{ ngVerticalBarVisible: !$last }">&nbsp;</div>' +
+        '<div ng-cell></div>' +
+        '</div></div>'
 	}; 
     
     $scope.Inactive = function(row) 
@@ -233,6 +302,18 @@ iCal.controller('TodaysCAController', ['$scope','$window','icalFactory','CAManag
         		 row.entity.flag = '0';
          }
     };
+    
+    $scope.Edit = function(row) 
+    {
+         { 
+        	 if(row.entity.allowEdit == false)
+        		 row.entity.allowEdit = true;
+        	 else
+        		 row.entity.allowEdit = false;
+         }
+    };
+    
+    
     
     $scope.updateCA = function() 
     {

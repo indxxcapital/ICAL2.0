@@ -266,7 +266,8 @@ public class indexRestService {
 		try 
 		{
 			String tickerValue = jsonObject.getString("IndexTicker");
-			isDuplicateIndex(tickerValue);
+			String nameValue = jsonObject.getString("IndexName");
+			isDuplicateIndex(tickerValue,nameValue);
 			LocalDate localDate = LocalDate.now();
 			String strDate = DateTimeFormatter.ofPattern("YYYY-MM-dd").format(localDate);
 			
@@ -332,11 +333,11 @@ public class indexRestService {
 	    return rb.build();
 	}
 	
-	private void isDuplicateIndex(String  tickerValue) throws Exception
+	private void isDuplicateIndex(String  tickerValue,String indexName) throws Exception
 	{
 		
 		IndexService iService = new IndexService();	
-		String	strFilter =" Where indexTicker = '" + tickerValue + "'";
+		String	strFilter =" Where indexTicker = '" + tickerValue + "' or indexName ='" + indexName + "'";
 		List<IndexBean> iList = new ArrayList<IndexBean>();
 		try
 		{

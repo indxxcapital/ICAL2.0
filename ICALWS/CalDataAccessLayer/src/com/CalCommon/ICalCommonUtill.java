@@ -5,6 +5,9 @@ import java.util.Map;
 
 public class ICalCommonUtill {
 
+	public static String PRIMARY_DATABASE_CA = "Bloomberg";
+	public static String SECONDARY_DATA_CA = "FACTSET"; 
+	
 	public static Map<String,String> getIndexStatusNameCodeMap()
 	{
 		Map<String,String> keyValueMap = new HashMap<String,String>();

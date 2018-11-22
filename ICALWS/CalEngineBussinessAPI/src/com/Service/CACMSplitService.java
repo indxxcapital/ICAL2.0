@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import com.Bean.CACMBean;
 import com.Bean.CorporateActionsFinal;
+import com.CalCommon.ICalCommonUtill;
 import com.DataService.CorporateActionsDao;
 
 public class CACMSplitService  extends CACMService
@@ -63,7 +64,7 @@ public class CACMSplitService  extends CACMService
 	{
 		Map<String,CorporateActionsFinal>  fdsCAMap = new HashMap<String,CorporateActionsFinal>();
 		CorporateActionsDao caDao = new CorporateActionsDao();
-		ResultSet rs = caDao.getAllCAByDateAndCode(strCode,fromDate,toDate,"FACTSET") ;
+		ResultSet rs = caDao.getAllCAByDateAndCode(strCode,fromDate,toDate,ICalCommonUtill.SECONDARY_DATA_CA) ;
 		fdsCAMap =convertListToCorporateActionsFinalList(rs);
 		return fdsCAMap;		
 	}

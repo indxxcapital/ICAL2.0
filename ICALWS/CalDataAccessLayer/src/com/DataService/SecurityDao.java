@@ -383,4 +383,24 @@ public class SecurityDao extends DefaultDao
 	    }
 	}
 	
+	public ResultSet getSecutiryPrice(String ISIN ,String bbgTicker,String currency,String date) throws Exception
+	{		
+		String strWhereClause = getSecurityPriceExistQuerty( ISIN , bbgTicker,currency,date);
+		String strSelectQuery = DataUtill.createSelect(SECURITY_PRICE_TABLE_NAME, strWhereClause);
+		System.out.println(strSelectQuery);
+		ResultSet rs = ExecuteQuery(strSelectQuery);
+		return rs;		
+	}
+	
+	private String getSecurityPriceExistQuerty(String ISIN ,String bbgTicker,String currency,String date)
+	{
+		String strWhereClause = "Where  ISIN = '" +ISIN.trim() + "' and BBGTicker = '" +bbgTicker.trim() + "' and crrysymbol = '" +currency.trim()
+		+ "' and vd = '" +date.trim() + "'";
+//		+ "' AND CAST(GETDATE() AS DATE) BETWEEN vf AND vt";
+		// CONVERT(char(10), GetDate(),112)
+		return strWhereClause;
+		
+	}
+	
+	
 }

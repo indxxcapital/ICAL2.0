@@ -3,16 +3,13 @@ package com.Service;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.Bean.SecurityBean;
 import com.Bean.SecurityPriceBean;
-import com.DataService.ConfigUtil;
-import com.DataService.ConnectionFactory;
 import com.DataService.SecurityDao;
+import com.Validations.CommonValidations;
 import com.Validations.SecurityValidations;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
@@ -70,7 +67,7 @@ public class SecurityService
 		 			
 					try 
 					{
-						if(!SecurityValidations.checkForExistingSecurities(securityBean))
+						if(!CommonValidations.checkForExistingSecurities(securityBean))
 						{
 						    csvWriter.writeNext(ICalUtil.getSecurityValueListForMisiingSecurities(securityBean));
 						}

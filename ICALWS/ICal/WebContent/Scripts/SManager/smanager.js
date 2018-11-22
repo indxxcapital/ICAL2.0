@@ -16,13 +16,14 @@ iCal.controller('securityManagerController', ['$scope','$window','IManagerServic
 	{
 		data: 'SData', 
 		enableHorizontalScrollbar: 1,
+		enableVerticalScrollbar: 1,
 		columnDefs: 
 		[
 			{
 				field: 'fullName',
 				displayName: 'Security Name',
            		enableCellEdit: false,
-           		width: '250px'
+           		width: '280px'
 			},{
 				field: 'BBGTicker',
 				displayName: 'BBG Ticker',
@@ -32,7 +33,7 @@ iCal.controller('securityManagerController', ['$scope','$window','IManagerServic
 				field: 'ISIN',
 				displayName: 'ISIN',
            		enableCellEdit: false,
-           		width: '120px'
+           		width: '150px'
 			},{
 				field: 'country',
 				displayName: 'Country',

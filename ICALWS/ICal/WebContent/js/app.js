@@ -101,6 +101,11 @@ iCal.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: 'templates/CAManager/UploadCA.html',
             controller: 'CAUploadController'
         })
+        .state('CAManager.ModifiedCA', {
+        	url: '/ModifiedCA',
+            templateUrl: 'templates/CAManager/ModifyCAGrid.html',
+            controller: 'CAMyCtrl'
+        })
        ;
 //    $urlRouterProvider.otherwise('/settings/profile');
     $urlRouterProvider.otherwise('');

@@ -1,44 +1,57 @@
 iCal.controller('CAMyCtrl', ['$scope', function($scope)
 {
-  $scope.myData = [{name: "Moroni", dob: '1985-01-01'},
-                 {name: "Tiancum", dob: '1956-11-21'},
-                 {name: "Jacob", dob: '1980-03-08'},
-                 {name: "Nephi", dob: '1974-08-08'},
-                 {name: "Enos", dob: '1991-07-17'}];
-                 
-  $scope.gridOptions = {
-    data: 'myData',
-    rowTemplate: '<div ng-style="{ \'cursor\': row.cursor }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}" style="overflow: visible"><div class="ngVerticalBar" ng-style="{height: rowHeight}" ng-class="{ ngVerticalBarVisible: !$last }">&nbsp;</div><div ng-cell></div></div>',
-    columnDefs: [     
-      {
-        field: 'dob',
-        cellFilter: 'date',
-        editableCellTemplate: '<input ng-class="\'colt\' + col.index" datepicker-popup is-open="true" ng-model="COL_FIELD" style="height: 20px;width: 120px" />',
-        enableCellEdit: true,
-        width: '180px'
-        //height: '12px'
-      },
-      {
-          field: 'name',
-          
-          editableCellTemplate: '<input ng-class="\'colt\' + col.index"  ng-model="COL_FIELD" style="height: 20px;width: 120px" />',
-          enableCellEdit: true,
-          width: '180px'
-          //height: '12px'
-       },
-       {
-           field: 'name',
-           
-           editableCellTemplate: '<select ng-model="COL_FIELD" ng-class="\'colt\' + col.index" style="height: 20px;width: 120px" >'
-			+ '<option value="Jacob">Jacob</option>'
-			+ '<option value="Moroni">Moroni</option>'
-			+ '<option value="Nephi">Nephi</option>'
-			+ '<option value="Enos">Enos</option>'
-			+ '</select>',
-           enableCellEdit: true,
-           width: '180px'
-           //height: '12px'
-        }
-    ]
-  }
+    $scope.myData = [{name: "Moroni", age: 50, edit: false},
+        {name: "Tiancum", age: 43, edit: false},
+        {name: "Jacob", age: 27, edit: true},
+        {name: "Nephi", age: 29, edit: true},
+        {name: "Enos", age: 34, edit: false}];
+    
+    
+$scope.gridOptions = 
+	{
+		data: 'myData',
+		columnDefs: 
+		[
+			{
+				field: 'name',
+				displayName:'Name'
+			},{
+				field: 'age', 
+				displayName:'Age', 
+				cellTemplate:
+					'<div class="ngCellText"><div ng-show="!row.entity.edit">{{COL_FIELD}}</div>' + 
+                    '<div ng-show="row.entity.edit" class="ngCellText"><input type="text" ng-model="row.entity.age" style="height: 20px"></div></div>'
+			},{
+				field: 'age', 
+				displayName:'Age', 
+				cellTemplate:
+					
+                    '<div ng-show="row.entity.edit" class="ngCellText" style="height: 30px"><input type="text" ng-model="row.entity.age" style="height: 30px"></div>'
+			},{
+				field: 'age', 
+				displayName:'Age', 
+				cellTemplate:
+					
+                    '<div  class="ngCellText" style="height: 30px"><input type="text" ng-disabled="{{row.entity.edit}}" ng-model="row.entity.age" style="height: 30px"></div>'
+			},{
+		    	  name: 'actions', 
+		    	  width: '120px', 
+		    	  displayName: 'Actions', 
+		    	  enableCellEdit: false,
+		    	  cellTemplate: 
+		    		 '<button id="inactiveBtn1" type="button" ng-click="Edit(row)">edit</button>'
+		      }
+		]
+	};
+
+	$scope.Edit = function(row) 
+	{
+		 if(row.entity.edit == false)
+			 row.entity.edit = true;
+		 else
+			 row.entity.edit = false;
+	};
+
+
+
 }]);

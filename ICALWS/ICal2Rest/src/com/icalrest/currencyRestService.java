@@ -62,7 +62,7 @@ public class currencyRestService {
 
 		File file = new File(RestUtil.CURRENCY_OUT_FILE_PATH);
 		ResponseBuilder response = Response.ok((Object) file);
-		response.header("Content-Disposition","attachment; filename=" + RestUtil.CURRENCY_OUT_FILE_PATH);
+		response.header("Content-Disposition","attachment; filename=" + "missing-currencies.csv");
 		return response.build();
 	}
 	
